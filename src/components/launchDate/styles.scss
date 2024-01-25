@@ -1,0 +1,46 @@
+.launchDate {
+  width: 100%;
+  height: 100%;
+  background-color: #b3dec2;
+  justify-content: space-evenly;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .launchDate__title {
+    color: black;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .launchDate__body {
+    display: flex;
+    gap: 8px;
+justify-content: center;
+    img {
+      height: 40px;
+    }
+
+    .launchDate__timer {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 4px;
+
+      .launchDate__date {
+        display: flex;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 300;
+      }
+
+      .launchDate__daysLeft {
+        font-weight: 600;
+        font-size: 24px;
+      }
+    }
+
+  }
+}

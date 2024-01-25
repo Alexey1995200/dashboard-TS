@@ -1,0 +1,112 @@
+.overdue__wrapper {
+  background-color: white;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+  padding: 6px 16px;
+  font-size: 10px;
+
+  .overdue__table {
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+
+    .table__header {
+      font-weight: 600;
+      background-color: lightgray;
+    }
+
+    .table__body {
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+      gap: 8px;
+    }
+
+    .table__header div {
+      padding: 4px;
+    }
+
+    .table__header, .table__row {
+      display: flex;
+      flex-direction: row;
+
+      div {
+        display: flex;
+        justify-content: center;
+        border: solid 2px white;
+        word-break: break-word;
+        gap: 8px;
+        align-items: center;
+
+
+        &.days {
+          display: flex;
+          justify-content: flex-end;
+          padding-right: 4px;
+          gap: unset;
+        }
+
+        .indicator {
+          display: flex;
+          align-self: center;
+          border: none;
+          position: relative;
+          left: -4px
+        }
+
+
+        &.days_lite {
+          color: goldenrod;
+
+          .indicator {
+            display: none;
+          }
+        }
+
+        &.days_med {
+          color: red;
+
+          .indicator {
+            height: 16px;
+            width: 16px;
+            background-color: peachpuff;
+            border-radius: 100%;
+
+          }
+        }
+
+        &.days_high {
+          color: red;
+
+          .indicator {
+            height: 8px;
+            width: 8px;
+            background-color: red;
+            border-radius: 100%;
+          }
+        }
+
+      }
+
+      div:nth-child(1) {
+        width: 20%
+      }
+
+      div:nth-child(2) {
+        width: 36%
+      }
+
+      div:nth-child(3) {
+        width: 20%
+      }
+
+      div:nth-child(4) {
+        width: 24%
+      }
+    }
+  }
+
+}

@@ -1,0 +1,70 @@
+
+
+.progressBar {
+  display: flex!important;
+  flex-direction: column;
+  background-color: white;
+height: 100%;
+  width: 100%;
+  //flex: 1;
+  .progressBar__bar {
+    padding: 0 20px;
+
+  }
+
+  .progressBar__tasks {
+    display: flex;
+    flex-direction: row;
+    //gap: 16px;
+    justify-content: space-evenly;
+    font-size: 10px;
+
+    .task {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      align-items: center;
+
+      //border-right: 1px double #f1f1f1;
+      //border-left: 1px double #f1f1f1;
+      border-right: 1px double lightgray;
+      border-left: 1px double lightgray;
+
+      &:first-child {
+        border-left: none;
+      }
+
+      &:last-child {
+        border-right: none;
+      }
+
+      .circle {
+        display: flex;
+        align-self: center;
+        background-color: #44ae69;
+        border-radius: 100%;
+        height: 50px;
+        width: 50px;
+
+        .checked {
+          border-bottom: 2px solid white;
+          border-left: 2px solid white;
+          height: 10px;
+          width: 36px;
+          rotate: -45deg;
+          position: relative;
+          left: 12px;
+          top: 12px;
+        }
+      }
+
+      .waiting {
+        display: flex;
+        align-self: center;
+        height: 50px;
+        width: 50px;
+      }
+    }
+  }
+}

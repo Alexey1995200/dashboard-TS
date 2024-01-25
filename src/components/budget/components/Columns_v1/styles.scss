@@ -1,0 +1,14 @@
+.vColumns{
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+
+
+  .vColumns__chart{
+    height: 100px;
+    width: 100px;
+  }
+  .vColumns__legend{
+
+  }
+}
