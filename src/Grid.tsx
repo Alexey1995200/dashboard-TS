@@ -24,6 +24,7 @@ const Grid = ({}) => {
     const ResponsiveGridLayout = WidthProvider(Responsive);
     const [screenSize, setScreenSize] = useState(window.innerWidth);
     const [currentBreakpoint, setCurrentBreakpoint] = useState('x1');
+    // const currentBreakpoint='x8'
     const [isVerticalCompact, setIsVerticalCompact] = useState(true)
 
     const breakpoints = {x0: 0, x1: 159};
@@ -122,7 +123,7 @@ const Grid = ({}) => {
             },
             {
                 i: 'reset',
-                x: 0, y: -2,
+                x: 0, y: 72,
                 w: 999999, h: calculateH(20),
                 minW: calculateW(10), maxW: calculateW(999999),
                 minH: calculateH(10), maxH: calculateH(50),
@@ -145,27 +146,36 @@ const Grid = ({}) => {
     const getFromLS = (key) => {
         if (global.localStorage) {
             try {
+                console.log('log', 'getFromLS')
                 return JSON.parse(global.localStorage.getItem("rgl-8"))?.[key] || null;
             } catch (e) {
-                /* Ignore parsing errors */
+                console.log('i catched err', 'log')
             }
         }
         return null;
     };
 
     const [layouts, setLayouts] = useState(() => {
-        const storedLayouts = getFromLS('savedPosition'); // Adjusted to directly get "x8" from localStorage
+        // const storedLayouts = getFromLS('savedPosition'); // Adjusted to directly get "x8" from localStorage
+        // const storedLayouts = getFromLS(`${currentBreakpoint}`) || responsiveLayouts[currentBreakpoint];
+        const storedLayouts = getFromLS(`savedPosition`) || responsiveLayouts[currentBreakpoint];
+        console.log('Stored Layouts:', storedLayouts);
         return storedLayouts || JSON.parse(JSON.stringify(responsiveLayouts));
     });
 
 
+    function deepEqual(obj1, obj2) {
+        return JSON.stringify(obj1) === JSON.stringify(obj2);
+    }
+
 
     const onBreakpointChange = (breakpoint) => {
         setCurrentBreakpoint(breakpoint);
+        console.log('Current Breakpoint:', breakpoint);
     };
     const onLayoutChange = (layout, layouts) => {
         saveToLS('savedPosition', layouts);
-        setLayouts(layouts);
+        prevLayoutsRef.current = layouts; // Update the ref instead of the state
     };
     const changeCompactView = () => {
         setIsVerticalCompact(!isVerticalCompact)
@@ -174,11 +184,24 @@ const Grid = ({}) => {
     const resetSavedPosition = () => {
         if (global.localStorage) {
             global.localStorage.removeItem("rgl-8");
+            // Avoid forced page reload here
+            setLayouts(JSON.parse(JSON.stringify(responsiveLayouts))); // Reset layouts to the default
+            setCurrentBreakpoint('x1'); // Reset breakpoint to the default
             refresh()
         }
     };
+    const prevLayoutsRef = useRef(layouts);
+    useEffect(() => {
+        if (!deepEqual(prevLayoutsRef.current, layouts)) {
+            saveToLS('savedPosition', layouts);
+            // saveToLS(`${currentBreakpoint}`, layouts);
+            setLayouts(layouts);
+        }
+    }, [layouts]);
+
     const saveToLS = (key, value) => {
         if (global.localStorage) {
+            console.log('log', 'saveToLS')
             global.localStorage.setItem(
                 "rgl-8",
                 JSON.stringify({
