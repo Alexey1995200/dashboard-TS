@@ -1,11 +1,12 @@
 import { ConfigProvider, Progress } from "antd";
 import React, {useEffect, useRef, useState} from "react";
+import { useQuery } from "react-query";
 import './styles.scss';
 
 const OverallProgress = () => {
     const [overallScale, setOverallScale]=useState(1)
     const [colors, setColors] = useState({})
-    const [percentage, setPercentage] = useState(0)
+    const [percentage, setPercentage] = useState(50)
     const overallProgressRef = useRef<HTMLDivElement>(null);
     const getDimensions = () => {
         if (overallProgressRef.current) {
@@ -41,6 +42,16 @@ const OverallProgress = () => {
         };
     }, []);
 
+
+    // const { isLoading, error, data } = useQuery('repoData', () =>
+    //     fetch('https://api.github.com/repos/tannerlinsley/react-query').then(res =>
+    //         res.json()
+    //     )
+    // )
+
+    // if (isLoading) return 'Loading...'
+    //
+    // if (error) return 'An error has occurred: ' + error.message
 
 
     return (

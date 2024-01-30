@@ -1,0 +1,60 @@
+.header__wrapper {
+  background-color: #183e25;
+  display: flex;
+  flex-direction: row;
+  color: white;
+  justify-content: space-between;
+
+  .navBar__wrapper {
+    display: flex;
+    flex-direction: row;
+
+    .header__logo {
+      height: 48px;
+      width: 48px;
+      margin: 0 40px 0 80px;
+    }
+
+    .navBar {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+
+      .navBar__link {
+        &:hover {
+          color: #368b54;
+          cursor: pointer;
+        }
+
+      }
+    }
+  }
+
+
+  .account {
+    align-self: center;
+
+    img {
+      height: 36px;
+      width: 36px;
+    }
+
+    display: flex;
+
+    .account__info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .info__name {
+        font-size: 16px;
+      }
+
+      .info__position {
+        font-size: 12px;
+
+      }
+    }
+  }
+}

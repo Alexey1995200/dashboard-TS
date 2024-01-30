@@ -5,7 +5,7 @@ const LaunchDate = ({}) => {
     const [launchDateScale, setLaunchDateScale]=useState(1)
     const launchDateRef = useRef<HTMLDivElement>(null);
     const [finishDate, setFinishDate] = useState(new Date())
-    const [finishDateTimeStampMS, setFinishDateTimeStampMS] = useState(0)
+    const [finishDateTimeStampMS, setFinishDateTimeStampMS] = useState(new Date().getTime())
     const getDimensions = () => {
         if (launchDateRef.current) {
             const { width, height } = launchDateRef.current.getBoundingClientRect();

@@ -9,43 +9,14 @@ import OverdueTasks from "./components/overdueTasks";
 import Summary from "./components/summary";
 import AvgTime from "./components/avgTime";
 import UpcTasks from "./components/upcomingDeadlines";
-import ProjectLogs from "./components/logs";
+import ProjectLogs from "./components/logs/old";
 
 
 function App() {
 
     return (
         <div className={'wrapper'}>
-            <Space>
-                <OverallProgress/>
-            </Space>
-            <Space>
-                <ProgressBar/>
-            </Space>
-            <Space>
-                <LaunchDate/>
-            </Space>
-            <Space>
-                <Risks/>
-            </Space>
-            <Space>
-                <Budget/>
-            </Space>
-            <Space>
-                <OverdueTasks/>
-            </Space>
-            <Space>
-                <Summary/>
-            </Space>
-            <Space>
-                <AvgTime/>
-            </Space>
-            <Space>
-                <UpcTasks/>
-            </Space>
-            <Space>
-                <ProjectLogs/>
-            </Space>
+
         </div>
     );
 }

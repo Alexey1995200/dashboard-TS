@@ -48,7 +48,6 @@
           .title__text {
             font-size: 12px;
             font-weight: 700;
-
           }
 
           .title__days {
@@ -99,5 +98,69 @@
     text-decoration: underline;
     padding-bottom: 16px;
     text-align: center;
+  }
+}
+
+
+.logBuilder {
+  background-color: white;
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  .logBuilder__body{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .logs__el_wrapper {
+      background-color: white;
+      font-size: 12px;
+      border-left: 2px solid lightgray;
+      margin: 0 12px 0 20px;
+      padding: 0 0 0 20px;
+      position: relative;
+      min-height: 80px;
+      .el__ico {
+        position: absolute;
+        border: 4px solid white;
+        background-color: white;
+        height: 24px;
+        width: 24px;
+        margin: 8px 16px 8px 16px;
+        top: -8px;
+        left: -30px;
+      }
+
+      .el__upper {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .el__title {
+          font-weight: 700;
+        }
+
+        .el__days {
+          width: 25%;
+          font-weight: unset;
+          color: gray;
+          font-size: 8px;
+        }
+      }
+
+      .el__text {
+        padding-bottom: 8px;
+
+      }
+
+    }
+    .logs__button {
+      color: gray;
+      text-decoration: underline;
+      padding-bottom: 16px;
+      text-align: center;
+    }
   }
 }

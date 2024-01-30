@@ -13,7 +13,9 @@ import OverdueTasks from "./components/overdueTasks";
 import Summary from "./components/summary";
 import AvgTime from "./components/avgTime";
 import UpcTasks from "./components/upcomingDeadlines";
-import ProjectLogs from "./components/logs";
+import './normalize.css'
+import './clean_style.css'
+import LogBuilder from "./components/logs";
 
 
 const ReactGridLayout = WidthProvider(RGL);
@@ -48,14 +50,14 @@ const Grid = ({}) => {
         x8: [
             {
                 i: 'iVC',
-                x: 0, y: -1,
+                x: 0, y: 0,
                 w: 999999, h: calculateH(20),
                 minW: calculateW(10), maxW: calculateW(999999),
                 minH: calculateH(10), maxH: calculateH(50),
                 static: true
-            },{
+            }, {
                 i: 'OverallProgress',
-                x: 0, y: 0,
+                x: 0, y: 1,
                 w: Math.ceil(calculateW(140)), h: calculateH(120),
                 minW: calculateW(120), maxW: calculateW(800),
                 minH: calculateH(120), maxH: calculateH(800),
@@ -65,61 +67,67 @@ const Grid = ({}) => {
             },
             {
                 i: 'ProgressBar',
-                x: 19, y: 0,
+                x: 19, y: 1,
                 w: Math.ceil(calculateW(900)), h: calculateH(120),
                 minW: 40,
                 minH: calculateH(120), maxH: calculateH(120)
             },
             {
                 i: 'LaunchDate',
-                x: 134, y: 0,
+                x: 134, y: 1,
                 w: calculateW(185), h: calculateH(120),
                 minW: calculateW(120), maxW: calculateW(800),
                 minH: calculateH(120), maxH: calculateH(600)
             },
             {
                 i: 'Risks',
-                x: 0, y: 1,
+                x: 0, y: 2,
                 w: Math.ceil(calculateW(230)), h: calculateH(164),
                 minW: calculateW(170), maxW: calculateW(800),
                 minH: calculateH(80), maxH: calculateH(600),
             },
-            {i: 'Budget',
-                x: 31, y: 1,
+            {
+                i: 'Budget',
+                x: 31, y: 2,
                 w: Math.ceil(calculateW(390)), h: calculateH(164),
                 minW: Math.ceil(calculateW(386)), maxW: calculateW(450),
                 minH: calculateH(164), maxH: calculateH(200)
             },
-            {i: 'OverdueTasks',
-                x: 82, y: 1,
-                w: Math.ceil(calculateW(400)), h: calculateH(164),
-                minW: Math.ceil(calculateW(300)), maxW: Math.ceil(calculateW(1200)),
-                minH: calculateH(95), maxH: calculateH(400)
-            },
-            {i: 'Summary',
-                x: 0, y: 2,
-                w: Math.ceil(calculateW(230)), h: calculateH(164),
-                minW: calculateW(180), maxW: calculateW(800),
-                minH: calculateH(144), maxH: calculateH(600),
-            },
-            {i: 'AvgTime',
-                x: 31, y: 2,
-                w: Math.ceil(calculateW(390)), h: calculateH(164),
-                minW: Math.ceil(calculateW(386)), maxW: calculateW(450),
-                minH: calculateH(164), maxH: calculateH(200),
-                isResizable: false,
-            },
-            {i: 'UpcTasks',
+            {
+                i: 'OverdueTasks',
                 x: 82, y: 2,
                 w: Math.ceil(calculateW(400)), h: calculateH(164),
                 minW: Math.ceil(calculateW(300)), maxW: Math.ceil(calculateW(1200)),
                 minH: calculateH(95), maxH: calculateH(400)
             },
-            {i: 'ProjectLogs',
-                x: 134, y: 1,
+            {
+                i: 'Summary',
+                x: 0, y: 3,
+                w: Math.ceil(calculateW(230)), h: calculateH(164),
+                minW: calculateW(180), maxW: calculateW(800),
+                minH: calculateH(144), maxH: calculateH(600),
+            },
+            {
+                i: 'AvgTime',
+                x: 31, y: 3,
+                w: Math.ceil(calculateW(390)), h: calculateH(164),
+                minW: Math.ceil(calculateW(386)), maxW: calculateW(450),
+                minH: calculateH(164), maxH: calculateH(200),
+                isResizable: false,
+            },
+            {
+                i: 'UpcTasks',
+                x: 82, y: 3,
+                w: Math.ceil(calculateW(400)), h: calculateH(164),
+                minW: Math.ceil(calculateW(300)), maxW: Math.ceil(calculateW(1200)),
+                minH: calculateH(95), maxH: calculateH(400)
+            },
+            {
+                i: 'ProjectLogs',
+                x: 134, y: 2,
                 w: Math.ceil(calculateW(186)), h: calculateH(336),
                 minW: Math.ceil(calculateW(150)), maxW: Math.ceil(calculateW(1111)),
-                minH: calculateH(336),maxH: calculateH(900)
+                minH: calculateH(336), maxH: calculateH(900)
             },
             {
                 i: 'reset',
@@ -128,7 +136,7 @@ const Grid = ({}) => {
                 minW: calculateW(10), maxW: calculateW(999999),
                 minH: calculateH(10), maxH: calculateH(50),
                 static: true
-            }
+            },
         ],
     };
 
@@ -259,7 +267,7 @@ const Grid = ({}) => {
                 <UpcTasks/>
             </div>
             <div key={'ProjectLogs'}>
-                <ProjectLogs/>
+                <LogBuilder/>
             </div>
             <button key={"reset"} className={'dragHandle'} onClick={resetSavedPosition}>Reset Saved Positions</button>
         </ResponsiveGridLayout>

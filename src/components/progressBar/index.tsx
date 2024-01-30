@@ -16,8 +16,8 @@ interface ITasks {
 }
 const task: ITasks[] = [{
     id: 0,
-    title: "taskTitle",
-    percentage: 99,
+    title: "",
+    percentage: 0,
 }]
 const ProgressBar = () => {
     const [colors, setColors] = useState({})

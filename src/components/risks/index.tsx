@@ -1,18 +1,19 @@
 import './styles.scss'
 import {useEffect, useRef, useState} from "react";
 import {format} from "date-fns";
+
 const Risks = ({}) => {
     const [risksScale, setRisksScale] = useState(1)
     const risksRef = useRef<HTMLDivElement>(null);
     const [overTasks, setOverTasks] = useState([{
         task: 'status upd for board',
-        deadline: format(new Date(946681261001), "dd.MM.yyyy"),
+        deadline: format(new Date(32503676461000), "dd.MM.yyyy"),
         days: Math.floor((946681261001) / (1000 * 60 * 60 * 24)),
         employee: 'employee',
         employeeId: 0,
         employeeShort: 'emp'
     }])
-    const [overPercent, setOverPercent] = useState(1)
+    const [overPercent, setOverPercent] = useState(0)
     const getDimensions = () => {
         if (risksRef.current) {
             const {width, height} = risksRef.current.getBoundingClientRect();
@@ -48,6 +49,7 @@ const Risks = ({}) => {
 
     const taskMedRisk = (overTasks.filter(task => task.days >= 7 && task.days <= 14)).length;
     const taskHiRisk = (overTasks.filter(task => task.days >= 14)).length;
+
     interface IRisks {
         id: number;
         num: number;
@@ -69,24 +71,28 @@ const Risks = ({}) => {
             description: 'Overdue hi.risk'
         },
     ]
+
     return (
         <div className={'risks__wrapper'} ref={risksRef}>
             <div
                 className={'default_dashboard_title dragHandle'}
-                style={{transform: `scale(${risksScale > 1.25 ? risksScale / 1.25 : 1})`,
-                    paddingTop:`${risksScale > 1.5 ? risksScale*4/1.5 : 0}px`
-            }}> Risks </div>
+                style={{
+                    transform: `scale(${risksScale > 1.25 ? risksScale / 1.25 : 1})`,
+                    paddingTop: `${risksScale > 1.5 ? risksScale * 4 / 1.5 : 0}px`
+                }}> Risks
+            </div>
             <div
                 className={'risks'}
                 style={{fontSize: `${risksScale > 1.25 ? 12 * risksScale / 1.25 : 12}px`}}
 
             >
-                {risks.map((risk) => (
-                        <div key={risk.id}
-                             className={`risks__el ${risk.num > 0 ?
-                                 (risk.id === 1 ? 'yellow' : (risk.id === 0 || risk.id === 2 ? 'red' : ''))
-                                 : ''}`}
-                        >
+                {risks.every(risk => risk.num <= 0) ? <div className={'goodNews'}>all good</div> :
+                    risks.map((risk) => (
+                            <div key={risk.id}
+                                 className={`risks__el ${risk.num > 0 ?
+                                     (risk.id === 1 ? 'yellow' : (risk.id === 0 || risk.id === 2 ? 'red' : ''))
+                                     : ''}`}
+                            >
                                 <div className={`risk__num ${risk.num > 0 ? '' : 'green'}`}
                                      style={{width: `${risksScale > 1.25 ? 36 * risksScale / 1.25 : 27.5}px`}}
                                 >
@@ -95,10 +101,12 @@ const Risks = ({}) => {
                                 <div className={`risk__description`}>
                                     {risk.description}
                                 </div>
-                        </div>
+                            </div>
+                        )
                     )
-                )
+
                 }
+
             </div>
         </div>
 

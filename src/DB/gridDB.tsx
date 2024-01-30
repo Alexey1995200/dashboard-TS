@@ -98,3 +98,4 @@
 // };
 //
 // export {responsiveLayouts, setCurrentBreakpoint}
+export default 0

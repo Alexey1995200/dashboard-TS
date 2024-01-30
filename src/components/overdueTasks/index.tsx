@@ -1,12 +1,12 @@
 import './styles.scss'
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {format} from "date-fns";
 const OverdueTasks = () => {
     const [overdueScale, setOverdueScale]=useState(1)
     const [tasks, setTasks] = useState([{
         task: 'status upd for board',
         deadline: format(new Date(946681261001), "dd.MM.yyyy"),
-        days: Math.floor((946681261001) / (1000 * 60 * 60 * 24)),
+        days: 0,
         employee: 'employee',
         employeeId: 0,
         employeeShort: 'emp'
@@ -59,7 +59,9 @@ const OverdueTasks = () => {
                      style={{
                          fontSize: `${overdueScale >= 2.5 ? 16 : overdueScale > 1.5 ? 10 * (overdueScale / 1.5) : 10}px`,
                      }}>
-                    {tasks.map((task) => (
+                    {tasks.every(task => task.days === 0)
+                        ? <div className={'goodNews'}> not a single task is overdue </div>
+                        : tasks.map((task) =>  (
                             <div className={'table__row'} key={task.employeeId}>
                                 <div
                                     className={`days ${task.days < 7 ? 'days_lite' : task.days <= 14 ? 'days_med' : 'days_high'}`}>
