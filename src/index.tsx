@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -19,20 +19,12 @@ async function enableMocking() {
 }
 
 enableMocking().then(() => {
+
     // @ts-ignore
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(
         <React.StrictMode>
-            <div className={'wrapper'} style={{display:"flex", flexDirection:"column"}}>
-                <Header/>
-                <div className={'body'} style={{
-                    display: 'grid',
-                    gridTemplateColumns: '200px 1fr',
-                }}>
-                    <SideBar/>
-                    <Grid/>
-                </div>
-            </div>
+            <App/>
         </React.StrictMode>
     );
 })

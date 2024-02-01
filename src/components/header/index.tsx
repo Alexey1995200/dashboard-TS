@@ -6,7 +6,7 @@ const Header = () => {
     
     return (
         <div className={'header__wrapper'}>
-            <div className={'navBar__wrapper'}>
+            <nav className={'navBar__wrapper'}>
                 <img src={react} alt="LOGO" className={'header__logo'}/>
                 <ul className="navBar">
                     <li className="navBar__link">Dashboard</li>
@@ -16,7 +16,7 @@ const Header = () => {
                     <li className="navBar__link">Log</li>
                 </ul>
 
-            </div>
+            </nav>
             <div className={'account'}>
                 <img src={user} alt="USER"/>
                 <img src={auth} alt="AUTH" style={{padding:'4px'}}/>

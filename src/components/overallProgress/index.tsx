@@ -1,6 +1,5 @@
 import { ConfigProvider, Progress } from "antd";
 import React, {useEffect, useRef, useState} from "react";
-import { useQuery } from "react-query";
 import './styles.scss';
 
 const OverallProgress = () => {
@@ -23,7 +22,7 @@ const OverallProgress = () => {
 
     useEffect(() => {
         handleResize(); // Initial render
-        fetch('/db/colors')
+        fetch('/db/colors')                                         //todo optimize fetch duplicates
             .then((response) => response.json())
             .then((respColors) => {
                 setColors(respColors.mainColors)

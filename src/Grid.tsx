@@ -21,23 +21,21 @@ import LogBuilder from "./components/logs";
 const ReactGridLayout = WidthProvider(RGL);
 
 
-const Grid = ({}) => {
+const Grid = ({
+                  isVerticalCompact,
+                  layouts,
+                  setLayouts,
+                  currentBreakpoint,
+                  setCurrentBreakpoint,
+                  breakpoints,
+                  cols,
+                  isMobileVer,
+                  isAdaptive
+              }) => {
     const gridLayoutRef = useRef(null);
     const ResponsiveGridLayout = WidthProvider(Responsive);
     const [screenSize, setScreenSize] = useState(window.innerWidth);
-    const [currentBreakpoint, setCurrentBreakpoint] = useState('x1');
-    // const currentBreakpoint='x8'
-    const [isVerticalCompact, setIsVerticalCompact] = useState(true)
 
-    const breakpoints = {x0: 0, x1: 159};
-    for (let i = 2; i <= 27; i++) {
-        breakpoints[`x${i}`] = breakpoints[`x${i - 1}`] + 160;
-    }
-    const cols = {x0: 1};
-    for (let i = 1; i <= 27; i++) {
-        cols[`x${i}`] = i * 20;
-        // console.log(cols)
-    }
     const gridMargins = [10, 10]// Margin between items [x, y] in px
     const gridRowHeight = 1
 
@@ -46,7 +44,7 @@ const Grid = ({}) => {
 // const calculateW = (expectedWidth) => (expectedWidth + gridMargins[0]) / ((screenSize - (gridMargins[0] * (cols[currentBreakpoint] - 1))) / cols[currentBreakpoint] + gridMargins[0]);
 
     const calculateW = (expectedW) => (expectedW + gridMargins[0]) / (parseFloat((breakpoints[currentBreakpoint] - (gridMargins[0] * (cols[currentBreakpoint]))) / cols[currentBreakpoint]) + gridMargins[0])  //don't give exact width, but pretty close
-    const responsiveLayouts: any = {
+    const defaultResponsiveLayouts: any = {
         x8: [
             {
                 i: 'iVC',
@@ -131,7 +129,7 @@ const Grid = ({}) => {
             },
             {
                 i: 'reset',
-                x: 0, y: 72,
+                x: 0, y: 0,
                 w: 999999, h: calculateH(20),
                 minW: calculateW(10), maxW: calculateW(999999),
                 minH: calculateH(10), maxH: calculateH(50),
@@ -139,38 +137,6 @@ const Grid = ({}) => {
             },
         ],
     };
-
-    // const getFromLS = (key) => {
-    //     if (global.localStorage) {
-    //         try {
-    //             return JSON.parse(global.localStorage.getItem("rgl-8")) || null;
-    //         } catch (e) {
-    //             /* Ignore parsing errors */
-    //         }
-    //     }
-    //     return null;
-    // };
-
-    const getFromLS = (key) => {
-        if (global.localStorage) {
-            try {
-                console.log('log', 'getFromLS')
-                return JSON.parse(global.localStorage.getItem("rgl-8"))?.[key] || null;
-            } catch (e) {
-                console.log('i catched err', 'log')
-            }
-        }
-        return null;
-    };
-
-    const [layouts, setLayouts] = useState(() => {
-        // const storedLayouts = getFromLS('savedPosition'); // Adjusted to directly get "x8" from localStorage
-        // const storedLayouts = getFromLS(`${currentBreakpoint}`) || responsiveLayouts[currentBreakpoint];
-        const storedLayouts = getFromLS(`savedPosition`) || responsiveLayouts[currentBreakpoint];
-        console.log('Stored Layouts:', storedLayouts);
-        return storedLayouts || JSON.parse(JSON.stringify(responsiveLayouts));
-    });
-
 
     function deepEqual(obj1, obj2) {
         return JSON.stringify(obj1) === JSON.stringify(obj2);
@@ -185,39 +151,37 @@ const Grid = ({}) => {
         saveToLS('savedPosition', layouts);
         prevLayoutsRef.current = layouts; // Update the ref instead of the state
     };
-    const changeCompactView = () => {
-        setIsVerticalCompact(!isVerticalCompact)
-    }
-    const refresh = () => window.location.reload(true)
-    const resetSavedPosition = () => {
-        if (global.localStorage) {
-            global.localStorage.removeItem("rgl-8");
-            // Avoid forced page reload here
-            setLayouts(JSON.parse(JSON.stringify(responsiveLayouts))); // Reset layouts to the default
-            setCurrentBreakpoint('x1'); // Reset breakpoint to the default
-            refresh()
-        }
-    };
+
+
     const prevLayoutsRef = useRef(layouts);
     useEffect(() => {
-        if (!deepEqual(prevLayoutsRef.current, layouts)) {
+        if (deepEqual(prevLayoutsRef.current, layouts)) {
             saveToLS('savedPosition', layouts);
-            // saveToLS(`${currentBreakpoint}`, layouts);
-            setLayouts(layouts);
+        }
+        if (deepEqual(prevLayoutsRef.current, layouts)) {
+            saveToLS('savedPosition', layouts);
         }
     }, [layouts]);
 
     const saveToLS = (key, value) => {
         if (global.localStorage) {
-            console.log('log', 'saveToLS')
+            // console.log('log', 'saveToLS')
             global.localStorage.setItem(
-                "rgl-8",
+                "rgl",
                 JSON.stringify({
                     [key]: value
                 })
             );
+            global.localStorage.setItem(
+                "rgl_props",
+                JSON.stringify({
+                    isMobileVer: isMobileVer,
+                    isAdaptive: isAdaptive,
+                }),
+            );
         }
     };
+
 
 
     return (
@@ -238,7 +202,6 @@ const Grid = ({}) => {
             allowOverlap={false}
             onLayoutChange={(layout, layouts) => onLayoutChange(layout, layouts)}
         >
-            <button key="iVC" onClick={changeCompactView}>Change compact view</button>
             <div key={'OverallProgress'}>
                 <OverallProgress/>
             </div>
@@ -269,7 +232,7 @@ const Grid = ({}) => {
             <div key={'ProjectLogs'}>
                 <LogBuilder/>
             </div>
-            <button key={"reset"} className={'dragHandle'} onClick={resetSavedPosition}>Reset Saved Positions</button>
+
         </ResponsiveGridLayout>
         // </div>
     );
