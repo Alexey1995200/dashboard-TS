@@ -1,7 +1,7 @@
 import { ConfigProvider, Progress } from "antd";
 import React, {useEffect, useRef, useState} from "react";
 import './styles.scss';
-
+import { useIsFetching } from '@tanstack/react-query'
 const OverallProgress = () => {
     const [overallScale, setOverallScale]=useState(1)
     const [colors, setColors] = useState({})
@@ -13,6 +13,7 @@ const OverallProgress = () => {
             return [width, height]
         }
     };
+
     const handleResize = () => {
         const dimensions = getDimensions();
         if (!dimensions) return;
@@ -52,8 +53,11 @@ const OverallProgress = () => {
     //
     // if (error) return 'An error has occurred: ' + error.message
 
+    const isFetching = useIsFetching()
+    return isFetching ? (
+            <div>Queries are fetching in the background...</div>
+        ) : (
 
-    return (
         <div
             ref={overallProgressRef}
             className={'overallProgress dragHandle'}

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {delay, http, HttpResponse} from 'msw'
 import {finishDate, finishTimestampMS, mainColors, summDB} from '../DB/db'
 import {percentage, tasks} from "../DB/progressDB";
@@ -90,6 +91,11 @@ export const handlers = [
             defaultDBposition
         })
     }),
+    http.get('/localstorage', async (key, value) => {
+        return (localStorage.getItem(key))?.[value]
+    }),
+
+// return JSON.parse(global.localStorage.getItem(key))?.[value] || null;
 
 
     // http.post('/gridParams/currentBreakpoint', async ({ request }) => {

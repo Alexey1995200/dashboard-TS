@@ -152,15 +152,14 @@ const Grid = ({
         prevLayoutsRef.current = layouts; // Update the ref instead of the state
     };
 
-
     const prevLayoutsRef = useRef(layouts);
     useEffect(() => {
         if (deepEqual(prevLayoutsRef.current, layouts)) {
             saveToLS('savedPosition', layouts);
         }
-        if (deepEqual(prevLayoutsRef.current, layouts)) {
-            saveToLS('savedPosition', layouts);
-        }
+        // if (deepEqual(prevLayoutsRef.current, layouts)) {
+        //     saveToLS('savedPosition', layouts);
+        // }
     }, [layouts]);
 
     const saveToLS = (key, value) => {
@@ -178,6 +177,16 @@ const Grid = ({
                     isMobileVer: isMobileVer,
                     isAdaptive: isAdaptive,
                 }),
+            );
+            global.localStorage.setItem(
+                "rgl_isMobileVer",
+                JSON.stringify({
+                    isMobileVer
+                }),
+                "rgl_isAdaptive",
+                JSON.stringify({
+                    isAdaptive
+                })
             );
         }
     };

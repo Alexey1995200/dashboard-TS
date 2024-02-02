@@ -1,14 +1,18 @@
-import React, {useState} from 'react';
+import React, {} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './clean_style.css'
 import './normalize.css'
-import Grid from "./Grid";
-import Header from "./components/header";
-import SideBar from "./components/sideBar";
+import {
+    QueryClient,
+    QueryClientProvider,
+    useQuery,
+} from '@tanstack/react-query'
 
+
+const queryClient = new QueryClient()
 
 async function enableMocking() {
     if (process.env.NODE_ENV !== 'development') {
@@ -23,9 +27,11 @@ enableMocking().then(() => {
     // @ts-ignore
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(
-        <React.StrictMode>
-            <App/>
-        </React.StrictMode>
+        <QueryClientProvider client={queryClient}>
+            <React.StrictMode>
+                <App/>
+            </React.StrictMode>
+        </QueryClientProvider>
     );
 })
 reportWebVitals();
