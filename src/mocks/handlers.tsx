@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {delay, http, HttpResponse} from 'msw'
 import {finishDate, finishTimestampMS, mainColors, summDB} from '../DB/db'
 import {percentage, tasks} from "../DB/progressDB";
@@ -10,25 +11,25 @@ import {defaultDBposition} from "../DB/gridDB";
 export const handlers = [
 
     http.get('/db/colors', async () => {
-        //await delay(5000)
+            //await delay(5000)
             return HttpResponse.json({
                 mainColors
             })
         }
     ),
     http.get('/db/progressDB/percentage', async () => {
-        //await delay(5000)
+            //await delay(5000)
             return HttpResponse.json({
                 percentage
             })
         }
     ),
     http.get('db/progressDB/tasks', async () => {
-        //await delay(5000)
+            //await delay(5000)
             return  HttpResponse.json({
-            tasks
-        })
-    }
+                tasks
+            })
+        }
     ),
     http.get('db/overdueDB/tasks', async () => {
         //await delay(5000)
@@ -90,6 +91,11 @@ export const handlers = [
             defaultDBposition
         })
     }),
+    http.get('/localstorage', async (key, value) => {
+        return (localStorage.getItem(key))?.[value]
+    }),
+
+// return JSON.parse(global.localStorage.getItem(key))?.[value] || null;
 
 
     // http.post('/gridParams/currentBreakpoint', async ({ request }) => {

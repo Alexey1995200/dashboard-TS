@@ -112,7 +112,6 @@ const LogBuilder = () => {
     };
     const handleResize = () => {
         const [width, height] = getDimensions();
-        console.log(width, height)
         setLogBuilderScale((Math.min(width, height) / 120));
     };
 
