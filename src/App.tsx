@@ -29,6 +29,8 @@ function App() {
     const [isVerticalCompact, setIsVerticalCompact] = useState(true)
     const [fetchedLayout, setFetchedLayout] = useState([])
     const [currentBreakpoint, setCurrentBreakpoint] = useState('x0');
+
+
     const [isMobileVer, setIsMobileVer] = useState(() => {
         const isMobile = getFromLS('rgl_props', 'isMobileVer')
         return isMobile ? isMobile : false
@@ -37,7 +39,7 @@ function App() {
         // console.log('get mobile', getFromLS('rgl_props',`isMobileVer`))
         // if (localIsMobileVerState) return localIsMobileVerState
         // else return false
-        })
+    })
 
     const [isAdaptive, setIsAdaptive] = useState(() => {
         const localAdaptiveState = getFromLS('rgl_props', `isAdaptive`)
@@ -45,25 +47,27 @@ function App() {
         if (localAdaptiveState) return localAdaptiveState
         else if (localIsMobileVerState) return localIsMobileVerState
         else return false
-        })
+    })
 
     const [layouts, setLayouts] = useState(() => {
         const storedLayouts = getFromLS('rgl',`savedPosition`);
-        if (storedLayouts) return storedLayouts
-            else if (fetchedLayout) return JSON.parse(JSON.stringify(fetchedLayout))
-            else return JSON.parse(JSON.stringify(''));
+        return storedLayouts || fetchedLayout || JSON.parse(JSON.stringify(''));
     });
+    // const [layouts, setLayouts] = useState(() => {
+    //     const storedLayouts = getFromLS('rgl',`savedPosition`);
+    //     console.log(storedLayouts, 'stored')
+    //     if (!!storedLayouts) return storedLayouts
+    //     else if (fetchedLayout) return JSON.parse(JSON.stringify(fetchedLayout))
+    //     else return JSON.parse(JSON.stringify(''));
+    // });                  /                                           /todo why is it broken???!
     const changeCompactView = () => {
         setIsVerticalCompact(!isVerticalCompact)
     }
-    // todo getfromls when buttons pressed
     //todo save as custom, load as custom
     //todo ask about where widget must be taken from? (sidebar or menu inside of grid layout)
     //todo make widget remove feature
     //todo if less then 768 - global_mobile
-    const changeAdaptiveState = () => {
-        setIsAdaptive(!isAdaptive)
-    }
+
     const isMobileVerByUserAgent = () => {
         return (
             useragent.toLowerCase().includes('ipad') ||
@@ -73,36 +77,21 @@ function App() {
             useragent.toLowerCase().includes('mobile')
         );
     };
-
-    const resetLocalSettings = () =>{
-        global.localStorage.removeItem("rgl_props");
-        setIsMobileVer(isMobileVerByUserAgent()); // Call the function to get the boolean value
-        setIsAdaptive(isMobileVerByUserAgent())
+    const changeAdaptiveState = () => {
+        setIsAdaptive(!isAdaptive)
+        console.log('dbg', isAdaptive)
     }
-    const resetLocalTable = () => {
-        global.localStorage.removeItem("rgl");
-        // Avoid forced page reload
-        const keyToSearch = currentBreakpoint;
-        const defaultKey = Object.keys(defaultDBposition)[0]; // Get the first key
-        const chosenKey = defaultDBposition[keyToSearch] ? keyToSearch : defaultKey;
-        // const chosenArr = defaultDBposition[keyToSearch] || defaultDBposition[defaultKey];
-        const chosenObj = { [currentBreakpoint]: defaultDBposition[chosenKey] };
-
-        setLayouts(chosenObj)
-        // setLayouts(JSON.parse(JSON.stringify(fetchedLayout))); // Reset layouts to the default
-        setCurrentBreakpoint('x0'); // Reset breakpoint to the default
-        // refresh()
-    }
-    const resetLocalStorage = () => {
-        if (global.localStorage) {
-            resetLocalSettings()
-            resetLocalTable()
-        }
-    };
-
-
-
-
+    const refresh = () => window.location.reload(true)
+    // const resetLocalStorage = () => {
+    //     if (global.localStorage) {
+    //         global.localStorage.removeItem("rgl");
+    //         global.localStorage.removeItem("rgl_props");
+    //         // Avoid forced page reload here
+    //         setLayouts(JSON.parse(JSON.stringify(fetchedLayout))); // Reset layouts to the default
+    //         setCurrentBreakpoint('x0'); // Reset breakpoint to the default
+    //         // refresh()
+    //     }
+    // };
     const breakpoints = () => {
         if (isAdaptive) {
             return isMobileVer ? {mobileGlobal: 0} : {global: 0};
@@ -125,6 +114,37 @@ function App() {
             return cols;
         }
     };
+
+    const resetLocalSettings = () =>{
+        global.localStorage.removeItem("rgl_props");
+        setIsMobileVer(isMobileVerByUserAgent()); // Call the function to get the boolean value
+        setIsAdaptive(isMobileVerByUserAgent())
+    }
+    const resetLocalTable = () => {
+
+                localStorage.removeItem("rgl");
+                // Avoid forced page reload here
+                setLayouts(JSON.parse(JSON.stringify(fetchedLayout))); // Reset layouts to the default
+                setCurrentBreakpoint('x0'); // Reset breakpoint to the default
+
+        // const keyToSearch = currentBreakpoint;
+        // const defaultKey = Object.keys(defaultDBposition)[0]; // Get the first key
+        // const chosenKey = defaultDBposition[keyToSearch] ? keyToSearch : defaultKey;
+        // // const chosenArr = defaultDBposition[keyToSearch] || defaultDBposition[defaultKey];
+        // const chosenObj = { [currentBreakpoint]: defaultDBposition[chosenKey] };
+        //
+        // setLayouts(chosenObj)
+        // // setLayouts(JSON.parse(JSON.stringify(fetchedLayout))); // Reset layouts to the default
+        // setCurrentBreakpoint('x0'); // Reset breakpoint to the default
+        // // refresh()                                                                         //todo fix this shit
+    }
+    const resetLocalStorage = () => {
+        if (global.localStorage) {
+            resetLocalSettings()
+            resetLocalTable()
+        }
+    };
+
     useEffect(() => {
 
         setIsMobileVer(isMobileVerByUserAgent()); // Call the function to get the boolean value
@@ -143,7 +163,6 @@ function App() {
         //     })
         // console.log('fetched', fetchedLayout)
     }, []);
-
 
     const changeIsMobileState = () => setIsMobileVer(!isMobileVer)
     return (
@@ -188,6 +207,3 @@ function App() {
 }
 
 export default App;
-
-
-

@@ -55,8 +55,8 @@ const OverallProgress = () => {
 
     const isFetching = useIsFetching()
     return isFetching ? (
-            <div>Queries are fetching in the background...</div>
-        ) : (
+        <div>Queries are fetching in the background...</div>
+    ) : (
 
         <div
             ref={overallProgressRef}
