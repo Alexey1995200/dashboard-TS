@@ -43,30 +43,31 @@ function App() {
 
     const [isAdaptive, setIsAdaptive] = useState(() => {
         const localAdaptiveState = getFromLS('rgl_props', `isAdaptive`)
-        const localIsMobileVerState = getFromLS('rgl_props',`isMobileVer`)
+        const localIsMobileVerState = getFromLS('rgl_props', `isMobileVer`)
         if (localAdaptiveState) return localAdaptiveState
         else if (localIsMobileVerState) return localIsMobileVerState
         else return false
     })
 
-    const [layouts, setLayouts] = useState(() => {
-        const storedLayouts = getFromLS('rgl',`savedPosition`);
-        return storedLayouts || fetchedLayout || JSON.parse(JSON.stringify(''));
-    });
     // const [layouts, setLayouts] = useState(() => {
     //     const storedLayouts = getFromLS('rgl',`savedPosition`);
-    //     console.log(storedLayouts, 'stored')
-    //     if (!!storedLayouts) return storedLayouts
-    //     else if (fetchedLayout) return JSON.parse(JSON.stringify(fetchedLayout))
-    //     else return JSON.parse(JSON.stringify(''));
-    // });                  /                                           /todo why is it broken???!
+    //     return storedLayouts || fetchedLayout || JSON.parse(JSON.stringify(''));
+    // });
+    const [layouts, setLayouts] = useState(() => {
+        const storedLayouts = getFromLS('rgl', `savedPosition`);
+        console.log(storedLayouts, 'stored')
+        if (!!storedLayouts) return storedLayouts
+        else if (fetchedLayout) return JSON.parse(JSON.stringify(fetchedLayout))
+        else return JSON.parse(JSON.stringify(''));
+    });
     const changeCompactView = () => {
         setIsVerticalCompact(!isVerticalCompact)
     }
-    //todo save as custom, load as custom
+
     //todo ask about where widget must be taken from? (sidebar or menu inside of grid layout)
+    //todo save as custom, load as custom
     //todo make widget remove feature
-    //todo if less then 768 - global_mobile
+    //todo fix gridDB default
 
     const isMobileVerByUserAgent = () => {
         return (
@@ -115,17 +116,17 @@ function App() {
         }
     };
 
-    const resetLocalSettings = () =>{
+    const resetLocalSettings = () => {
         global.localStorage.removeItem("rgl_props");
         setIsMobileVer(isMobileVerByUserAgent()); // Call the function to get the boolean value
         setIsAdaptive(isMobileVerByUserAgent())
     }
     const resetLocalTable = () => {
 
-                localStorage.removeItem("rgl");
-                // Avoid forced page reload here
-                setLayouts(JSON.parse(JSON.stringify(fetchedLayout))); // Reset layouts to the default
-                setCurrentBreakpoint('x0'); // Reset breakpoint to the default
+        localStorage.removeItem("rgl");
+        // Avoid forced page reload here
+        setLayouts(JSON.parse(JSON.stringify(fetchedLayout))); // Reset layouts to the default
+        setCurrentBreakpoint('x0'); // Reset breakpoint to the default
 
         // const keyToSearch = currentBreakpoint;
         // const defaultKey = Object.keys(defaultDBposition)[0]; // Get the first key
@@ -175,11 +176,13 @@ function App() {
                 <SideBar/>
                 <div>
                     <div style={{display: "flex", flexDirection: "row", justifyContent: "space-evenly"}}>
-                        <div style={{color:  isAdaptive ? 'green' : 'red' }}>isAdaptive { isAdaptive ? 'true' : 'false' }</div>
-                        <div style={{color:  isMobileVer ? 'green' : 'red' }}>isMobileVer { isMobileVer ? 'true' : 'false' }</div>
+                        <div
+                            style={{color: isAdaptive ? 'green' : 'red'}}>isAdaptive {isAdaptive ? 'true' : 'false'}</div>
+                        <div
+                            style={{color: isMobileVer ? 'green' : 'red'}}>isMobileVer {isMobileVer ? 'true' : 'false'}</div>
                     </div>
                     <div style={{display: "flex", flexDirection: "row", justifyContent: "space-evenly"}}>
-                        <button onClick={resetLocalStorage}>Reset All</button>
+
                         <button onClick={changeCompactView}>Change compact view</button>
                         <button onClick={changeAdaptiveState}>Change Adaptive Type</button>
                         <button onClick={changeIsMobileState}>
@@ -187,6 +190,8 @@ function App() {
                         </button>
                         <button onClick={resetLocalTable}>Reset Table</button>
                         <button onClick={resetLocalSettings}>Reset Setting</button>
+                        <button onClick={resetLocalStorage}>Reset All</button>
+
                     </div>
                     <Grid
                         isVerticalCompact={isVerticalCompact}

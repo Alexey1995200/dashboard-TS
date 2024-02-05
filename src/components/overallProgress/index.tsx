@@ -54,9 +54,10 @@ const OverallProgress = () => {
     // if (error) return 'An error has occurred: ' + error.message
 
     const isFetching = useIsFetching()
-    return isFetching ? (
-        <div>Queries are fetching in the background...</div>
-    ) : (
+    return (
+    // isFetching ? (
+    //     <div>Queries are fetching in the background...</div>
+    // ) : (
 
         <div
             ref={overallProgressRef}
