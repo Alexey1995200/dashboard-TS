@@ -73,6 +73,27 @@ export const handlers = [
             upcTasks
         })
     }),
+
+
+    // {
+    //     user: {
+    //
+    //     },
+    //     project: {
+    //         projectName: "",
+    //         projectLeader: "",
+    //         startDate: "",
+    //         endDate: "",
+    //         budget: {
+    //
+    //         }
+    //     },
+    //     tasks: {
+    //
+    //     }
+    // },
+
+
     http.get('db/logs', async () => {
         //await delay(5000)
         return HttpResponse.json({
@@ -91,9 +112,46 @@ export const handlers = [
             defaultDBposition
         })
     }),
-    http.get('/localstorage', async (key, value) => {
-        return (localStorage.getItem(key))?.[value]
+    http.get('/localstorage?', async ({request}) => {
+        const searchUrl = ('lstorage?', request.url)
+        const regex = /[?&]([^=#]+)=([^&#]*)/g;
+        console.log('lst',searchUrl.match(regex))
+        return (localStorage)
     }),
+    // http.get('/localstorage',  ((breakpoint) => {
+    //     return HttpResponse.json{
+    //         (localStorage.getItem('rgl'))?.['savedPosition']
+    //
+    //     }
+    //     // console.log('lstorage', key, value)
+    //     // return (localStorage.getItem(key))?.[value]
+    //     // const json = JSON.parse(localStorage.getItem('rgl'));
+    //     // return json.savedPosition[breakpoint] || [Object.keys(json.savedPosition)[0]];
+    // })),
+
+    http.get('/localstorage',  ((key, value) => {
+        console.log('lstorage', key, value)
+        return (localStorage.getItem(key))?.[value]
+    })),
+
+
+    http.get('/DB',() => {
+            return HttpResponse.json(localStorage.getItem('rgl_DB'))
+        },
+    ),
+
+    http.put('/DB_upload', async ({request}, ) => {
+        console.log('123qwe, handler')
+        const data  = await request.json()
+        global.localStorage.setItem(
+            "rgl_DB",
+            JSON.stringify({
+                "value":
+                data
+            })
+        );
+
+    })
 
 // return JSON.parse(global.localStorage.getItem(key))?.[value] || null;
 

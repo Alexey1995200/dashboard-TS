@@ -23,7 +23,7 @@ const Risks = ({}) => {
     };
     const handleResize = () => {
         const [width, height] = getDimensions();
-        setRisksScale((Math.min(width, height) / 120));
+        setRisksScale((Math.min(width, height) / 165));
     };
 
     useEffect(() => {
@@ -75,7 +75,7 @@ const Risks = ({}) => {
     return (
         <div className={'risks__wrapper'} ref={risksRef}>
             <div
-                className={'default_dashboard_title dragHandle'}
+                className={'centered_title dragHandle'}
                 style={{
                     transform: `scale(${risksScale > 1.25 ? risksScale / 1.25 : 1})`,
                     paddingTop: `${risksScale > 1.5 ? risksScale * 4 / 1.5 : 0}px`

@@ -61,9 +61,9 @@ const OverallProgress = () => {
 
         <div
             ref={overallProgressRef}
-            className={'overallProgress dragHandle'}
+            className={'overallProgress'}
         >
-            <div className={'default_dashboard_title overallProgress__title'} style={{ transform: `scale(${overallScale > 1.25 ? overallScale/1.25 : 1})` }}>Overall Progress</div>
+            <div className={'centered_title overallProgress__title dragHandle'} style={{ transform: `scale(${overallScale > 1.25 ? overallScale/1.25 : 1})` }}>Overall Progress</div>
             <ConfigProvider
                 theme={{
                     components: {

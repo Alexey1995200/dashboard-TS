@@ -12,8 +12,9 @@ interface ILog {
     recordNum: number,
     task: string,
 }
+
 interface ILogs {
-    log:ILog
+    log: ILog
 }
 
 const LOG_TYPES = {
@@ -48,13 +49,13 @@ const LOG_TITLE_MAPPING = {
     [LOG_TYPES.FINISHED]: "Task Finished",
 }
 
-const AssignedLog = ({log}:ILogs) => `Task ${log.task} assigned to ${log.user}`
-const PriorityChange = ({log}:ILogs) => `${log.task} overdue is High, Priority of task changed`
-const NewSubTask = ({log}:ILogs) => `New subtask added to task ${log.task} by ${log.user}`
-const UpdateTask = ({log}:ILogs) => `Task ${log.task} updated by ${log.user}`
-const OverdueTask = ({log}:ILogs) => `Task ${log.task} is overdue`
-const NewComment = ({log}:ILogs) => `${log.user} commented on task ${log.task}`
-const FinishedTask = ({log}:ILogs) => `${log.user} commented on task ${log.task}`
+const AssignedLog = ({log}: ILogs) => `Task ${log.task} assigned to ${log.user}`
+const PriorityChange = ({log}: ILogs) => `${log.task} overdue is High, Priority of task changed`
+const NewSubTask = ({log}: ILogs) => `New subtask added to task ${log.task} by ${log.user}`
+const UpdateTask = ({log}: ILogs) => `Task ${log.task} updated by ${log.user}`
+const OverdueTask = ({log}: ILogs) => `Task ${log.task} is overdue`
+const NewComment = ({log}: ILogs) => `${log.user} commented on task ${log.task}`
+const FinishedTask = ({log}: ILogs) => `${log.user} commented on task ${log.task}`
 
 const LOG_DESCRIPTION_COMPONENTS_MAPPING = {
     [LOG_TYPES.ASSIGNED]: AssignedLog,
@@ -70,7 +71,7 @@ const LogBuilder = () => {
     const [logs, setLogs] = useState([])
     const [user, setUser] = useState([])
     const [isAllLogsShown, setIsAllLogsShown] = useState(false);
-    console.log('preresp', logs)
+    // console.log('preresp', logs)
     const showAllLogs = () => {
         setIsAllLogsShown(!isAllLogsShown);
     };
@@ -87,10 +88,10 @@ const LogBuilder = () => {
             .then((response) => {
                 // console.log('resp', response)
                 setLogs(response.logs)
-                console.log('type', typeof logs)
+                // console.log('type', typeof logs)
             })
     }, []);
-    const LogContentComponent = (logs:ILogs):string => {
+    const LogContentComponent = (logs: ILogs): string => {
         const logTextBuilder = LOG_DESCRIPTION_COMPONENTS_MAPPING[logs.log.type]
         return (
             logTextBuilder(logs)
@@ -105,7 +106,7 @@ const LogBuilder = () => {
     const getDimensions = () => {
         if (logBuilderRef.current) {
             const {width, height} = logBuilderRef.current.getBoundingClientRect();
-            console.log('debug ', width, height)
+            // console.log('debug ', width, height)
             return [width, height];
         }
         return [0, 0];
@@ -127,48 +128,50 @@ const LogBuilder = () => {
     }, []);
 
 
-    return <div className={'logBuilder'} ref={logBuilderRef}>
-        <div className={'default_dashboard_title dragHandle'}
+    return (
+        <div className={'logBuilder'} ref={logBuilderRef}>
+            <div className={'centered_title dragHandle'}
 
-             style={{
-                 transform: `scale(${logBuilderScale > 1.25 ? logBuilderScale / 1.25 : 1})`,
-                 padding: `${logBuilderScale > 1.5 ? logBuilderScale * 8 / 1.5 : 0}px`
-             }}
-        >Project Logs
-        </div>
-        <div className={'logBuilder__body'}>
-            <div className={'logs__el'}>
-                {(logs.length === 0) ? <div className={'goodNews'} style={{color: 'black'}}> Log is empty </div>
-                    : shownLogs.map((log:ILog) => (
-                        <div className={'logs__el_wrapper'}
-                             style={{
-                                 fontSize: `${logBuilderScale > 3 ? logBuilderScale * 8 / 2 : 12}px`
-                             }}
-                             key={log.recordNum}>
-                            <img src={LOG_ICONS_MAPPING[log.type]} className={'el__ico'} alt={''}/>
-                            <div className={'el__upper'}>
-                                <div className={'el__title'}>
-                                    {LOG_TITLE_MAPPING[log.type]}
+                 style={{
+                     transform: `scale(${logBuilderScale > 1.25 ? logBuilderScale / 1.25 : 1})`,
+                     padding: `${logBuilderScale > 1.5 ? logBuilderScale * 8 / 1.5 : 0}px`
+                 }}
+            >Project Logs
+            </div>
+            <div className={'logBuilder__body'}>
+                <div className={'logs__el'}>
+                    {(logs.length === 0) ? <div className={'goodNews'} style={{color: 'black'}}> Log is empty </div>
+                        : shownLogs.map((log: ILog) => (
+                            <div className={'logs__el_wrapper'}
+                                 style={{
+                                     fontSize: `${logBuilderScale > 3 ? logBuilderScale * 8 / 2 : 12}px`
+                                 }}
+                                 key={log.recordNum}>
+                                <img src={LOG_ICONS_MAPPING[log.type]} className={'el__ico'} alt={''}/>
+                                <div className={'el__upper'}>
+                                    <div className={'el__title'}>
+                                        {LOG_TITLE_MAPPING[log.type]}
+                                    </div>
+                                    <div className={'el__days'}
+                                         style={{
+                                             fontSize: `${logBuilderScale > 3 ? logBuilderScale * 8 / 2 : 8}px`
+                                         }}>{daysLeft(log.date)} days
+                                    </div>
                                 </div>
-                                <div className={'el__days'}
-                                     style={{
-                                         fontSize: `${logBuilderScale > 3 ? logBuilderScale * 8 / 2 : 8}px`
-                                     }}>{daysLeft(log.date)} days
+                                <div className={'el__text'}>
+                                    <p>
+                                        {LogContentComponent({log})}
+                                    </p>
+                                    {/*<LogContentComponent*/}
+                                    {/*    log={log}*/}
+                                    {/*/>*/}
                                 </div>
                             </div>
-                            <div className={'el__text'}>
-                                <p>
-                                    {LogContentComponent({log})}
-                                </p>
-                                {/*<LogContentComponent*/}
-                                {/*    log={log}*/}
-                                {/*/>*/}
-                            </div>
-                        </div>
-                    ))
+                        ))
 
-                }
+                    }
 
+                </div>
             </div>
             {(logs.length > 0) ?
                 <div onClick={showAllLogs} className={'logs__button'}>
@@ -176,8 +179,7 @@ const LogBuilder = () => {
                 </div>
                 : <div/>
             }
-        </div>
-    </div>
+        </div>)
 }
 
 

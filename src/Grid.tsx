@@ -21,146 +21,361 @@ import LogBuilder from "./components/logs";
 const ReactGridLayout = WidthProvider(RGL);
 
 
+// {
+//     key: 'UpcTasks24343',
+//     el: UpcTasks
+// }
+// const test = (widget) => {
+//     const MyWidget = widget.el
+//     return (
+//         <div>
+//             <MyWidget  />
+//         </div>
+//     )
+// }
+
+// {
+//     key: 'UpcTasks24343',
+//     el: <UpcTasks />
+// }
+// const test = (widget) => {
+//     return (
+//         <div>
+//             {widget.el} // CAN'T PASS PROPS
+//         </div>
+//     )
+// }
+
+
 const Grid = ({
-                  isVerticalCompact,
+                  // isVerticalCompact,
+                  currentCompactType,
                   layouts,
-                  setLayouts,
-                  currentBreakpoint,
-                  setCurrentBreakpoint,
+                  // currentBreakpoint,
+                  // setCurrentBreakpoint,
                   breakpoints,
                   cols,
                   isMobileVer,
-                  isAdaptive
+                  isAdaptive,
+                  setLayouts
               }) => {
+
+    const breakpointsArr = () => {
+        return isMobileVer ? [
+            {device: 'galaxyY', resolution: 320 - 1},
+            {device: 'galaxyS3', resolution: 360 - 1},
+            {device: 'F3', resolution: 486 - 1},
+            {device: 'Tab7in', resolution: 600 - 1},
+            {device: 'Tab', resolution: 780 - 1}
+        ] : [
+            {device: 'phone', resolution: 360 - 1},
+            {device: 'WQVGA', resolution: 480 - 1},
+            {device: 'VGA', resolution: 640 - 1},
+            {device: 'WVGA', resolution: 800 - 1},
+            {device: 'qHD', resolution: 960 - 1},
+            {device: 'XGA', resolution: 1024 - 1},
+            {device: 'WXGA', resolution: 1279 - 1},
+            {device: 'WXGAHD', resolution: 1366 - 1},
+            {device: 'HDp', resolution: 1600 - 1},
+            {device: 'FHD', resolution: 1920 - 1},
+            {device: 'WQHD', resolution: 2560 - 1},
+            {device: 'FourK', resolution: 3840 - 1},
+            {device: 'FourKRetina', resolution: 4096 - 1}
+        ]
+    };
+    const colsArr = () => {
+        if (isAdaptive) {
+            return isMobileVer ? {
+                    galaxyY: 1,
+                    galaxyS3: 2,
+                    F3: 4,
+                    Tab7in: 6,
+                    Tab: 8,
+                    // Tab2: 8,
+                } :
+                {
+                    phone: 4,
+                    WQVGA: 6,
+                    VGA: 8,
+                    WVGA: 10,
+                    qHD: 12,
+                    XGA: 13,
+                    WXGA: 16,
+                    WXGAHD: 17,
+                    HDp: 20,
+                    FHD: 24,
+                    WQHD: 32,
+                    FourK: 48,
+                    FourKRetina: 52,
+                };
+        }
+    };
+    const [allWidgets, setAllWidgets] = useState([])
     const gridLayoutRef = useRef(null);
     const ResponsiveGridLayout = WidthProvider(Responsive);
     const [screenSize, setScreenSize] = useState(window.innerWidth);
-
-    const gridMargins = [10, 10]// Margin between items [x, y] in px
+    const breakpointsTestArr = [
+        { device: 'phone', resolution: 360 - 1, type: 'desktop' },
+        { device: 'WQVGA', resolution: 480 - 1, type: 'desktop' },
+        { device: 'VGA', resolution: 640 - 1, type: 'desktop' },
+        { device: 'WVGA', resolution: 800 - 1, type: 'desktop' },
+        { device: 'qHD', resolution: 960 - 1, type: 'desktop' },
+        { device: 'XGA', resolution: 1024 - 1, type: 'desktop' },
+        { device: 'WXGA', resolution: 1279 - 1, type: 'desktop' },
+        { device: 'WXGAHD', resolution: 1366 - 1, type: 'desktop' },
+        { device: 'HDp', resolution: 1600 - 1, type: 'desktop' },
+        { device: 'FHD', resolution: 1920 - 1, type: 'desktop' },
+        { device: 'WQHD', resolution: 2560 - 1, type: 'desktop' },
+        { device: 'FourK', resolution: 3840 - 1, type: 'desktop' },
+        { device: 'FourKRetina', resolution: 4096 - 1, type: 'desktop' },
+        { device: 'galaxyY', resolution: 320 - 1, type: 'mobile' },
+        { device: 'galaxyS3', resolution: 360 - 1, type: 'mobile' },
+        { device: 'F3', resolution: 486 - 1, type: 'mobile' },
+        { device: 'Tab7in', resolution: 600 - 1, type: 'mobile' },
+        { device: 'Tab', resolution: 780 - 1, type: 'mobile' }
+    ];
+    const getCurrentBreakpoint = (screenWidth) => {
+        let arrByType
+        if (isMobileVer === true) {
+            arrByType = breakpointsTestArr .filter((el) => el.type != 'desktop')
+        } else {arrByType = breakpointsTestArr .filter((el) => el.type === 'desktop')}
+        const filteredArr = arrByType.filter((el) => el.resolution > screenWidth)
+        if (filteredArr.length < 1) {
+            return arrByType[arrByType.length - 1]
+        } else return filteredArr[0].device
+    }
+    // useEffect(() => {
+    //     setCurrentBreakpoint(getCurrentBreakpoint(screenSize))
+    // }, []);
+    const [currentBreakpoint, setCurrentBreakpoint] = useState(
+        // () => getCurrentBreakpoint(screenSize)
+        getCurrentBreakpoint(screenSize)
+    )
+    console.log(currentBreakpoint, 'qweqweqwe')
+    const gridMargins: [number, number] = [10, 10]// Margin between items [x, y] in px
     const gridRowHeight = 1
 
     const calculateH = (expectedH) => ((expectedH + gridMargins[1]) / (gridRowHeight + gridMargins[1]))
-
-// const calculateW = (expectedWidth) => (expectedWidth + gridMargins[0]) / ((screenSize - (gridMargins[0] * (cols[currentBreakpoint] - 1))) / cols[currentBreakpoint] + gridMargins[0]);
-
+    // const calculateW = (expectedWidth) => (expectedWidth + gridMargins[0]) / ((screenSize - (gridMargins[0] * (cols[currentBreakpoint] - 1))) / cols[currentBreakpoint] + gridMargins[0]);
     const calculateW = (expectedW) => (expectedW + gridMargins[0]) / (parseFloat((breakpoints[currentBreakpoint] - (gridMargins[0] * (cols[currentBreakpoint]))) / cols[currentBreakpoint]) + gridMargins[0])  //don't give exact width, but pretty close
-    const defaultResponsiveLayouts: any = {
-        x8: [
-            {
-                i: 'iVC',
-                x: 0, y: 0,
-                w: 999999, h: calculateH(20),
-                minW: calculateW(10), maxW: calculateW(999999),
-                minH: calculateH(10), maxH: calculateH(50),
-                static: true
-            }, {
-                i: 'OverallProgress',
-                x: 0, y: 1,
-                w: Math.ceil(calculateW(140)), h: calculateH(120),
-                minW: calculateW(120), maxW: calculateW(800),
-                minH: calculateH(120), maxH: calculateH(800),
-                // static: false,                 //static position and size  (isDraggable & isResizable):false
-                // isDraggable: false,
-                // isResizable: true,
-            },
-            {
-                i: 'ProgressBar',
-                x: 19, y: 1,
-                w: Math.ceil(calculateW(900)), h: calculateH(120),
-                minW: 40,
-                minH: calculateH(120), maxH: calculateH(120)
-            },
-            {
-                i: 'LaunchDate',
-                x: 134, y: 1,
-                w: calculateW(185), h: calculateH(120),
-                minW: calculateW(120), maxW: calculateW(800),
-                minH: calculateH(120), maxH: calculateH(600)
-            },
-            {
-                i: 'Risks',
-                x: 0, y: 2,
-                w: Math.ceil(calculateW(230)), h: calculateH(164),
-                minW: calculateW(170), maxW: calculateW(800),
-                minH: calculateH(80), maxH: calculateH(600),
-            },
-            {
-                i: 'Budget',
-                x: 31, y: 2,
-                w: Math.ceil(calculateW(390)), h: calculateH(164),
-                minW: Math.ceil(calculateW(386)), maxW: calculateW(450),
-                minH: calculateH(164), maxH: calculateH(200)
-            },
-            {
-                i: 'OverdueTasks',
-                x: 82, y: 2,
-                w: Math.ceil(calculateW(400)), h: calculateH(164),
-                minW: Math.ceil(calculateW(300)), maxW: Math.ceil(calculateW(1200)),
-                minH: calculateH(95), maxH: calculateH(400)
-            },
-            {
-                i: 'Summary',
-                x: 0, y: 3,
-                w: Math.ceil(calculateW(230)), h: calculateH(164),
-                minW: calculateW(180), maxW: calculateW(800),
-                minH: calculateH(144), maxH: calculateH(600),
-            },
-            {
-                i: 'AvgTime',
-                x: 31, y: 3,
-                w: Math.ceil(calculateW(390)), h: calculateH(164),
-                minW: Math.ceil(calculateW(386)), maxW: calculateW(450),
-                minH: calculateH(164), maxH: calculateH(200),
-                isResizable: false,
-            },
-            {
-                i: 'UpcTasks',
-                x: 82, y: 3,
-                w: Math.ceil(calculateW(400)), h: calculateH(164),
-                minW: Math.ceil(calculateW(300)), maxW: Math.ceil(calculateW(1200)),
-                minH: calculateH(95), maxH: calculateH(400)
-            },
-            {
-                i: 'ProjectLogs',
-                x: 134, y: 2,
-                w: Math.ceil(calculateW(186)), h: calculateH(336),
-                minW: Math.ceil(calculateW(150)), maxW: Math.ceil(calculateW(1111)),
-                minH: calculateH(336), maxH: calculateH(900)
-            },
-            {
-                i: 'reset',
-                x: 0, y: 0,
-                w: 999999, h: calculateH(20),
-                minW: calculateW(10), maxW: calculateW(999999),
-                minH: calculateH(10), maxH: calculateH(50),
-                static: true
-            },
-        ],
+
+    // Responsive.getBreakpointFromWidth(breakpoints, screenSize)
+    console.log(cols, breakpoints, currentBreakpoint, 'qweqwe')
+    console.log(layouts, 'qwe_layouts')
+
+    const WIDGET_TEMPLATE = {
+        key: '',
+        el: <></>
+    }
+
+    const WIDGETS_KEYS = {
+        OverallProgress: 'OverallProgress',
+        ProgressBar: 'ProgressBar',
+        LaunchDate: 'LaunchDate',
+        Risks: 'Risks',
+        Budget: 'Budget',
+        OverdueTasks: 'OverdueTasks',
+        Summary: 'Summary',
+        AvgTime: 'AvgTime',
+        UpcTasks: 'UpcTasks',
+        ProjectLogs: 'ProjectLogs'
     };
+
+    const widgets = {
+        [WIDGETS_KEYS.OverallProgress]:
+            {
+                key: WIDGETS_KEYS.OverallProgress,
+                el: OverallProgress,
+                data: {
+                    i: WIDGETS_KEYS.OverallProgress,
+                    w: Math.ceil(calculateW(120)),
+                    h: Math.ceil(calculateH(120)),
+                    minH: Math.ceil(calculateH(90)),
+                    minW: Math.ceil(calculateW(100)),
+                    x: 0,
+                    y: Infinity
+                }
+            },
+        [WIDGETS_KEYS.ProgressBar]:
+            {
+                key: WIDGETS_KEYS.ProgressBar,
+                el: ProgressBar,
+                data: {
+                    i: WIDGETS_KEYS.ProgressBar,
+                    w: Math.ceil(calculateW(900)),
+                    h: Math.ceil(calculateH(120)),
+                    minH: Math.ceil(calculateH(110)),
+                    minW: Math.ceil(calculateW(320)),
+                    x: 0,
+                    y: Infinity
+                }
+            },
+        [WIDGETS_KEYS.LaunchDate]:
+            {
+                key: WIDGETS_KEYS.LaunchDate,
+                el: LaunchDate,
+                data: {
+                    i: WIDGETS_KEYS.LaunchDate,
+                    w: Math.ceil(calculateW(120)),
+                    h: Math.ceil(calculateH(120)),
+                    minH: Math.ceil(calculateH(120)),
+                    minW: Math.ceil(calculateW(120)),
+                    x: 0,
+                    y: Infinity
+                }
+            },
+        [WIDGETS_KEYS.Risks]:
+            {
+                key: WIDGETS_KEYS.Risks,
+                el: Risks,
+                data: {
+                    i: WIDGETS_KEYS.Risks,
+                    w: Math.ceil(calculateW(120)),
+                    h: Math.ceil(calculateH(120)),
+                    minH: Math.ceil(calculateH(120)),
+                    minW: Math.ceil(calculateW(120)),
+                    x: 0,
+                    y: Infinity
+                }
+            },
+        [WIDGETS_KEYS.Budget]:
+            {
+                key: WIDGETS_KEYS.Budget,
+                el: Budget,
+                data: {
+                    i: WIDGETS_KEYS.Budget,
+                    w: Math.ceil(calculateW(386)),
+                    h: Math.ceil(calculateH(164)),
+                    minH: Math.ceil(calculateH(164)), maxH: Math.ceil(calculateH(164)),
+                    minW: Math.ceil(calculateW(386)),
+                    x: 0,
+                    y: Infinity
+                }
+            },
+        [WIDGETS_KEYS.OverdueTasks]:
+            {
+                key: WIDGETS_KEYS.OverdueTasks,
+                el: OverdueTasks,
+                data: {
+                    i: WIDGETS_KEYS.OverdueTasks,
+                    w: Math.ceil(calculateW(386)),
+                    h: Math.ceil(calculateH(164)),
+                    minH: Math.ceil(calculateH(120)),
+                    minW: Math.ceil(calculateW(275)),
+                    x: 0,
+                    y: Infinity
+                }
+            },
+        [WIDGETS_KEYS.Summary]:
+            {
+                key: WIDGETS_KEYS.Summary,
+                el: Summary,
+                data: {
+                    i: WIDGETS_KEYS.Summary,
+                    w: Math.ceil(calculateW(120)),
+                    h: Math.ceil(calculateH(120)),
+                    minH: Math.ceil(calculateH(120)),
+                    minW: Math.ceil(calculateW(120)),
+                    x: 0,
+                    y: Infinity
+                }
+            },
+        [WIDGETS_KEYS.AvgTime]:
+            {
+                key: WIDGETS_KEYS.AvgTime,
+                el: AvgTime,
+                data: {
+                    i: WIDGETS_KEYS.AvgTime,
+                    w: Math.ceil(calculateW(276)), h: calculateH(164),
+                    minW: Math.ceil(calculateW(386)), maxW: calculateW(450),
+                    minH: calculateH(164), maxH: calculateH(200),
+                    isResizable: false,
+                    x: 0,
+                    y: Infinity
+                }
+            },
+        [WIDGETS_KEYS.UpcTasks]:
+            {
+                key: WIDGETS_KEYS.UpcTasks,
+                el: UpcTasks,
+                data: {
+                    i: WIDGETS_KEYS.UpcTasks,
+                    w: Math.ceil(calculateW(386)),
+                    h: Math.ceil(calculateH(164)),
+                    minH: Math.ceil(calculateH(120)),
+                    minW: Math.ceil(calculateW(275)),
+                    x: 0,
+                    y: Infinity
+                }
+            },
+        [WIDGETS_KEYS.ProjectLogs]:
+            {
+                key: WIDGETS_KEYS.ProjectLogs,
+                el: LogBuilder,
+                data: {
+                    i: WIDGETS_KEYS.ProjectLogs,
+                    w: Math.ceil(calculateW(186)),
+                    h: Math.ceil(calculateH(336)),
+                    minH: Math.ceil(calculateH(240)),
+                    minW: Math.ceil(calculateW(149)),
+                    x: 0,
+                    y: Infinity
+                }
+            },
+        [WIDGETS_KEYS.AvgTime]:
+            {
+                key: WIDGETS_KEYS.AvgTime,
+                el: AvgTime
+            },
+    }
+
 
     function deepEqual(obj1, obj2) {
         return JSON.stringify(obj1) === JSON.stringify(obj2);
     }
 
+    const uploadRGLData = async (data) => {
+
+        console.log('Before fetch:', JSON.stringify(data));
+        try {
+            const response = await fetch('/DB_upload', {
+                method: 'PUT',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            console.log('sended resp', response)
+            const json = await response.json();
+            console.log('Success:', JSON.stringify(json));
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
 
     const onBreakpointChange = (breakpoint) => {
-        setCurrentBreakpoint(breakpoint);
-        console.log('Current Breakpoint:', breakpoint);
+        console.log('qwe before on change', currentBreakpoint)
+        setCurrentBreakpoint(breakpoint)
+        console.log('qwe after on change', currentBreakpoint)
     };
+    useEffect(() => {
+        onBreakpointChange()
+    }, []);
     const onLayoutChange = (layout, layouts) => {
+        uploadRGLData(layouts)
+        console.log(layouts, '123qwe')
         saveToLS('savedPosition', layouts);
         prevLayoutsRef.current = layouts; // Update the ref instead of the state
     };
 
     const prevLayoutsRef = useRef(layouts);
-    useEffect(() => {
-        if (deepEqual(prevLayoutsRef.current, layouts)) {
-            saveToLS('savedPosition', layouts);
-        }
-        // if (deepEqual(prevLayoutsRef.current, layouts)) {
-        //     saveToLS('savedPosition', layouts);
-        // }
-    }, [layouts]);
+    // useEffect(() => {
+    //     // console.log('123qwe useeffect')
+    //     if (deepEqual(prevLayoutsRef.current, layouts)) {
+    //         saveToLS('savedPosition', layouts);
+    //     }
+    //
+    // }, [layouts]);
 
     const saveToLS = (key, value) => {
         if (global.localStorage) {
@@ -171,79 +386,160 @@ const Grid = ({
                     [key]: value
                 })
             );
-            global.localStorage.setItem(
-                "rgl_props",
-                JSON.stringify({
-                    isMobileVer: isMobileVer,
-                    isAdaptive: isAdaptive,
-                }),
-            );
-            global.localStorage.setItem(
-                "rgl_isMobileVer",
-                JSON.stringify({
-                    isMobileVer
-                }),
-                "rgl_isAdaptive",
-                JSON.stringify({
-                    isAdaptive
-                })
-            );
         }
     };
+    // console.log([...layouts])
+    const removeByKeyOnClick = (key) => {
+        setAllWidgets(allWidgets.filter(widget => widget.key !== key));
+    }
+    const removeAllOnClick = () => setAllWidgets([])
+    const uniqueID = () => Math.random().toString(16).slice(-4);
+    const addWidgetByKeyOnClick = (widget) => {
+        console.log(widgets, widget, 'qwe',)
+        const newWidget = {
+            ...WIDGET_TEMPLATE,
+            key: widget,
+            el: widgets[widget].el,
+            data: widgets[widget].data
+        }
+        setAllWidgets([...allWidgets, newWidget]);
+        // setLayouts([...layouts])
+    }
+    // const test = () => {
+    //     Object.keys(widgets).map((widget) => {
+    //         const widgetEl = widgets[widget].el
+    //         const widgetKey = widgets[widget].key
+    //             return  {
+    //                 key: widgetKey,
+    //                 el: widgetEl
+    //             }
+    //         }
+    //     )
+    // }
+    // console.log('test', test())
 
-
-
+    // console.log(Object.keys(allWidgets), 'widget')
     return (
-        <ResponsiveGridLayout
-            ref={gridLayoutRef}
-            className={'grid_wrapper'}
-            layouts={layouts}
-            breakpoints={breakpoints}
-            cols={cols}
-            verticalCompact={isVerticalCompact}
-            rowHeight={gridRowHeight}
-            onBreakpointChange={onBreakpointChange}
-            draggableHandle=".dragHandle"
-            margin={gridMargins}
-            isDraggable={true}
-            isResizable={true}
-            isBounded={false}
-            allowOverlap={false}
-            onLayoutChange={(layout, layouts) => onLayoutChange(layout, layouts)}
-        >
-            <div key={'OverallProgress'}>
-                <OverallProgress/>
-            </div>
-            <div key={'ProgressBar'}>
-                <ProgressBar/>
-            </div>
-            <div key={'LaunchDate'}>
-                <LaunchDate/>
-            </div>
-            <div key={'Risks'}>
-                <Risks/>
-            </div>
-            <div key={'Budget'}>
-                <Budget/>
-            </div>
-            <div key={'OverdueTasks'}>
-                <OverdueTasks/>
-            </div>
-            <div key={'Summary'}>
-                <Summary/>
-            </div>
-            <div key={'AvgTime'}>
-                <AvgTime/>
-            </div>
-            <div key={'UpcTasks'}>
-                <UpcTasks/>
-            </div>
-            <div key={'ProjectLogs'}>
-                <LogBuilder/>
-            </div>
+        <div>
 
-        </ResponsiveGridLayout>
-        // </div>
+            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                {Object.keys(widgets).map((widget) => {
+                    console.log(widget, 'widgettt')
+                    return (<button onClick={() => addWidgetByKeyOnClick(widget)}>{widget}</button>)
+                })}
+                <div
+                    className="remove_btn"
+                    style={{
+                        // position: "absolute",
+                        // right: "2px",
+                        // top: 0,
+                        cursor: "pointer"
+                    }}
+                    onClick={() => removeAllOnClick()}
+                >
+                    &#10006;
+                </div>
+            </div>
+            <ResponsiveGridLayout
+                ref={gridLayoutRef}
+                className={'grid_wrapper'}
+                layouts={layouts}
+                breakpoints={breakpoints}
+                cols={cols}
+                // verticalCompact={isVerticalCompact}
+                compactType={currentCompactType}
+                rowHeight={gridRowHeight}
+                onBreakpointChange={onBreakpointChange}
+                draggableHandle=".dragHandle"
+                margin={gridMargins}
+                isDraggable={true}
+                isResizable={true}
+                isBounded={false}
+                allowOverlap={false}
+                onLayoutChange={(layout, layouts) => onLayoutChange(layout, layouts)}
+                // preventCollision={true}
+            >
+                {/*{allWidgets.map((widget) => {*/}
+                {/*    const WidgetEl = widget.el*/}
+                {/*    return (*/}
+                {/*        <div*/}
+                {/*            className={"widget"}*/}
+                {/*            key={widget.key}>*/}
+                {/*            <WidgetEl*/}
+                {/*            />*/}
+                {/*            /!*<div style={{*!/*/}
+                {/*            /!*    background: 'gray',*!/*/}
+                {/*            /!*    fontSize: '24px',*!/*/}
+                {/*            /!*    margin: 'auto',*!/*/}
+                {/*            /!*    height: '100%',*!/*/}
+                {/*            /!*    textAlign: 'center'*!/*/}
+                {/*            /!*}}>*!/*/}
+                {/*            /!*    <div style={{*!/*/}
+                {/*            /!*        position: 'relative',*!/*/}
+                {/*            /!*        top: '50%',*!/*/}
+                {/*            /!*        transform: 'translate(0, -50%)'*!/*/}
+                {/*            /!*    }}>{widget.key}</div>*!/*/}
+                {/*            /!*</div>*!/*/}
+                {/*            <span*/}
+                {/*                className="remove_btn"*/}
+                {/*                style={{*/}
+                {/*                    position: "absolute",*/}
+                {/*                    right: "2px",*/}
+                {/*                    top: 0,*/}
+                {/*                    cursor: "pointer"*/}
+                {/*                }}*/}
+                {/*                onClick={() => removeByKeyOnClick(widget.key)}*/}
+                {/*            >*/}
+                {/*            &#10006;*/}
+                {/*        </span>*/}
+                {/*        </div>*/}
+                {/*    )*/}
+                {/*})}*/}
+
+                {allWidgets.map((widget) => {
+                    const WidgetEl = widget.el
+                    return (
+                        <div
+                            className={"widget"}
+                            key={widget.key}
+                            data-grid={widget.data}
+                        >
+
+                            <WidgetEl
+                                // key={widget.key}
+                                // data-grid={widget.data}
+                            />
+                            {/*<div style={{*/}
+                            {/*    background: 'gray',*/}
+                            {/*    fontSize: '24px',*/}
+                            {/*    margin: 'auto',*/}
+                            {/*    height: '100%',*/}
+                            {/*    textAlign: 'center'*/}
+                            {/*}}>*/}
+                            {/*    <div style={{*/}
+                            {/*        position: 'relative',*/}
+                            {/*        top: '50%',*/}
+                            {/*        transform: 'translate(0, -50%)'*/}
+                            {/*    }}>{widget.key}</div>*/}
+                            {/*</div>*/}
+                            <span
+                                className="remove_btn"
+                                style={{
+                                    position: "absolute",
+                                    right: "2px",
+                                    top: 0,
+                                    cursor: "pointer"
+                                }}
+                                onClick={() => removeByKeyOnClick(widget.key)}
+                            >
+                            &#10006;
+                        </span>
+                        </div>
+                    )
+                })}
+
+            </ResponsiveGridLayout>
+        </div>
     );
 };
 

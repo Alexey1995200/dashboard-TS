@@ -39,7 +39,7 @@ const Budget = ({}) => {
     const handleResize = () => {
         const [width, height] = getDimensions();
         
-        setBudgetScale((Math.min(width, height)/120));
+        setBudgetScale((Math.min(width, height)/165));
     };
 
     useEffect(() => {
@@ -69,14 +69,14 @@ const Budget = ({}) => {
 
 
     return (
-        <div className={'budget__wrapper dragHandle'} ref={budgetRef}>
-            <h3 className={'default_dashboard_title '}
+        <div className={'budget__wrapper'} ref={budgetRef}>
+            <h3 className={'centered_title dragHandle'}
                 style={{
                     transform: `scale(${budgetScale > 1.25 ? budgetScale/1.5 : 1})`,
                 }}
             >Project Budget</h3>
             <div className={'budget'}>
-                <div className={'budget__columns'}>
+                <div className={'budget__columns dragHandle'}>
                     <div className={'columns'} style={{ transform: `scale(${budgetScale > 1.25 ? budgetScale/1.5 : 1})` }}>
                         <VictoryColumns
                             columnsData={data}

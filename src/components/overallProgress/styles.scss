@@ -1,31 +1,28 @@
-.overallProgress{
+.overallProgress {
   //scale: 2;
 
   background-color: white;
   display: flex;
   flex-direction: column;
-  gap:6px;
+  gap: 6px;
   text-align: center;
   padding: 16px;
   height: 100%;
   justify-content: space-around;
-.overallProgress__title{
-  padding-top: 16px;
-  display: flex;
-  word-wrap: break-word;
-  width: 50%;
-  justify-content: center;
-  //position: relative;
-  //top: 5%;
 
-}
-  .ant-progress-text{
-    top:40px!important;
+  .overallProgress__title {
+    padding-top: 16px;
+    width: 50%;
+  }
+
+  .ant-progress-text {
+    top: 40px !important;
     font-weight: 500;
   }
-  .antProgOverall{
+
+  .antProgOverall {
     position: relative;
     margin-bottom: -10%;
-    top:10%;
+    top: 10%;
   }
 }

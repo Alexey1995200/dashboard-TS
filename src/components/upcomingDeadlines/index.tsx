@@ -25,7 +25,7 @@ const UpcTasks = () => {
     const handleResize = () => {
 
         const [width, height] = getDimensions();
-        setUpcomingScale((Math.min(width, height) / 120));
+        setUpcomingScale((Math.min(width, height) / 140));
 
     };
 
@@ -55,7 +55,7 @@ const test = () => {
 }
     return <div className={'upcoming__wrapper'} ref={upcomingRef}
                    style={{gap: `${upcomingScale > 1.25 ? 4 * upcomingScale : 4}px`}}>
-                <h3 className={'default_dashboard_title dragHandle'}
+                <h3 className={'centered_title dragHandle'}
                     style={{
                         transform: `scale(${upcomingScale > 1.25 ? upcomingScale / 1.25 : 1})`,
                         paddingTop: `${upcomingScale > 1.5 ? upcomingScale * 4 / 1.5 : 0}px`

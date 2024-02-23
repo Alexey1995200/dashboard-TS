@@ -12,7 +12,7 @@ const AvgTime = () => {
     ];
     return (
         <div className={'avgTime__wrapper'}>
-            <div className={'default_dashboard_title dragHandle'}
+            <div className={'centered_title dragHandle'}
             >Avg Handle Time in days for Prjct-Task</div>
             {/*<div>*/}
                 <div className={'bar'}>

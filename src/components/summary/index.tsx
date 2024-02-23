@@ -35,7 +35,7 @@ const Summary = () => {
     const handleResize = () => {
         const [width, height] = getDimensions();
         
-        setSummaryScale((Math.min(width, height)/120));
+        setSummaryScale((Math.min(width, height)/165));
     };
     const isProjectOnTime = ():boolean => (finishTimestampMS - new Date().getTime()) > 0;
     useEffect(() => {
@@ -61,7 +61,7 @@ const Summary = () => {
 
     return (
         <div className={'summary__wrapper'} ref={summaryRef}>
-            <div className={'default_dashboard_title dragHandle'}
+            <div className={'centered_title dragHandle'}
                  style={{
                      transform: `scale(${summaryScale > 1.25 ? summaryScale / 1.25 : 1})`,
                      paddingTop:`${summaryScale > 1.5 ? summaryScale*4/1.5 : 0}px`

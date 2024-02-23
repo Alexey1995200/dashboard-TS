@@ -62,7 +62,7 @@ const ProjectLogs = () => {
 
     return (
         <div className={'logs__wrapper'} ref={logsRef}>
-            <div className={'default_dashboard_title logs__title dragHandle'}
+            <div className={'centered_title logs__title dragHandle'}
                  style={{
                      transform: `scale(${logsScale > 1.25 ? logsScale / 1.25 : 1})`,
                      padding: `${logsScale > 1.5 ? logsScale * 8 / 1.5 : 0}px`

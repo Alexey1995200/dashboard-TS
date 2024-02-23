@@ -51,9 +51,9 @@ const LaunchDate = ({}) => {
     const timeLeftMS = finishDateTimeStampMS - localDate.getTime();
     const daysLeft = Math.floor(timeLeftMS / (1000 * 60 * 60 * 24));
     return (
-        <div className={'launchDate dragHandle'} ref={launchDateRef}>
-            <div className={'launchDate__title default_dashboard_title'} style={{ transform: `scale(${launchDateScale > 1.25 ? launchDateScale/1.5 : 1})` }}><p>Project</p><p>Launch Date</p></div>
-            <div className={'launchDate__body'} style={{ transform: `scale(${launchDateScale > 1.25 ? launchDateScale/1.5 : 1})` }}>
+        <div className={'launchDate'} ref={launchDateRef}>
+            <div className={'launchDate__title centered_title dragHandle'} style={{ transform: `scale(${launchDateScale > 1.25 ? launchDateScale/1.25 : 1})` }}><p>Project</p><p>Launch Date</p></div>
+            <div className={'launchDate__body'} style={{ transform: `scale(${launchDateScale > 1.25 ? launchDateScale : 1})` }}>
                 <img src={finish} alt='🏁'/>
                 <div className={'launchDate__timer'}>
                     <div className={'launchDate__date'}>{new Date(finishDate).toLocaleDateString(undefined, options)}</div>

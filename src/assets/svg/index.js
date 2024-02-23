@@ -10,5 +10,16 @@ import priority from './priority.svg'
 import react from './react.svg'
 import user from './user.svg'
 import auth from './auth.svg'
+import movement from './movement.svg'
+import resize from './resize.svg'
+import desktop from './desktop.svg'
+import mobile from './mobile.svg'
+import reset from './reset.svg'
+import resetSettings from './resetSettings.svg'
+import resetTable from './resetTable.svg'
+import resetGlobal from './resetGlobal.svg'
+import compactVertical from './alignTop.svg'
+import compactHorizontal from './alignLeft.svg'
+import compactNone from './alignNone.svg'
 
-export {waiting, finish, alert, checked, comment, copy, tag, update, priority, react, user, auth}
+export {waiting, finish, alert, checked, comment, copy, tag, update, priority, react, user, auth, movement, resize, desktop, mobile, reset, resetSettings, resetTable, resetGlobal, compactVertical, compactHorizontal, compactNone}

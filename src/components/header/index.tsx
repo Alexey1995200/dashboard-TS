@@ -1,13 +1,15 @@
 import './styles.scss'
 import {auth, react, user} from "../../assets/svg";
+import {colorFilter} from "../../App";
 
 const Header = () => {
-    
+
+
     
     return (
         <div className={'header__wrapper'}>
             <nav className={'navBar__wrapper'}>
-                <img src={react} alt="LOGO" className={'header__logo'}/>
+                <img src={react} alt="LOGO" className={'header__logo'} style={colorFilter.green}/>
                 <ul className="navBar">
                     <li className="navBar__link">Dashboard</li>
                     <li className="navBar__link">Users</li>
