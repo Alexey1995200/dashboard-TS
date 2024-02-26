@@ -361,11 +361,13 @@ const Grid = ({
     useEffect(() => {
         onBreakpointChange()
     }, []);
+
     const onLayoutChange = (layout, layouts) => {
         uploadRGLData(layouts)
-        console.log(layouts, '123qwe')
-        saveToLS('savedPosition', layouts);
-        prevLayoutsRef.current = layouts; // Update the ref instead of the state
+        uploadRGLData(allWidgets)
+        // console.log(layouts, '123qwe')
+        // saveToLS('savedPosition', layouts);
+        // prevLayoutsRef.current = layouts; // Update the ref instead of the state
     };
 
     const prevLayoutsRef = useRef(layouts);

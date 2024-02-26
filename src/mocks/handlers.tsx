@@ -8,6 +8,16 @@ import {upcTasks} from "../DB/upcDeadlinesDB";
 import {logs, users} from "../DB/logs";
 import {defaultDBposition} from "../DB/gridDB";
 
+const resolutionNamesCheck = (some) => {
+    const resolutionNames = ['phone', 'WQVGA', 'VGA', 'WVGA', 'qHD', 'XGA', 'WXGA', 'WXGAHD', 'HDp', 'FHD', 'WQHD', 'FourK', 'FourKRetina', 'galaxyY', 'galaxyS3', 'F3', 'Tab7in', 'Tab', 'Tab2']
+    return resolutionNames.includes(some)
+}
+
+const widgetNamesCheck = (some) => {
+    const widgetNames = ['OverallProgress', 'ProgressBar', 'LaunchDate', 'Risks', 'Budget', 'OverdueTasks', 'Summary', 'AvgTime', 'UpcTasks', 'ProjectLogs'];
+    return widgetNames.includes(some);
+}
+
 export const handlers = [
 
     http.get('/db/colors', async () => {
@@ -26,7 +36,7 @@ export const handlers = [
     ),
     http.get('db/progressDB/tasks', async () => {
             //await delay(5000)
-            return  HttpResponse.json({
+            return HttpResponse.json({
                 tasks
             })
         }
@@ -115,7 +125,7 @@ export const handlers = [
     http.get('/localstorage?', async ({request}) => {
         const searchUrl = ('lstorage?', request.url)
         const regex = /[?&]([^=#]+)=([^&#]*)/g;
-        console.log('lst',searchUrl.match(regex))
+        console.log('lst', searchUrl.match(regex))
         return (localStorage)
     }),
     // http.get('/localstorage',  ((breakpoint) => {
@@ -129,27 +139,40 @@ export const handlers = [
     //     // return json.savedPosition[breakpoint] || [Object.keys(json.savedPosition)[0]];
     // })),
 
-    http.get('/localstorage',  ((key, value) => {
+    http.get('/localstorage', ((key, value) => {
         console.log('lstorage', key, value)
         return (localStorage.getItem(key))?.[value]
     })),
 
 
-    http.get('/DB',() => {
+    http.get('/DB', () => {
             return HttpResponse.json(localStorage.getItem('rgl_DB'))
         },
     ),
 
-    http.put('/DB_upload', async ({request}, ) => {
+    http.put('/DB_upload', async ({request},) => {
         console.log('123qwe, handler')
-        const data  = await request.json()
-        global.localStorage.setItem(
-            "rgl_DB",
-            JSON.stringify({
-                "value":
-                data
-            })
-        );
+        const data = await request.json()
+        if (Object.keys(data).some(key => resolutionNamesCheck(key))) {
+            global.localStorage.setItem(
+                "rgl_DB",
+                JSON.stringify({
+                    "value":
+                    data
+                })
+            );
+        }
+        else
+            // if (Object.keys(data).some(key => widgetNamesCheck(key)))
+            {
+            global.localStorage.setItem(
+                "rgl_widgets",
+                JSON.stringify({
+                    "value":
+                    data
+                })
+            );
+        }
 
     })
 
