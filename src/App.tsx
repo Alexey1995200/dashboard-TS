@@ -1,9 +1,10 @@
-//@ts-nocheck
+// @ts-nocheck old
 import './grid.css';
 import Header from "./components/header";
 import SideBar from "./components/sideBar";
 import Grid from "./Grid";
 import React, {useEffect, useState} from "react";
+import './grid.css';
 import {defaultDBposition} from "./DB/gridDB";
 import {
     compactHorizontal, compactNone,
@@ -25,104 +26,187 @@ const colorFilter = {
         filter: 'brightness(0) saturate(100%) invert(26%) sepia(57%) saturate(6032%) hue-rotate(340deg) brightness(93%) contrast(85%)',
     }
 };
-// const getFromLS = (key: string, value: string) => {                                  todo original getfromLS
-//     console.log('getFromLS called')
-//
-//     if (localStorage) {
-//         // try {
-//         //     console.log('getFromLS', key, value, JSON.parse(localStorage.getItem(key))?.[value])
-//         //     return JSON.parse(localStorage.getItem(key))?.[value] || null;
-//         // } catch (e) {
-//         //     // console.log('getFromLS ERR catched')
-//         // }
-//         try {
-//             console.log('getFromLS', key, value, JSON.parse(localStorage.getItem(key))?.[value])
-//             return JSON.parse(localStorage.getItem(key))?.[value];
-//         } catch (e) {
-//             // console.log('getFromLS ERR catched')
-//         }
-//     }
-// };
 
-const getFromLS = (key) => {
+const getFromLS = (key, value) => {
     if (localStorage) {
+        // try {
+        //     console.log('getFromLS', key, value, JSON.parse(localStorage.getItem(key))?.[value])
+        //     return JSON.parse(localStorage.getItem(key))?.[value] || null;
+        // } catch (e) {
+        //     // console.log('getFromLS ERR catched')
+        // }
         try {
-            return JSON.parse(localStorage.getItem(key)).value;
+            console.log('getFromLS', key, value, JSON.parse(localStorage.getItem(key))?.[value])
+            return JSON.parse(localStorage.getItem(key))?.[value];
         } catch (e) {
-            return null
+            // console.log('getFromLS ERR catched')
         }
     }
 };
-const useragent: string = window.navigator.userAgent
-const isMobileVerByUserAgent = (): boolean => {
-    return (
-        useragent.toLowerCase().includes('ipad') ||
-        useragent.toLowerCase().includes('iphone') ||
-        useragent.toLowerCase().includes('phone') ||
-        useragent.toLowerCase().includes('android') ||
-        useragent.toLowerCase().includes('mobile')
-    );
+const saveToLS = (key, value) => {
+    if (global.localStorage) {
+        global.localStorage.setItem(
+            key,
+            JSON.stringify({
+                value
+            })
+        );
+    }
 };
-
 function App() {
-
-    const [screenSize, setScreenSize]: number = useState(window.innerWidth);
-    // const [isVerticalCompact, setIsVerticalCompact]: boolean = useState(false)
+    const useragent = window.navigator.userAgent
+    const [screenSize, setScreenSize] = useState(window.innerWidth);
     const [currentCompactType, setCurrentCompactType]: string = useState('vertical')
-    // const [fetchedLayout, setFetchedLayout] = useState()
-    const [fetchedDefaultLayout, setFetchedDefaultLayout] = useState()
-    const [fetchedSavedLayout, setFetchedSavedLayout] = useState()
-    const [isDemo, setIsDemo] = useState(false)
-
-    // const [currentBreakpoint, setCurrentBreakpoint] = useState();
+    // const [isVerticalCompact, setIsVerticalCompact] = useState(true)
+    const [fetchedLayout, setFetchedLayout] = useState([])
 
 
-    const [isMobileByUA, setIsMobileByUA] = useState(isMobileVerByUserAgent)
     const [isMobileVer, setIsMobileVer] = useState(() => {
-        const localIsMobileVerState = getFromLS(`isMobile`)
-        return localIsMobileVerState ? localIsMobileVerState : isMobileByUA
+        const isMobile = getFromLS('rgl_props', 'isMobileVer')
+        return isMobile ? isMobile : false
+
+        // const localIsMobileVerState = getFromLS('rgl_props',`isMobileVer`)
+        // console.log('get mobile', getFromLS('rgl_props',`isMobileVer`))
+        // if (localIsMobileVerState) return localIsMobileVerState
+        // else return false
     })
 
     const [isAdaptive, setIsAdaptive] = useState(() => {
-        const localAdaptiveState = getFromLS(`isAdaptive`)
-        const localIsMobileVerState = getFromLS(`isMobile`)
-        console.log('states', localAdaptiveState, localIsMobileVerState)
-        if ((localIsMobileVerState === true) && (localAdaptiveState === true)) return true
-        else if ((localIsMobileVerState === false) && (localAdaptiveState === true)) return true
-        else if (localAdaptiveState === false) return false
-        else return true
-
+        const localAdaptiveState = getFromLS('rgl_props', `isAdaptive`)
+        const localIsMobileVerState = getFromLS('rgl_props', `isMobileVer`)
+        if (localAdaptiveState) return localAdaptiveState
+        else if (localIsMobileVerState) return localIsMobileVerState
+        else return false
     })
 
     // const [layouts, setLayouts] = useState(() => {
-    //     const storedLayouts = getFromLS('rgl', 'savedPosition');
-    //     console.log(storedLayouts, 'stored')
-    //
-    //     return (
-    //         // storedLayouts
-    //         // ||
-    //         fetchedSavedLayout
-    //         ||
-    //         fetchedDefaultLayout
-    //     )
+    //     const storedLayouts = getFromLS('rgl',`savedPosition`);
+    //     return storedLayouts || fetchedLayout || JSON.parse(JSON.stringify(''));
     // });
+    const [layouts, setLayouts] = useState(() => {
+        const storedLayouts = getFromLS('rgl', `savedPosition`);
+        console.log(storedLayouts, 'stored')
+        if (!!storedLayouts) return storedLayouts
+        else if (fetchedLayout) return JSON.parse(JSON.stringify(fetchedLayout))
+        else return JSON.parse(JSON.stringify(''));
+    });
+    const changeCompactView = () => {
+        setIsVerticalCompact(!isVerticalCompact)
+    }
 
-    const [layouts, setLayouts] = useState();
+    //todo ask about where widget must be taken from? (sidebar or menu inside of grid layout)
+    //todo save as custom, load as custom
+    //todo make widget remove feature
+    //todo fix gridDB default
 
+    const isMobileVerByUserAgent = () => {
+        return (
+            useragent.toLowerCase().includes('ipad') ||
+            useragent.toLowerCase().includes('iphone') ||
+            useragent.toLowerCase().includes('phone') ||
+            useragent.toLowerCase().includes('android') ||
+            useragent.toLowerCase().includes('mobile')
+        );
+    };
+    const changeAdaptiveState = () => {
+        setIsAdaptive(!isAdaptive)
+        console.log('dbg', isAdaptive)
+    }
+    const refresh = () => window.location.reload(true)
+    // const resetLocalStorage = () => {
+    //     if (global.localStorage) {
+    //         global.localStorage.removeItem("rgl");
+    //         global.localStorage.removeItem("rgl_props");
+    //         // Avoid forced page reload here
+    //         setLayouts(JSON.parse(JSON.stringify(fetchedLayout))); // Reset layouts to the default
+    //         setCurrentBreakpoint('x0'); // Reset breakpoint to the default
+    //         // refresh()
+    //     }
+    // };
+    const breakpoints = () => {
+        if (isAdaptive) {
+            return isMobileVer ? {mobileGlobal: 0} : {global: 0};
+        } else {
+            const breakpoints = {x0: 0, x1: 159};
+            for (let i = 2; i <= 27; i++) {
+                breakpoints[`x${i}`] = breakpoints[`x${i - 1}`] + 160;
+            }
+            return breakpoints;
+        }
+    };
+    const cols = () => {
+        if (isAdaptive) {
+            return isMobileVer ? {mobileGlobal: 3} : {global: 16};
+        } else {
+            const cols = {x0: 1};
+            for (let i = 1; i <= 27; i++) {
+                cols[`x${i}`] = i * 20;
+            }
+            return cols;
+        }
+    };
 
-    // const [layouts, setLayouts] = useState(() => {
-    //     // const storedLayouts = getFromLS('rgl', `savedPosition`);
-    //     // console.log(storedLayouts, 'stored')
-    //     // if (!!storedLayouts) return storedLayouts
-    //     // else
-    //         if (fetchedLayout) return JSON.parse(JSON.stringify(fetchedLayout))
-    //     else return null
-    // });                                                      //todo last working ver
+    const resetLocalSettings = () => {
+        global.localStorage.removeItem("rgl_props");
+        setIsMobileVer(isMobileVerByUserAgent()); // Call the function to get the boolean value
+        setIsAdaptive(isMobileVerByUserAgent())
+    }
+    const resetLocalTable = () => {
 
+        localStorage.removeItem("rgl");
+        // Avoid forced page reload here
+        setLayouts(JSON.parse(JSON.stringify(fetchedLayout))); // Reset layouts to the default
+        setCurrentBreakpoint('x0'); // Reset breakpoint to the default
 
-    // const changeCompactView = () => {
-    //     setIsVerticalCompact(!isVerticalCompact)
-    // }
+        // const keyToSearch = currentBreakpoint;
+        // const defaultKey = Object.keys(defaultDBposition)[0]; // Get the first key
+        // const chosenKey = defaultDBposition[keyToSearch] ? keyToSearch : defaultKey;
+        // // const chosenArr = defaultDBposition[keyToSearch] || defaultDBposition[defaultKey];
+        // const chosenObj = { [currentBreakpoint]: defaultDBposition[chosenKey] };
+        //
+        // setLayouts(chosenObj)
+        // // setLayouts(JSON.parse(JSON.stringify(fetchedLayout))); // Reset layouts to the default
+        // setCurrentBreakpoint('x0'); // Reset breakpoint to the default
+        // // refresh()                                                                         //todo fix this shit
+    }
+    const resetLocalStorage = () => {
+        if (global.localStorage) {
+            resetLocalSettings()
+            resetLocalTable()
+        }
+    };
+
+    useEffect(() => {
+
+        setIsMobileVer(isMobileVerByUserAgent()); // Call the function to get the boolean value
+        setIsAdaptive(isMobileVerByUserAgent())
+
+        fetch('/db/gird/defaultDBposition')
+            .then((response) => response.json())
+            .then((resp) => {
+                setFetchedLayout(resp.defaultDBposition)
+            })
+        // fetch('/localstorage', rgl_props, isMobileVer)
+        //     .then((response) => response.json())
+        //     .then((resp) => {
+        //         console.log(resp,'resp')
+        //         // setFetchedLayout(resp)
+        //     })
+        // console.log('fetched', fetchedLayout)
+    }, []);
+
+    const forcedMobileVersion = () => {
+        setIsMobileVer(true)
+        setIsAdaptive(true)
+        saveToLS('isMobile', true)
+        saveToLS('isAdaptive', true)
+    }
+    const forcedDesktopVersion = () => {
+        setIsMobileVer(false)
+        setIsAdaptive(true)
+        saveToLS('isMobile', false)
+        saveToLS('isAdaptive', true)
+    }
     const changeCompactType = () => {
         if (currentCompactType === 'vertical') {
             setCurrentCompactType('horizontal')
@@ -138,224 +222,15 @@ function App() {
         // "horizontal" | "vertical" | null.
 
     }
-    //todo ask about where widget must be taken from? (sidebar or menu inside of grid layout)
-    //todo save as custom, load as custom
-
-    // const resetLocalStorage = () => {
-    //     if (global.localStorage) {
-    //         global.localStorage.removeItem("rgl");
-    //         global.localStorage.removeItem("rgl_props");
-    //         // Avoid forced page reload here
-    //         setLayouts(JSON.parse(JSON.stringify(fetchedLayout))); // Reset layouts to the default
-    //         setCurrentBreakpoint('x0'); // Reset breakpoint to the default
-    //         // refresh()
-    //     }
-    // };
-    const breakpoints = () => {
-        if (isAdaptive) {
-            return isMobileVer ? {
-                galaxyY: 320 - 1,
-                galaxyS3: 360 - 1,
-                F3: 486 - 1,
-                Tab7in: 600 - 1,
-                Tab: 780 - 1,
-                // Tab2: 800 - 1,
-
-            } : {
-                phone: 360 - 1,
-                WQVGA: 480 - 1,
-                VGA: 640 - 1,
-                WVGA: 800 - 1,
-                qHD: 960 - 1,
-                XGA: 1024 - 1,
-                WXGA: 1279 - 1,
-                WXGAHD: 1366 - 1,
-                HDp: 1600 - 1,
-                FHD: 1920 - 1,
-                WQHD: 2560 - 1,
-                FourK: 3840 - 1,
-                FourKRetina: 4096 - 1,
-            }
-        }
-        // else {
-        //     const breakpoints = {x0: 0, x1: 159};
-        //     for (let i: number = 2; i <= 27; i++) {
-        //         breakpoints[`x${i}`] = breakpoints[`x${i - 1}`] + 160;
-        //     }
-        //     return breakpoints;
-        // }
-    };
-    const cols = () => {
-        if (isAdaptive) {
-            return isMobileVer ? {
-                    galaxyY: 1,
-                    galaxyS3: 2,
-                    F3: 4,
-                    Tab7in: 6,
-                    Tab: 8,
-                    // Tab2: 8,
-                } :
-                {
-                    phone: 4,
-                    WQVGA: 6,
-                    VGA: 8,
-                    WVGA: 10,
-                    qHD: 12,
-                    XGA: 13,
-                    WXGA: 16,
-                    WXGAHD: 17,
-                    HDp: 20,
-                    FHD: 24,
-                    WQHD: 32,
-                    FourK: 48,
-                    FourKRetina: 52,
-                };
-        }
-        // else {
-        //     const cols = {x0: 1};
-        //     for (let i = 1; i <= 27; i++) {
-        //         // @ts-ignore
-        //         cols[`x${i}`] = (i * 20);
-        //     }
-        //     return cols;
-        // }
-    };
-
-    const resetLocalSettings = () => {
-        setIsMobileVer(isMobileVerByUserAgent()) // Call the function to get the boolean value
-        setIsAdaptive(true)
-    }
-    const resetLocalTable = () => {
-        if (global.localStorage) {
-            localStorage.removeItem("rgl_DB");
-            // Avoid forced page reload here
-            setLayouts(fetchedDefaultLayout); // Reset layouts to the default
-            // setCurrentBreakpoint('x0'); // Reset breakpoint to the default
-        }
-        // localStorage.removeItem("rgl_DB");
-        // console.log('qwe, before set', fetchedDefaultLayout)
-        // setLayouts(fetchedDefaultLayout); // Reset layouts to the default
-        // console.log('qwe, after set', fetchedDefaultLayout)
-    }
-    const resetLocalStorage = () => {
-        if (global.localStorage) {
-            resetLocalSettings()
-            resetLocalTable()
-            localStorage.clear()
-        }
-    };
-
-
-    const saveToLS = (key, value) => {
-        if (global.localStorage) {
-            global.localStorage.setItem(
-                key,
-                JSON.stringify({
-                    value
-                })
-            );
-        }
-    };
-
-
-    useEffect(() => {
-        // setIsMobileVer(isMobileVerByUserAgent()); // Call the function to get the boolean value
-        // setIsAdaptive(isMobileVerByUserAgent())
-        // setIsAdaptive(true)         // todo remove this later
-
-        fetch('/DB')
-            .then((response) => response.json())
-            .then((response) => {
-                if (response && response.value) {
-                    setFetchedSavedLayout(JSON.parse(response.value));
-                } else {
-                    // Handle the case where response or response.value is null
-                    console.error('saved position is empty');
-                    setFetchedSavedLayout({});
-                }
-            })
-
-        fetch('/db/gird/defaultDBposition')
-            .then((response) => response.json())
-            .then((resp) => {
-                setFetchedDefaultLayout(resp.defaultDBposition)
-            })
-
-    }, []);
-    // useEffect(() => {
-    //     const layoutParams = {breakpoint: currentBreakpoint};
-    //     fetch('/localstorage?' + new URLSearchParams(layoutParams))
-    //         .then(response => {
-    //             console.log('resp123', response)
-    //             return response.json();
-    //         })
-    //         .then(data => {
-    //             console.log('Response from server:', data);
-    //             // Further processing of the response data
-    //         })
-    //         .catch(error => {
-    //             console.error('Error fetching data:', error);
-    //         });
-    // }, [currentBreakpoint]);
-
-    // console.log(fetchedDefaultLayout, fetchedSavedLayout, 'qwerty')
-
-    useEffect(() => {
-        setLayouts(
-            // storedLayouts
-            // ||
-            fetchedSavedLayout
-            // ||
-            // fetchedDefaultLayout
-        )
-    }, [fetchedSavedLayout || fetchedDefaultLayout]);
-
-    const forcedMobileVersion = () => {
-        setIsMobileVer(true)
-        setIsAdaptive(true)
-        saveToLS('isMobile', true)
-        saveToLS('isAdaptive', true)
-    }
-    const forcedDesktopVersion = () => {
-        setIsMobileVer(false)
-        setIsAdaptive(true)
-        saveToLS('isMobile', false)
-        saveToLS('isAdaptive', true)
-    }
-    const forcedFreeResize = () => {
-        setIsMobileVer(false)
-        setIsAdaptive(false)
-        saveToLS('isMobile', false)
-        saveToLS('isAdaptive', false)
-    }
-
-    if (!layouts) return null
-    // console.log("rrr", layouts)
-    return screenSize >= 320 ? (
-        <div className={'wrapper'}
-            // style={{display: "flex", flexDirection: "column"}}
-        >
-            {/*<Header/>*/}
-            {/*<div className="progressbar" style={{backgroundColor:'gray', position:"static", minHeight:'16px'}}>*/}
-            {/*    <div className="progress" style={{backgroundColor:"green", width:`${progressPercent}%`, position:'absolute'}}> &nbsp;</div>*/}
-            {/*    <div style={{position:"absolute", transform:'translate(-50,-50%)',left:'50%',}}>{progressPercent}%</div>*/}
-            {/*</div>*/}
-
-            <div className={'body'}
-                // style={{
-                //     display: 'grid',
-                //     gridTemplateColumns: '1fr 9fr',
-                // }}
-            >
-                {/*{isMobileVer === false ? <SideBar/> : null}*/}
+        return (
+        <div className={'wrapper'} style={{display: "flex", flexDirection: "column"}}>
+            <Header/>
+            <div className={'body'} style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 9fr',
+            }}>
+                <SideBar/>
                 <div>
-                    {/*<div style={{display: "flex", flexDirection: "row", justifyContent: "space-evenly"}}>*/}
-                    {/*    <div*/}
-                    {/*        style={{color: isAdaptive ? 'green' : 'red'}}>isAdaptive {isAdaptive ? 'true' : 'false'}</div>*/}
-                    {/*    <div*/}
-                    {/*        style={{color: isMobileVer ? 'green' : 'red'}}>isMobileVer {isMobileVer ? 'true' : 'false'}</div>*/}
-                    {/*</div>*/}
-
                     <div className={'settings'}
                          style={screenSize < 460 ? {flexDirection: "column"} : {flexDirection: 'row'}}>
                         <div className={'choose_device same'}>
@@ -435,30 +310,21 @@ function App() {
                             <button onClick={resetLocalStorage}><img src={resetGlobal} alt="Reset All"/></button>
                         </div>
                     </div>
-
-                    <div className={'add'}>
-
-                    </div>
-
                     <Grid
-                        // isVerticalCompact={isVerticalCompact}
                         currentCompactType={currentCompactType}
+                        // isVerticalCompact={isVerticalCompact}
                         layouts={layouts}
                         setLayouts={setLayouts}
-                        // currentBreakpoint={currentBreakpoint}
-                        // setCurrentBreakpoint={setCurrentBreakpoint}
                         breakpoints={breakpoints()}
                         cols={cols()}
                         isAdaptive={isAdaptive}
                         isMobileVer={isMobileVer}
-                        isDemo={isDemo}
-                        screenSize={screenSize}
                     />
                 </div>
 
             </div>
         </div>
-    ) : <h1 style={{display: 'flex', flex: 1,}}> This resolution is not supported </h1>
+    );
 }
 
 export default App;
