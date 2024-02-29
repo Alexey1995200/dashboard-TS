@@ -21,7 +21,6 @@ import LogBuilder from "./components/logs";
 const ReactGridLayout = WidthProvider(RGL);
 
 
-
 const Grid = ({
                   currentCompactType,
                   layouts,
@@ -39,31 +38,33 @@ const Grid = ({
     const [screenSize, setScreenSize] = useState(window.innerWidth);
 
     const breakpointsTestArr = [
-        { device: 'phone', resolution: 360 - 1, type: 'desktop' },
-        { device: 'WQVGA', resolution: 480 - 1, type: 'desktop' },
-        { device: 'VGA', resolution: 640 - 1, type: 'desktop' },
-        { device: 'WVGA', resolution: 800 - 1, type: 'desktop' },
-        { device: 'qHD', resolution: 960 - 1, type: 'desktop' },
-        { device: 'XGA', resolution: 1024 - 1, type: 'desktop' },
-        { device: 'WXGA', resolution: 1279 - 1, type: 'desktop' },
-        { device: 'WXGAHD', resolution: 1366 - 1, type: 'desktop' },
-        { device: 'HDp', resolution: 1600 - 1, type: 'desktop' },
-        { device: 'FHD', resolution: 1920 - 1, type: 'desktop' },
-        { device: 'WQHD', resolution: 2560 - 1, type: 'desktop' },
-        { device: 'FourK', resolution: 3840 - 1, type: 'desktop' },
-        { device: 'FourKRetina', resolution: 4096 - 1, type: 'desktop' },
-        { device: 'galaxyY', resolution: 320 - 1, type: 'mobile' },
-        { device: 'galaxyS3', resolution: 360 - 1, type: 'mobile' },
-        { device: 'F3', resolution: 486 - 1, type: 'mobile' },
-        { device: 'Tab7in', resolution: 600 - 1, type: 'mobile' },
-        { device: 'Tab', resolution: 780 - 1, type: 'mobile' }
+        {device: 'phone', resolution: 360 - 1, type: 'desktop'},
+        {device: 'WQVGA', resolution: 480 - 1, type: 'desktop'},
+        {device: 'VGA', resolution: 640 - 1, type: 'desktop'},
+        {device: 'WVGA', resolution: 800 - 1, type: 'desktop'},
+        {device: 'qHD', resolution: 960 - 1, type: 'desktop'},
+        {device: 'XGA', resolution: 1024 - 1, type: 'desktop'},
+        {device: 'WXGA', resolution: 1279 - 1, type: 'desktop'},
+        {device: 'WXGAHD', resolution: 1366 - 1, type: 'desktop'},
+        {device: 'HDp', resolution: 1600 - 1, type: 'desktop'},
+        {device: 'FHD', resolution: 1920 - 1, type: 'desktop'},
+        {device: 'WQHD', resolution: 2560 - 1, type: 'desktop'},
+        {device: 'FourK', resolution: 3840 - 1, type: 'desktop'},
+        {device: 'FourKRetina', resolution: 4096 - 1, type: 'desktop'},
+        {device: 'galaxyY', resolution: 320 - 1, type: 'mobile'},
+        {device: 'galaxyS3', resolution: 360 - 1, type: 'mobile'},
+        {device: 'F3', resolution: 486 - 1, type: 'mobile'},
+        {device: 'Tab7in', resolution: 600 - 1, type: 'mobile'},
+        {device: 'Tab', resolution: 780 - 1, type: 'mobile'}
     ];
 
     const getCurrentBreakpoint = (screenWidth) => {
         let arrByType
         if (isMobileVer === true) {
-            arrByType = breakpointsTestArr .filter((el) => el.type != 'desktop')
-        } else {arrByType = breakpointsTestArr .filter((el) => el.type === 'desktop')}
+            arrByType = breakpointsTestArr.filter((el) => el.type != 'desktop')
+        } else {
+            arrByType = breakpointsTestArr.filter((el) => el.type === 'desktop')
+        }
         const filteredArr = arrByType.filter((el) => el.resolution > screenWidth)
         if (filteredArr.length < 1) {
             return arrByType[arrByType.length - 1]
@@ -333,58 +334,146 @@ const Grid = ({
     //     }
     // };
 
-
+    const removeByKeyOnClick = (key) => {
+        setAllWidgets(allWidgets.filter(widget => widget.key !== key));
+    }
+    const removeAllOnClick = () => setAllWidgets([])
+    const uniqueID = () => Math.random().toString(16).slice(-4);
+    const addWidgetByKeyOnClick = (widget) => {
+        console.log(widgets, widget, 'qwe',)
+        const newWidget = {
+            ...WIDGET_TEMPLATE,
+            key: widget,
+            el: widgets[widget].el,
+            data: widgets[widget].data
+        }
+        setAllWidgets([...allWidgets, newWidget]);
+        console.log(allWidgets, 'allWidgets')
+        // setLayouts([...layouts])
+    }
+    // const test = () => {
+    //     Object.keys(widgets).map((widget) => {
+    //         const widgetEl = widgets[widget].el
+    //         const widgetKey = widgets[widget].key
+    //             return  {
+    //                 key: widgetKey,
+    //                 el: widgetEl
+    //             }
+    //         }
+    //     )
+    // }
+    console.log('test', layouts)
     return (
-        <ResponsiveGridLayout
-            ref={gridLayoutRef}
-            className={'grid_wrapper'}
-            layouts={layouts}
-            breakpoints={breakpoints}
-            cols={cols}
-            rowHeight={gridRowHeight}
-            onBreakpointChange={onBreakpointChange}
-            draggableHandle=".dragHandle"
-            margin={gridMargins}
-            isDraggable={true}
-            isResizable={true}
-            isBounded={false}
-            allowOverlap={false}
-            onLayoutChange={(layout, layouts) => onLayoutChange(layout, layouts, allWidgets)}
-            currentCompactType={currentCompactType}
-        >
-            <div key={'OverallProgress'}>
-                <OverallProgress/>
+        <div>
+            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                {Object.keys(widgets).map((widget) => {
+                    console.log(widget, 'widgettt')
+                    return (<button onClick={() => addWidgetByKeyOnClick(widget)}>{widget}</button>)
+                })}
+                <div
+                    className="remove_btn"
+                    style={{
+                        // position: "absolute",
+                        // right: "2px",
+                        // top: 0,
+                        cursor: "pointer"
+                    }}
+                    onClick={() => removeAllOnClick()}
+                >
+                    &#10006;
+                </div>
             </div>
-            <div key={'ProgressBar'}>
-                <ProgressBar/>
-            </div>
-            <div key={'LaunchDate'}>
-                <LaunchDate/>
-            </div>
-            <div key={'Risks'}>
-                <Risks/>
-            </div>
-            <div key={'Budget'}>
-                <Budget/>
-            </div>
-            <div key={'OverdueTasks'}>
-                <OverdueTasks/>
-            </div>
-            <div key={'Summary'}>
-                <Summary/>
-            </div>
-            <div key={'AvgTime'}>
-                <AvgTime/>
-            </div>
-            <div key={'UpcTasks'}>
-                <UpcTasks/>
-            </div>
-            <div key={'ProjectLogs'}>
-                <LogBuilder/>
-            </div>
+            <ResponsiveGridLayout
+                ref={gridLayoutRef}
+                className={'grid_wrapper'}
+                layouts={layouts}
+                breakpoints={breakpoints}
+                cols={cols}
+                rowHeight={gridRowHeight}
+                currentCompactType={currentCompactType}
+                onBreakpointChange={onBreakpointChange}
+                draggableHandle=".dragHandle"
+                margin={gridMargins}
+                isDraggable={true}
+                isResizable={true}
+                isBounded={false}
+                allowOverlap={false}
+                onLayoutChange={(layout, layouts) => onLayoutChange(layout, layouts, allWidgets)}
+                // preventCollision={true}
+            >
+                {/*<div key={'OverallProgress'}>*/}
+                {/*    <OverallProgress/>*/}
+                {/*</div>*/}
+                {/*<div key={'ProgressBar'}>*/}
+                {/*    <ProgressBar/>*/}
+                {/*</div>*/}
+                {/*<div key={'LaunchDate'}>*/}
+                {/*    <LaunchDate/>*/}
+                {/*</div>*/}
+                {/*<div key={'Risks'}>*/}
+                {/*    <Risks/>*/}
+                {/*</div>*/}
+                {/*<div key={'Budget'}>*/}
+                {/*    <Budget/>*/}
+                {/*</div>*/}
+                {/*<div key={'OverdueTasks'}>*/}
+                {/*    <OverdueTasks/>*/}
+                {/*</div>*/}
+                {/*<div key={'Summary'}>*/}
+                {/*    <Summary/>*/}
+                {/*</div>*/}
+                <div key={'AvgTime'}>
+                    <AvgTime/>
+                </div>
+                <div key={'UpcTasks'}>
+                    <UpcTasks/>
+                </div>
+                {/*<div key={'ProjectLogs'}>*/}
+                {/*    <LogBuilder/>*/}
+                {/*</div>*/}
+                {allWidgets.map((widget) => {
+                    const WidgetEl = widget.el
+                    return (
+                        <div
+                            className={"widget"}
+                            key={widget.key}
+                            data-grid={widget.data}
+                        >
 
-        </ResponsiveGridLayout>
-        // </div>
+                            <WidgetEl
+                                // key={widget.key}
+                                // data-grid={widget.data}
+                            />
+                            {/*<div style={{*/}
+                            {/*    background: 'gray',*/}
+                            {/*    fontSize: '24px',*/}
+                            {/*    margin: 'auto',*/}
+                            {/*    height: '100%',*/}
+                            {/*    textAlign: 'center'*/}
+                            {/*}}>*/}
+                            {/*    <div style={{*/}
+                            {/*        position: 'relative',*/}
+                            {/*        top: '50%',*/}
+                            {/*        transform: 'translate(0, -50%)'*/}
+                            {/*    }}>{widget.key}</div>*/}
+                            {/*</div>*/}
+                            <span
+                                className="remove_btn"
+                                style={{
+                                    position: "absolute",
+                                    right: "2px",
+                                    top: 0,
+                                    cursor: "pointer"
+                                }}
+                                onClick={() => removeByKeyOnClick(widget.key)}
+                            >
+                            &#10006;
+                        </span>
+                        </div>
+                    )
+                })}
+            </ResponsiveGridLayout>
+        </div>
     );
 };
 

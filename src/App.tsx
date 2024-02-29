@@ -62,7 +62,7 @@ function App() {
 
 
     const [isMobileVer, setIsMobileVer] = useState(() => {
-        const isMobile = getFromLS('rgl_props', 'isMobileVer')
+        const isMobile = getFromLS('isMobile', 'value')
         return isMobile ? isMobile : false
 
         // const localIsMobileVerState = getFromLS('rgl_props',`isMobileVer`)
@@ -71,25 +71,21 @@ function App() {
         // else return false
     })
 
-    const [isAdaptive, setIsAdaptive] = useState(() => {
-        const localAdaptiveState = getFromLS('rgl_props', `isAdaptive`)
-        const localIsMobileVerState = getFromLS('rgl_props', `isMobileVer`)
-        if (localAdaptiveState) return localAdaptiveState
-        else if (localIsMobileVerState) return localIsMobileVerState
-        else return false
-    })
+    const [isAdaptive, setIsAdaptive] = useState(true)
 
     // const [layouts, setLayouts] = useState(() => {
     //     const storedLayouts = getFromLS('rgl',`savedPosition`);
     //     return storedLayouts || fetchedLayout || JSON.parse(JSON.stringify(''));
     // });
     const [layouts, setLayouts] = useState(() => {
-        const storedLayouts = getFromLS('rgl', `savedPosition`);
-        console.log(storedLayouts, 'stored')
+        const storedLayouts = getFromLS('rgl_DB', `value`);
         if (!!storedLayouts) return storedLayouts
         else if (fetchedLayout) return JSON.parse(JSON.stringify(fetchedLayout))
         else return JSON.parse(JSON.stringify(''));
     });
+    useEffect(() => {
+        console.log('layouts', layouts)
+    }, [layouts]);
     const changeCompactView = () => {
         setIsVerticalCompact(!isVerticalCompact)
     }
@@ -108,10 +104,6 @@ function App() {
             useragent.toLowerCase().includes('mobile')
         );
     };
-    const changeAdaptiveState = () => {
-        setIsAdaptive(!isAdaptive)
-        console.log('dbg', isAdaptive)
-    }
     const refresh = () => window.location.reload(true)
     // const resetLocalStorage = () => {
     //     if (global.localStorage) {
@@ -179,7 +171,6 @@ function App() {
     useEffect(() => {
 
         setIsMobileVer(isMobileVerByUserAgent()); // Call the function to get the boolean value
-        setIsAdaptive(isMobileVerByUserAgent())
 
         fetch('/db/gird/defaultDBposition')
             .then((response) => response.json())
