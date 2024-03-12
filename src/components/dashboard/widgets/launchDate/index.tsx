@@ -1,5 +1,5 @@
 import './styles.scss'
-import {finish} from "../../assets/svg";
+import {finish} from "../../../../assets/svg";
 import {useEffect, useRef, useState} from "react";
 const LaunchDate = ({}) => {
     const [launchDateScale, setLaunchDateScale]=useState(1)

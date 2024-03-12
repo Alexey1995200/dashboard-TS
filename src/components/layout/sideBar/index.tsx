@@ -1,9 +1,13 @@
 import './styles.scss'
-
-const SideBar = () => {
-
-    return(
+interface ISideBar {
+    changeSideBarVisibility:()=>void
+}
+const SideBar = ({
+                     changeSideBarVisibility
+                 }:ISideBar) =>
+    (
         <div className="sideBar">
+            <div className={'sideBar__header'}><button onClick={changeSideBarVisibility} className="remove_btn">&#10006;</button></div>
             <ul className="sideBar__links">
                 <li className="sideBar__link">Dashboard</li>
                 <li className="sideBar__link">User Profile</li>
@@ -29,5 +33,4 @@ const SideBar = () => {
             </ul>
         </div>
     )
-}
 export default SideBar

@@ -1,15 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-<svg
-        width="800px"
-        height="800px"
-        viewBox="0 -2 24 24"
-        id="meteor-icon-kit__solid-desktop"
-        fill="unset"
-        xmlns="http://www.w3.org/2000/svg">
-    <path
-            fill="currentColor"
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M2 0H22C23.1046 0 24 0.89543 24 2V15C24 16.1046 23.1046 17 22 17H2C0.89543 17 0 16.1046 0 15V2C0 0.89543 0.89543 0 2 0zM16 18C16.5523 18 17 18.4477 17 19C17 19.5523 16.5523 20 16 20H8C7.44772 20 7 19.5523 7 19C7 18.4477 7.44772 18 8 18H16z"
-    />
+<svg width="800.000000" height="800.000000" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<desc>
+			Created with Pixso.
+	</desc>
+	<defs>
+		<clipPath id="clip5_17">
+			<rect id="Desktop" width="800.000000" height="800.000000" fill="white" fill-opacity="0"/>
+		</clipPath>
+	</defs>
+	<rect id="Desktop" width="800.000000" height="800.000000" fill="#FFFFFF" fill-opacity="0"/>
+	<g clip-path="url(#clip5_17)">
+		<path id="Rectangle 2" d="M128 69L672 69C742.692 69 800 126.308 800 197L800 509C800 579.692 742.692 637 672 637L128 637C57.3076 637 0 579.692 0 509L0 197C0 126.308 57.3076 69 128 69Z" fill="currentColor" fill-opacity="1.000000" fill-rule="evenodd"/>
+		<path id="Rectangle 2" d="M128 69L672 69C742.692 69 800 126.308 800 197L800 509C800 579.692 742.692 637 672 637L128 637C57.3076 637 0 579.692 0 509L0 197C0 126.308 57.3076 69 128 69ZM128 133L672 133Q685.255 133 696.568 137.686Q707.882 142.373 717.255 151.745Q726.627 161.118 731.314 172.432Q736 183.745 736 197L736 509Q736 522.255 731.314 533.568Q726.627 544.882 717.255 554.255Q707.882 563.627 696.568 568.314Q685.255 573 672 573L128 573Q114.745 573 103.432 568.314Q92.1178 563.627 82.7452 554.255Q73.3726 544.882 68.6863 533.569Q64 522.255 64 509L64 197Q64 183.745 68.6863 172.432Q73.3726 161.118 82.7452 151.745Q92.1177 142.373 103.431 137.686Q114.745 133 128 133Z" fill="#000000" fill-opacity="1.000000" fill-rule="evenodd"/>
+		<rect id="Rectangle 3" x="231.000000" y="672.000000" rx="32.000000" width="338.000000" height="64.000000" fill="#000000" fill-opacity="1.000000"/>
+	</g>
 </svg>

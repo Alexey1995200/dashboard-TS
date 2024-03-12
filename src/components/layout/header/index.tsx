@@ -1,14 +1,26 @@
 import './styles.scss'
-import {auth, react, user} from "../../assets/svg";
-import {colorFilter} from "../../App";
+import {auth, Burger, react, user} from "../../../assets/svg";
+import {colorFilter} from "../../dashboard";
 
-const Header = () => {
+interface ISideBar {
+    changeSideBarVisibility:()=>void
+}
+
+const Header = ({
+                    changeSideBarVisibility
+                }:ISideBar) => {
 
 
     
     return (
         <div className={'header__wrapper'}>
+
             <nav className={'navBar__wrapper'}>
+                <Burger
+                    color={'white'}
+                    style={{margin:'auto 8px'}}
+                    onClick={changeSideBarVisibility}
+                />
                 <img src={react} alt="LOGO" className={'header__logo'} style={colorFilter.green}/>
                 <ul className="navBar">
                     <li className="navBar__link">Dashboard</li>
@@ -20,11 +32,11 @@ const Header = () => {
 
             </nav>
             <div className={'account'}>
-                <img src={user} alt="USER"/>
-                <img src={auth} alt="AUTH" style={{padding:'4px'}}/>
+
+                <img src={auth} alt="AUTH" style={{margin:'4px', padding:'4px'}}/>
                 <div className={'account__info'}>
                     <span className={'info__name'}>
-                    User Placeholder
+                    UserName Placeholder
                         {/*{user.name}*/}
                 </span>
                     <span className={'info__position'}>
@@ -32,6 +44,7 @@ const Header = () => {
                         {/*{user.position}*/}
                 </span>
                 </div>
+                <img src={user} alt="USER" style={{margin:'4px'}}/>
             </div>
         </div>
     )

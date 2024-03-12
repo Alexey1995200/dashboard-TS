@@ -1,7 +1,6 @@
 import React, {} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './clean_style.css'
 import './normalize.css'
@@ -10,7 +9,9 @@ import {
     QueryClientProvider,
     useQuery,
 } from '@tanstack/react-query'
-
+import Dashboard from "./components/dashboard";
+import Layout from "./components/layout";
+import './global.scss'
 
 const queryClient = new QueryClient()
 
@@ -29,7 +30,7 @@ enableMocking().then(() => {
     root.render(
         <QueryClientProvider client={queryClient}>
             <React.StrictMode>
-                <App/>
+                <Layout/>
             </React.StrictMode>
         </QueryClientProvider>
     );

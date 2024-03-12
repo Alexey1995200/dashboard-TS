@@ -1,8 +1,8 @@
-import {comment, copy, priority, tag, update, alert, checked} from "../../assets/svg";
+import {comment, copy, priority, tag, update, alert, checked} from "../../../../assets/svg";
 import './styles.scss'
 import {format, getTime} from "date-fns";
 import {useEffect, useRef, useState} from "react";
-import {users} from "../../DB/logs";
+import {users} from "../../../../DB/logs";
 
 
 interface ILog {

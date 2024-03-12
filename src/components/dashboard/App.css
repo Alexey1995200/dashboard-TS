@@ -6,7 +6,7 @@
   gap: 16px;
   background-color: lightgray;
   padding: 16px 16px 100px 16px;
-
+  min-height: 320px;
 }
 
 @keyframes App-logo-spin {

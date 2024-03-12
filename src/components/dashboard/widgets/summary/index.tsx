@@ -1,7 +1,7 @@
 import {format} from "date-fns";
 import './styles.scss'
 import {useEffect, useRef, useState} from "react";
-import {finishTimestampMS} from "../../DB/db";
+import {finishTimestampMS} from "../../../../DB/db";
 import {use} from "msw/lib/core/utils/internal/requestHandlerUtils";
 
 // const isProjectOnTime = () => {

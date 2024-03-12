@@ -140,19 +140,31 @@ export const handlers = [
     // })),
 
     http.get('/localstorage', ((key, value) => {
-        console.log('lstorage', key, value)
         return (localStorage.getItem(key))?.[value]
     })),
 
 
     http.get('/DB', () => {
+        if (localStorage.getItem('rgl_DB')) {
             return HttpResponse.json(localStorage.getItem('rgl_DB'))
+        } else return HttpResponse.error()
+        },
+    ),
+    http.get('/WIDGETS', () => {
+        if (localStorage.getItem('rgl_widgets')) {
+            // return HttpResponse.json(localStorage.getItem('rgl_widgets'))
+            const rgl_widgets = localStorage.getItem('rgl_widgets')
+            const regex = /null/g
+            const fix = rgl_widgets.replace('null', '"Infinity"')
+            console.log('fixed', fix, 'unfixed', rgl_widgets)
+            return HttpResponse.json(fix)
+        } else return new HttpResponse(null, { status: 404 })
         },
     ),
 
     http.put('/DB_upload', async ({request},) => {
-        console.log('123qwe, handler')
         const data = await request.json()
+        console.log('data', data)
         if (Object.keys(data).some(key => resolutionNamesCheck(key))) {
             global.localStorage.setItem(
                 "rgl_DB",

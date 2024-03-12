@@ -1,6 +1,6 @@
 import {ConfigProvider, Progress} from "antd";
 import './styles.scss'
-import {waiting} from "../../assets/svg";
+import {waiting} from "../../../../assets/svg";
 import {useEffect, useState} from "react";
 
 interface IProgBar {
