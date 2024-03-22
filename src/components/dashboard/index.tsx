@@ -2,80 +2,15 @@
 import Grid from "./grid/index";
 import React, {useEffect, useRef, useState} from "react";
 import {
-    compactHorizontal, compactNone,
-    compactVertical, Desktop,
-    desktop, Mobile,
-    mobile,
-    reset, resetGlobal,
-    resetSettings,
-    resetTable,
-    resize
+    compactHorizontal, compactNone, compactVertical,
+    Desktop, Mobile,
+    resetGlobal, resetSettings, resetTable,
 } from "./../../assets/svg";
-import Layout from "./components/layout";
-import {gridMargins, gridRowHeight} from "./grid/const";
-import OverallProgress from "./widgets/overallProgress";
-import ProgressBar from "./widgets/progressBar";
-import LaunchDate from "./widgets/launchDate";
-import Risks from "./widgets/risks";
-import Budget from "./widgets/budget";
-import OverdueTasks from "./widgets/overdueTasks";
-import Summary from "./widgets/summary";
-import AvgTime from "./widgets/avgTime";
-import UpcTasks from "./widgets/upcomingDeadlines";
-import LogBuilder from "./widgets/logs";
-
-const colorFilter = {
-    green: {
-        filter: 'brightness(0) saturate(100%) invert(43%) sepia(8%) saturate(2413%) hue-rotate(88deg) brightness(106%) contrast(102%)',
-    },
-    red: {
-        filter: 'brightness(0) saturate(100%) invert(26%) sepia(57%) saturate(6032%) hue-rotate(340deg) brightness(93%) contrast(85%)',
-    }
-};
-
-const getFromLS = (key: string) => {
-    if (localStorage) {
-        try {
-            // @ts-ignore
-            return JSON.parse(localStorage.getItem(key)).value;
-        } catch (e) {
-            return null
-        }
-    }
-};
-const useragent = window.navigator.userAgent
-const isMobileVerByUserAgent = () => {
-    return (
-        useragent.toLowerCase().includes('ipad') ||
-        useragent.toLowerCase().includes('iphone') ||
-        useragent.toLowerCase().includes('phone') ||
-        useragent.toLowerCase().includes('android') ||
-        useragent.toLowerCase().includes('mobile')
-    );
-}
-const breakpointsArr = [
-    {device: 'phone', resolution: 360 - 1, type: 'desktop'},
-    {device: 'WQVGA', resolution: 480 - 1, type: 'desktop'},
-    {device: 'VGA', resolution: 640 - 1, type: 'desktop'},
-    {device: 'WVGA', resolution: 800 - 1, type: 'desktop'},
-    {device: 'qHD', resolution: 960 - 1, type: 'desktop'},
-    {device: 'XGA', resolution: 1024 - 1, type: 'desktop'},
-    {device: 'WXGA', resolution: 1279 - 1, type: 'desktop'},
-    {device: 'WXGAHD', resolution: 1366 - 1, type: 'desktop'},
-    {device: 'HDp', resolution: 1600 - 1, type: 'desktop'},
-    {device: 'FHD', resolution: 1920 - 1, type: 'desktop'},
-    {device: 'WQHD', resolution: 2560 - 1, type: 'desktop'},
-    {device: 'FourK', resolution: 3840 - 1, type: 'desktop'},
-    {device: 'FourKRetina', resolution: 4096 - 1, type: 'desktop'},
-    {device: 'galaxyY', resolution: 320 - 1, type: 'mobile'},
-    {device: 'galaxyS3', resolution: 360 - 1, type: 'mobile'},
-    {device: 'F3', resolution: 486 - 1, type: 'mobile'},
-    {device: 'Tab7in', resolution: 600 - 1, type: 'mobile'},
-    {device: 'Tab', resolution: 780 - 1, type: 'mobile'}
-];
+import CreateWidget from "./create";
+import {getFromLS, isMobileVerByUserAgent} from "./utils";
+import {breakpoints, calculateW, cols, screenWidth, widgets, WIDGETS_KEYS} from "./const";
 
 const Dashboard = () => {
-    const screenWidth = window.innerWidth
     const [currentCompactType, setCurrentCompactType]: string = useState('vertical')
     const [fetchedLayout, setFetchedLayout] = useState()
     const [isMobileVer, setIsMobileVer] = useState(() => {
@@ -85,72 +20,8 @@ const Dashboard = () => {
     const [isAdaptive, setIsAdaptive] = useState(true)
     const [layouts, setLayouts] = useState();
     const [allWidgets, setAllWidgets] = useState([])
+
     const [widgetList, setWidgetList] = useState([])
-    const getCurrentBreakpoint = () => {
-        let arrByType
-        if (isMobileVer === true) {
-            arrByType = breakpointsArr.filter((el) => el.type != 'desktop')
-        } else {
-            arrByType = breakpointsArr.filter((el) => el.type === 'desktop')
-        }
-        const filteredArr = arrByType.filter((el) => el.resolution > screenWidth - 1)
-        console.log(filteredArr, 'qweasd', screenWidth)
-        if (filteredArr.length < 1) {
-            return arrByType[arrByType.length - 1]
-        } else return filteredArr[0].device
-    }
-    const currentBreakpoint = getCurrentBreakpoint()
-
-    const breakpoints = () => {
-        return isMobileVer ? {
-            galaxyY: 320 - 1,
-            galaxyS3: 360 - 1,
-            F3: 486 - 1,
-            Tab7in: 600 - 1,
-            Tab: 780 - 1,
-            // Tab2: 800 - 1,
-
-        } : {
-            phone: 360 - 1,
-            WQVGA: 480 - 1,
-            VGA: 640 - 1,
-            WVGA: 800 - 1,
-            qHD: 960 - 1,
-            XGA: 1024 - 1,
-            WXGA: 1279 - 1,
-            WXGAHD: 1366 - 1,
-            HDp: 1600 - 1,
-            FHD: 1920 - 1,
-            WQHD: 2560 - 1,
-            FourK: 3840 - 1,
-            FourKRetina: 4096 - 1,
-        }
-    }
-    const cols = () => {
-        return isMobileVer ? {
-                galaxyY: 1,
-                galaxyS3: 2,
-                F3: 4,
-                Tab7in: 6,
-                Tab: 8,
-                // Tab2: 8,
-            } :
-            {
-                phone: 4,
-                WQVGA: 6,
-                VGA: 8,
-                WVGA: 10,
-                qHD: 12,
-                XGA: 13,
-                WXGA: 16,
-                WXGAHD: 17,
-                HDp: 20,
-                FHD: 24,
-                WQHD: 32,
-                FourK: 48,
-                FourKRetina: 52,
-            }
-    }
 
     const resetLocalSettings = () => {
         setIsMobileVer(isMobileVerByUserAgent()) // Call the function to get the boolean value
@@ -257,178 +128,11 @@ const Dashboard = () => {
             console.error('Error:', error);
         }
     };
-    // const breakpointValue = breakpoints()[currentBreakpoint];
-    const calculateH = (expectedH) => ((expectedH + gridMargins[1]) / (gridRowHeight + gridMargins[1]))
-    // const calculateW = (expectedWidth) => (expectedWidth + gridMargins[0]) / ((screenSize - (gridMargins[0] * (cols[currentBreakpoint] - 1))) / cols[currentBreakpoint] + gridMargins[0]);
-    const calculateW = (expectedW) => (expectedW + gridMargins[0]) / (parseFloat((breakpoints()[currentBreakpoint] - (gridMargins[0] * (cols()[currentBreakpoint]))) / cols()[currentBreakpoint]) + gridMargins[0])  //don't give exact width, but pretty close
-    console.log('qweasdzxc', breakpoints()[currentBreakpoint], cols()[currentBreakpoint])
-    const WIDGET_TEMPLATE = {
-        key: '',
-        el: <></>
-    }
-    const WIDGETS_KEYS = {
-        OverallProgress: 'OverallProgress',
-        ProgressBar: 'ProgressBar',
-        LaunchDate: 'LaunchDate',
-        Risks: 'Risks',
-        Budget: 'Budget',
-        OverdueTasks: 'OverdueTasks',
-        Summary: 'Summary',
-        AvgTime: 'AvgTime',
-        UpcTasks: 'UpcTasks',
-        ProjectLogs: 'ProjectLogs'
-    };
 
-    const widgets = {
-        [WIDGETS_KEYS.OverallProgress]:
-            {
-                key: WIDGETS_KEYS.OverallProgress,
-                el: OverallProgress,
-                data: {
-                    i: WIDGETS_KEYS.OverallProgress,
-                    w: Math.ceil(calculateW(120)),
-                    h: Math.ceil(calculateH(120)),
-                    minH: Math.ceil(calculateH(90)),
-                    minW: Math.ceil(calculateW(100)),
-                    x: 0,
-                    y: Infinity
-                }
-            },
-        [WIDGETS_KEYS.ProgressBar]:
-            {
-                key: WIDGETS_KEYS.ProgressBar,
-                el: ProgressBar,
-                data: {
-                    i: WIDGETS_KEYS.ProgressBar,
-                    w: Math.ceil(calculateW(900)),
-                    h: Math.ceil(calculateH(120)),
-                    minH: Math.ceil(calculateH(110)),
-                    minW: Math.ceil(calculateW(320)),
-                    x: 0,
-                    y: Infinity
-                }
-            },
-        [WIDGETS_KEYS.LaunchDate]:
-            {
-                key: WIDGETS_KEYS.LaunchDate,
-                el: LaunchDate,
-                data: {
-                    i: WIDGETS_KEYS.LaunchDate,
-                    w: Math.ceil(calculateW(120)),
-                    h: Math.ceil(calculateH(120)),
-                    minH: Math.ceil(calculateH(120)),
-                    minW: Math.ceil(calculateW(120)),
-                    x: 0,
-                    y: Infinity
-                }
-            },
-        [WIDGETS_KEYS.Risks]:
-            {
-                key: WIDGETS_KEYS.Risks,
-                el: Risks,
-                data: {
-                    i: WIDGETS_KEYS.Risks,
-                    w: Math.ceil(calculateW(120)),
-                    h: Math.ceil(calculateH(120)),
-                    minH: Math.ceil(calculateH(120)),
-                    minW: Math.ceil(calculateW(120)),
-                    x: 0,
-                    y: Infinity
-                }
-            },
-        [WIDGETS_KEYS.Budget]:
-            {
-                key: WIDGETS_KEYS.Budget,
-                el: Budget,
-                data: {
-                    i: WIDGETS_KEYS.Budget,
-                    w: Math.ceil(calculateW(386)),
-                    h: Math.ceil(calculateH(164)),
-                    minH: Math.ceil(calculateH(164)), maxH: Math.ceil(calculateH(164)),
-                    minW: Math.ceil(calculateW(386)),
-                    x: 0,
-                    y: Infinity
-                }
-            },
-        [WIDGETS_KEYS.OverdueTasks]:
-            {
-                key: WIDGETS_KEYS.OverdueTasks,
-                el: OverdueTasks,
-                data: {
-                    i: WIDGETS_KEYS.OverdueTasks,
-                    w: Math.ceil(calculateW(386)),
-                    h: Math.ceil(calculateH(164)),
-                    minH: Math.ceil(calculateH(120)),
-                    minW: Math.ceil(calculateW(275)),
-                    x: 0,
-                    y: Infinity
-                }
-            },
-        [WIDGETS_KEYS.Summary]:
-            {
-                key: WIDGETS_KEYS.Summary,
-                el: Summary,
-                data: {
-                    i: WIDGETS_KEYS.Summary,
-                    w: Math.ceil(calculateW(120)),
-                    h: Math.ceil(calculateH(120)),
-                    minH: Math.ceil(calculateH(120)),
-                    minW: Math.ceil(calculateW(120)),
-                    x: 0,
-                    y: Infinity
-                }
-            },
-        [WIDGETS_KEYS.AvgTime]:
-            {
-                key: WIDGETS_KEYS.AvgTime,
-                el: AvgTime,
-                data: {
-                    i: WIDGETS_KEYS.AvgTime,
-                    w: Math.ceil(calculateW(276)), h: calculateH(164),
-                    minW: Math.ceil(calculateW(386)), maxW: calculateW(450),
-                    minH: calculateH(164), maxH: calculateH(200),
-                    isResizable: false,
-                    x: 0,
-                    y: Infinity
-                }
-            },
-        [WIDGETS_KEYS.UpcTasks]:
-            {
-                key: WIDGETS_KEYS.UpcTasks,
-                el: UpcTasks,
-                data: {
-                    i: WIDGETS_KEYS.UpcTasks,
-                    w: Math.ceil(calculateW(386)),
-                    h: Math.ceil(calculateH(164)),
-                    minH: Math.ceil(calculateH(120)),
-                    minW: Math.ceil(calculateW(275)),
-                    x: 0,
-                    y: Infinity
-                }
-            },
-        [WIDGETS_KEYS.ProjectLogs]:
-            {
-                key: WIDGETS_KEYS.ProjectLogs,
-                el: LogBuilder,
-                data: {
-                    i: WIDGETS_KEYS.ProjectLogs,
-                    w: Math.ceil(calculateW(186)),
-                    h: Math.ceil(calculateH(336)),
-                    minH: Math.ceil(calculateH(240)),
-                    minW: Math.ceil(calculateW(149)),
-                    x: 0,
-                    y: Infinity
-                }
-            },
-        [WIDGETS_KEYS.AvgTime]:
-            {
-                key: WIDGETS_KEYS.AvgTime,
-                el: AvgTime
-            },
-    }
 
     const handleLayoutChange = (layout, layouts) => {
         if (allWidgets.length > 0) {
+            console.log('allWidgets', allWidgets)
             uploadRGLData(layouts)
             uploadRGLData(allWidgets)
             // saveToLS('savedPosition', layouts);
@@ -445,7 +149,6 @@ const Dashboard = () => {
 
     const addWidgetByKeyOnClick = (widget) => {
         const newWidget = {
-            ...WIDGET_TEMPLATE,
             key: widget,
             el: widgets[widget].el,
             data: widgets[widget].data
@@ -453,6 +156,20 @@ const Dashboard = () => {
         setAllWidgets([...allWidgets, newWidget]);
         // setLayouts([...layouts])
     }
+    // const widgetsFixed = () => {
+    //     let arr = null
+    //     widgets[WIDGETS_KEYS].map((widget) => {
+    //         // console.log('qweasdzxc', widget[WIDGETS_KEYS]
+    //         const newWidget = {
+    //             key: widget,
+    //             el: widgets[widget].el,
+    //             data: widgets[widget].data
+    //         }
+    //         arr.push(newWidget)
+    //         // .el=<${WIDGETS_KEYS.OverallProgress}/>
+    //     })
+    //     console.log('qweasdzxc', arr)
+    // }
 
 // if (!layouts) return null
     if (screenWidth > 320) {
@@ -499,19 +216,38 @@ const Dashboard = () => {
                         </button>
                     </div>
                 </div>
-                {layouts ? (
+                <CreateWidget
+                    widgets={widgets}
+                />
+                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <div
+                        className="remove_btn"
+                        onClick={() => null}
+                    >
+                        DEBUG
+                    </div>
+                    {Object.keys(widgets).map((widgetKey) => {
+                        return (<button
+                            onClick={() => addWidgetByKeyOnClick(widgetKey)}>{widgetKey}</button>)
+                    })}
+                    <div
+                        className="remove_btn"
+                        onClick={() => removeAllOnClick()}
+                    >
+                        &#10006;
+                    </div>
+                </div>
+                {/*{layouts ? (*/}
                     <Grid
                         currentCompactType={currentCompactType}
                         layouts={layouts}
                         setLayouts={setLayouts}
                         allWidgets={allWidgets}
                         setAllWidgets={setAllWidgets}
-                        currentBreakpoint={currentBreakpoint}
-                        breakpoints={breakpoints()}
-                        cols={cols()}
+                        breakpoints={breakpoints(isMobileVer)}
+                        cols={cols(isMobileVer)}
                         isAdaptive={isAdaptive}
                         isMobileVer={isMobileVer}
-                        screenSize={screenWidth}
                         widgetList={widgetList}
                         removeByKeyOnClick={removeByKeyOnClick}
                         removeAllOnClick={removeAllOnClick}
@@ -519,9 +255,9 @@ const Dashboard = () => {
                         onLayoutChange={handleLayoutChange}
                         widgets={widgets}
                     />
-                ) : (
-                    <div>There's no widgets added</div>
-                )}
+                {/*) : (*/}
+                {/*    <div style={{margin: "auto", fontSize: '32px', textAlign: "center"}}>There's no widgets added</div>*/}
+                {/*)}*/}
 
             </div>
         )
@@ -530,4 +266,3 @@ const Dashboard = () => {
     }
 }
 export default Dashboard;
-export {colorFilter}

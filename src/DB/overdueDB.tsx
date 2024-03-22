@@ -8,7 +8,7 @@ let deadlineTimestamp: number = dealine.getTime();
 const overTasks = [
     {
         task: 'status upd for board',
-        deadline: format(new Date(deadlineTimestamp = (localDate.getTime() + 1000 * 60 * 60 * 24)), "dd.MM.yyyy"),
+        deadline: format(new Date(deadlineTimestamp = (localDate.getTime() + 1000 * 60 * 60 * 24)), "dd.MM.yyyy zz"),
         days: Math.ceil((deadlineTimestamp - localDateTimestamp) / (1000 * 60 * 60 * 24)),
         employee: 'Paula',
         employeeId: 0,

@@ -67,11 +67,10 @@ const LOG_DESCRIPTION_COMPONENTS_MAPPING = {
     [LOG_TYPES.FINISHED]: FinishedTask,
 }
 
-const LogBuilder = () => {
+const ProjectLogs = () => {
     const [logs, setLogs] = useState([])
     const [user, setUser] = useState([])
     const [isAllLogsShown, setIsAllLogsShown] = useState(false);
-    // console.log('preresp', logs)
     const showAllLogs = () => {
         setIsAllLogsShown(!isAllLogsShown);
     };
@@ -173,11 +172,10 @@ const LogBuilder = () => {
 
                 </div>
             </div>
-            {(logs.length > 0) ?
+            {(logs.length > 0) &&
                 <div onClick={showAllLogs} className={'logs__button'}>
                     {isAllLogsShown ? 'Show Last 3 Logs' : 'View All Logs'}
                 </div>
-                : <div/>
             }
         </div>)
 }
@@ -193,4 +191,4 @@ const LogBuilder = () => {
 //
 
 
-export default LogBuilder
+export default ProjectLogs

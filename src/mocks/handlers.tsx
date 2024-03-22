@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {delay, http, HttpResponse} from 'msw'
 import {finishDate, finishTimestampMS, mainColors, summDB} from '../DB/db'
 import {percentage, tasks} from "../DB/progressDB";
@@ -7,17 +6,9 @@ import {budgetData, overBudgetPercent} from "../DB/budgetDB";
 import {upcTasks} from "../DB/upcDeadlinesDB";
 import {logs, users} from "../DB/logs";
 import {defaultDBposition} from "../DB/gridDB";
+import {resolutionNamesCheck} from "../components/dashboard/utils";
 
-const resolutionNamesCheck = (some) => {
-    const resolutionNames = ['phone', 'WQVGA', 'VGA', 'WVGA', 'qHD', 'XGA', 'WXGA', 'WXGAHD', 'HDp', 'FHD', 'WQHD', 'FourK', 'FourKRetina', 'galaxyY', 'galaxyS3', 'F3', 'Tab7in', 'Tab', 'Tab2']
-    return resolutionNames.includes(some)
-}
-
-const widgetNamesCheck = (some) => {
-    const widgetNames = ['OverallProgress', 'ProgressBar', 'LaunchDate', 'Risks', 'Budget', 'OverdueTasks', 'Summary', 'AvgTime', 'UpcTasks', 'ProjectLogs'];
-    return widgetNames.includes(some);
-}
-
+// @ts-ignore
 export const handlers = [
 
     http.get('/db/colors', async () => {
@@ -122,7 +113,9 @@ export const handlers = [
             defaultDBposition
         })
     }),
+    //@ts-ignore
     http.get('/localstorage?', async ({request}) => {
+        //@ts-ignore
         const searchUrl = ('lstorage?', request.url)
         const regex = /[?&]([^=#]+)=([^&#]*)/g;
         console.log('lst', searchUrl.match(regex))
@@ -139,10 +132,11 @@ export const handlers = [
     //     // return json.savedPosition[breakpoint] || [Object.keys(json.savedPosition)[0]];
     // })),
 
-    http.get('/localstorage', ((key, value) => {
+    //@ts-ignore
+    http.get('/localstorage', ((key:string, value:string) => {
+        //@ts-ignore
         return (localStorage.getItem(key))?.[value]
     })),
-
 
     http.get('/DB', () => {
         if (localStorage.getItem('rgl_DB')) {
@@ -154,38 +148,42 @@ export const handlers = [
         if (localStorage.getItem('rgl_widgets')) {
             // return HttpResponse.json(localStorage.getItem('rgl_widgets'))
             const rgl_widgets = localStorage.getItem('rgl_widgets')
-            const regex = /null/g
-            const fix = rgl_widgets.replace('null', '"Infinity"')
-            console.log('fixed', fix, 'unfixed', rgl_widgets)
-            return HttpResponse.json(fix)
-        } else return new HttpResponse(null, { status: 404 })
+            if (!!rgl_widgets){
+                const regex = /null/g
+                const fix = rgl_widgets.replace('null', '"Infinity"')
+                console.log('fixed', fix, 'unfixed', rgl_widgets)
+                return HttpResponse.json(fix)
+            }
+        } else return new HttpResponse(null, { status: 418 })
         },
     ),
 
     http.put('/DB_upload', async ({request},) => {
         const data = await request.json()
-        console.log('data', data)
-        if (Object.keys(data).some(key => resolutionNamesCheck(key))) {
-            global.localStorage.setItem(
-                "rgl_DB",
-                JSON.stringify({
-                    "value":
-                    data
-                })
-            );
-        }
-        else
+        if (!!data){
+            console.log('handler DB_upl used if')
+            if (Object.keys(data).some(key => resolutionNamesCheck(key))) {
+                global.localStorage.setItem(
+                    "rgl_DB",
+                    JSON.stringify({
+                        "value":
+                        data
+                    })
+                );
+            }
+            else
+                console.log('handler DB_upl used else')
             // if (Object.keys(data).some(key => widgetNamesCheck(key)))
             {
-            global.localStorage.setItem(
-                "rgl_widgets",
-                JSON.stringify({
-                    "value":
-                    data
-                })
-            );
-        }
-
+                global.localStorage.setItem(
+                    "rgl_widgets",
+                    JSON.stringify({
+                        "value":
+                        data
+                    })
+                );
+            }
+        } else return new HttpResponse(null, { status: 418 })
     })
 
 // return JSON.parse(global.localStorage.getItem(key))?.[value] || null;

@@ -1,6 +1,6 @@
 import './styles.scss'
 import {auth, Burger, react, user} from "../../../assets/svg";
-import {colorFilter} from "../../dashboard";
+import {colorFilter} from "../../dashboard/const";
 
 interface ISideBar {
     changeSideBarVisibility:()=>void
@@ -10,8 +10,6 @@ const Header = ({
                     changeSideBarVisibility
                 }:ISideBar) => {
 
-
-    
     return (
         <div className={'header__wrapper'}>
 

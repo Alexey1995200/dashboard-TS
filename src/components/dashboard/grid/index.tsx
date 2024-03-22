@@ -1,9 +1,9 @@
 //@ts-nocheck
-import {useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import RGL, {Responsive, WidthProvider} from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import './grid.css'
+import './styles.css'
 import OverallProgress from './../widgets/overallProgress'
 import ProgressBar from "./../widgets/progressBar";
 import LaunchDate from "./../widgets/launchDate";
@@ -13,8 +13,8 @@ import OverdueTasks from "./../widgets/overdueTasks";
 import Summary from "./../widgets/summary";
 import AvgTime from "./../widgets/avgTime";
 import UpcTasks from "./../widgets/upcomingDeadlines";
-import LogBuilder from "./../widgets/logs";
-import {gridMargins, gridRowHeight} from "./const";
+import ProjectLogs from "./../widgets/logs";
+import {gridMargins, gridRowHeight} from "./../const";
 const ReactGridLayout = WidthProvider(RGL);
 
 // {
@@ -72,17 +72,6 @@ const Grid = ({
 
     return (
         <div>
-            <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                {Object.keys(widgets).map((widget) => {
-                    return (<button onClick={() => addWidgetByKeyOnClick(widget)}>{widget}</button>)
-                })}
-                <div
-                    className="remove_btn"
-                    onClick={() => removeAllOnClick()}
-                >
-                    &#10006;
-                </div>
-            </div>
             <ResponsiveGridLayout
                 ref={gridLayoutRef}
                 className={'grid_wrapper'}

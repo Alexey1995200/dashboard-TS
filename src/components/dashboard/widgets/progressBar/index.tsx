@@ -22,7 +22,7 @@ const task: ITasks[] = [{
 const ProgressBar = () => {
     const [colors, setColors] = useState({})
     const [percentage, setPercentage] = useState(0)
-    const [tasks, setTasks] = useState<ITasks[]>(task)
+    const [tasks, setTasks] = useState<ITasks[]>(task)  //todo like here
     useEffect(() => {
         fetch('/db/colors')
             .then((response) => response.json())
@@ -52,39 +52,39 @@ const ProgressBar = () => {
             />
             <div className={'progressBar__tasks'} >
                 {tasks.map((task: ITasks) => (
-                        <div
+                    <div
 
-                            className={'task'}
-                            key={`${task.id}`}>
-                            {task.title}
-                            {
-                                task.percentage === 100 ? (
-                                    <>
-                                        <div className={'circle'}>
-                                            <div className={'checked'}/>
-                                        </div>
-                                        <div>Completed</div>
-                                    </>
-                                ) : task.percentage === 0 ? (
-                                    <>
-                                        <img className={'waiting'} src={waiting} alt={'waiting'}/>
-                                        <div>Waiting</div>
-                                    </>
-                                ) : (
-                                    <ConfigProvider
-                                        theme={{
-                                            components: {
-                                                Progress: {
-                                                    circleTextFontSize: '16px',
-                                                },
+                        className={'task'}
+                        key={`${task.id}`}>
+                        {task.title}
+                        {
+                            task.percentage === 100 ? (
+                                <>
+                                    <div className={'circle'}>
+                                        <div className={'checked'}/>
+                                    </div>
+                                    <div>Completed</div>
+                                </>
+                            ) : task.percentage === 0 ? (
+                                <>
+                                    <img className={'waiting'} src={waiting} alt={'waiting'}/>
+                                    <div>Waiting</div>
+                                </>
+                            ) : (
+                                <ConfigProvider
+                                    theme={{
+                                        components: {
+                                            Progress: {
+                                                circleTextFontSize: '16px',
                                             },
-                                        }}
-                                    > <Progress type="dashboard" percent={task.percentage} strokeColor={colors}
-                                                strokeWidth={12} size={60} gapDegree={0.001}/>
-                                    </ConfigProvider>
-                                )}
+                                        },
+                                    }}
+                                > <Progress type="dashboard" percent={task.percentage} strokeColor={colors}
+                                            strokeWidth={12} size={60} gapDegree={0.001}/>
+                                </ConfigProvider>
+                            )}
 
-                        </div>
+                    </div>
                     )
                 )}
 

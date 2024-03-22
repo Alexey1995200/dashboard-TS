@@ -1,15 +1,14 @@
 import './styles.scss'
 import {VictoryAxis, VictoryBar, VictoryChart, VictoryLabel} from 'victory';
 
-
+const data = [
+    {x: 'Georg', y: 5.3},
+    {x: 'Kate', y: 4.5},
+    {x: 'Nancy', y: 3.7},
+    {x: 'Paula', y: 7.7},
+    {x: 'Richard', y: 6.4}
+];
 const AvgTime = () => {
-    const data = [
-        {x: 'Georg', y: 5.3},
-        {x: 'Kate', y: 4.5},
-        {x: 'Nancy', y: 3.7},
-        {x: 'Paula', y: 7.7},
-        {x: 'Richard', y: 6.4}
-    ];
     return (
         <div className={'avgTime__wrapper'}>
             <div className={'centered_title dragHandle'}
