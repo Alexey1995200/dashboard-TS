@@ -1,61 +1,103 @@
 .header__wrapper {
   background-color: #183e25;
   display: flex;
+  width: 100%;
   flex-direction: row;
   color: white;
+  overflow: unset;
+  position: fixed;
+  //height: 10dvh;
+  min-height: 48px;
+  max-height: 96px;
+  top: 0;
   justify-content: space-between;
 
-  .navBar__wrapper {
+  .header__left{
     display: flex;
     flex-direction: row;
-
-    .header__logo {
-      height: 48px;
-      width: 48px;
-      margin: 0 40px 0 80px;
-    }
-
-    .navBar {
+    .navBar__wrapper {
       display: flex;
       flex-direction: row;
-      align-items: center;
-      gap: 16px;
 
-      .navBar__link {
-        &:hover {
-          color: #368b54;
-          cursor: pointer;
+      .navBar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+        margin: 16px;
+
+        .navBar__link {
+          &:hover {
+            color: #368b54;
+            cursor: pointer;
+          }
+
         }
-
       }
     }
   }
 
-
-  .account {
-    align-self: center;
-
-    img {
-      height: 36px;
-      width: 36px;
-    }
-
+  .header__right{
     display: flex;
+    align-self: end;
 
-    .account__info {
+    .account {
+      align-self: center;
+
+      img {
+        height: 36px;
+        width: 36px;
+      }
+
       display: flex;
-      flex-direction: column;
-      gap: 4px;
-      justify-content: center;
 
-      .info__name {
-        font-size: 16px;
+      .account__info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        justify-content: center;
+
+        .info__name {
+          font-size: 16px;
+        }
+
+        .info__position {
+          font-size: 12px;
+
+        }
       }
+    }
+  }
 
-      .info__position {
-        font-size: 12px;
+  .header__logo {
+    height: 48px;
+    width: 48px;
+    align-self: center;
+    display: flex;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    position: absolute;
+    top: 50%;
+  }
 
+
+
+
+
+}
+
+@media (max-width: 800px) {
+  .header__wrapper {
+    flex-direction: column;
+    .header__left{
+      .navBar__wrapper {
+        display: none;
       }
+    }
+    .header__logo {
+      top:25%;
+      height: 32px;
+      width: 32px;
     }
   }
 }

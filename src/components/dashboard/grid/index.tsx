@@ -53,22 +53,13 @@ const Grid = ({
                   addWidgetByKeyOnClick,
                   removeByKeyOnClick,
                   removeAllOnClick,
+                  storedWidgets
               }) => {
 
     const gridLayoutRef = useRef(null);
     // const ResponsiveGridLayout = WidthProvider(Responsive);
     const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);      //todo ask why it useMemo?
 
-    // useEffect(() => {
-    // }, [layouts]);
-    //
-    //
-    //
-    // useEffect(() => {
-    //     for (let i = 0; i < widgetList.length; i++) {
-    //         addWidgetByKeyOnClick(widgetList[i])
-    //     }                                                   //todo must create widgets in restart, but don't work
-    // }, []);
 
     return (
         <div>

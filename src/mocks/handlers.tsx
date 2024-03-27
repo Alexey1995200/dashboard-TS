@@ -146,14 +146,16 @@ export const handlers = [
     ),
     http.get('/WIDGETS', () => {
         if (localStorage.getItem('rgl_widgets')) {
-            // return HttpResponse.json(localStorage.getItem('rgl_widgets'))
-            const rgl_widgets = localStorage.getItem('rgl_widgets')
-            if (!!rgl_widgets){
-                const regex = /null/g
-                const fix = rgl_widgets.replace('null', '"Infinity"')
-                console.log('fixed', fix, 'unfixed', rgl_widgets)
-                return HttpResponse.json(fix)
-            }
+            return HttpResponse.json(localStorage.getItem('rgl_widgets'))
+
+            // const rgl_widgets = localStorage.getItem('rgl_widgets')
+            // if (!!rgl_widgets){
+            //
+            //     const regex = /null/g
+            //     const fix = rgl_widgets.replace('null', '"Infinity"')
+            //     console.log('fixed', fix, 'unfixed', rgl_widgets)
+            //     return HttpResponse.json(fix)
+            // }
         } else return new HttpResponse(null, { status: 418 })
         },
     ),

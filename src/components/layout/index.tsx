@@ -15,7 +15,9 @@ const Layout = () => {
         {isSideBarVisible && <SideBar
             changeSideBarVisibility={changeSideBarVisibility}
         />}
-        <Dashboard/>
+        <div className={'content'}>
+            <Dashboard/>
+        </div>
     </div>
 }
 export default Layout

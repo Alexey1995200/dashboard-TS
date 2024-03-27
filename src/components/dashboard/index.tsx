@@ -11,17 +11,19 @@ import {getFromLS, isMobileVerByUserAgent} from "./utils";
 import {breakpoints, calculateW, cols, screenWidth, widgets, WIDGETS_KEYS} from "./const";
 
 const Dashboard = () => {
-    const [currentCompactType, setCurrentCompactType]: string = useState('vertical')
+    const [currentCompactType, setCurrentCompactType] = useState<string>('vertical')
     const [fetchedLayout, setFetchedLayout] = useState()
     const [isMobileVer, setIsMobileVer] = useState(() => {
         const isMobile = getFromLS('isMobile')
         return isMobile ? isMobile : isMobileVerByUserAgent()
     })
-    const [isAdaptive, setIsAdaptive] = useState(true)
+    const [isAdaptive, setIsAdaptive] = useState(true) //todo remove
     const [layouts, setLayouts] = useState();
-    const [allWidgets, setAllWidgets] = useState([])
+    const [createdWidgetsList, setCreatedWidgetsList] = useState([])  //todo rename as list etc
 
-    const [widgetList, setWidgetList] = useState([])
+    const [storedWidgets, setStoredWidgets] = useState()//stored? rename
+    // const [storedWidgetsCopy, setStoredWidgetsCopy] = useState()//stored? rename
+
 
     const resetLocalSettings = () => {
         setIsMobileVer(isMobileVerByUserAgent()) // Call the function to get the boolean value
@@ -29,7 +31,7 @@ const Dashboard = () => {
     }
     const resetLocalTable = () => {
         localStorage.removeItem("rgl_DB");
-        setLayouts();
+        setLayouts(undefined);
         //todo fix this shit later
     }
     const resetLocalStorage = () => {
@@ -62,21 +64,25 @@ const Dashboard = () => {
                     setFetchedLayout(undefined);
                 }
             })
+            .catch((error) => console.log(error))
         fetch('/WIDGETS')                           //todo fetch json err to bool or if null - nothing else etc
             .then((response) => response.json())
             .then((response) => {
                 if (!!JSON.parse(response).value) {
+                    console.log(response, 'qwerqwe')
                     const keys = [];
                     JSON.parse(response).value.forEach(obj => {
                         keys.push(obj.key);
                     });
-                    setWidgetList(keys)
+                    setStoredWidgets(keys)
                     console.log('qweasd allwidget seted', keys)
                 } else {
                     console.error('saved position is empty');
-                    setWidgetList([]);
+                    setStoredWidgets([]);
                 }
             })
+            .catch((error) => console.log(error))
+        console.log(storedWidgets, 'qwerqwe storedwidgets')
 
     }, []);
 
@@ -106,12 +112,9 @@ const Dashboard = () => {
             setCurrentCompactType('vertical')
             console.log('compact', 'null-vertical')
         }
-
         // "horizontal" | "vertical" | null.
-
     }
     const uploadRGLData = async (data) => {
-
         console.log('Before fetch:', JSON.stringify(data));
         try {
             const response = await fetch('/DB_upload', {
@@ -131,19 +134,25 @@ const Dashboard = () => {
 
 
     const handleLayoutChange = (layout, layouts) => {
-        if (allWidgets.length > 0) {
-            console.log('allWidgets', allWidgets)
+        if (createdWidgetsList.length > 0) {
+            console.log('allWidgets', createdWidgetsList, layouts)
             uploadRGLData(layouts)
-            uploadRGLData(allWidgets)
+            uploadRGLData(createdWidgetsList)
             // saveToLS('savedPosition', layouts);
             // prevLayoutsRef.current = layouts; // Update the ref instead of the state
         }
     };
 
     const removeByKeyOnClick = (key) => {
-        setAllWidgets(allWidgets.filter(widget => widget.key !== key));
+        setCreatedWidgetsList(createdWidgetsList.filter(widget => widget.key !== key));
+        if (createdWidgetsList.length<2){
+            uploadRGLData([])
+        }
     }
-    const removeAllOnClick = () => setAllWidgets([])
+    const removeAllOnClick = () => {
+        setCreatedWidgetsList(createdWidgetsList.filter(widget => widget !== widget))
+        uploadRGLData([])
+    }
 
     const uniqueID = () => Math.random().toString(16).slice(-4);
 
@@ -153,23 +162,25 @@ const Dashboard = () => {
             el: widgets[widget].el,
             data: widgets[widget].data
         }
-        setAllWidgets([...allWidgets, newWidget]);
+        console.log("ADD WIDGET", newWidget, createdWidgetsList)
+        setCreatedWidgetsList([...createdWidgetsList, newWidget]);
         // setLayouts([...layouts])
     }
-    // const widgetsFixed = () => {
-    //     let arr = null
-    //     widgets[WIDGETS_KEYS].map((widget) => {
-    //         // console.log('qweasdzxc', widget[WIDGETS_KEYS]
-    //         const newWidget = {
-    //             key: widget,
-    //             el: widgets[widget].el,
-    //             data: widgets[widget].data
-    //         }
-    //         arr.push(newWidget)
-    //         // .el=<${WIDGETS_KEYS.OverallProgress}/>
-    //     })
-    //     console.log('qweasdzxc', arr)
-    // }
+
+    useEffect(() => {
+        console.log('qwerqwe useefect', storedWidgets, !!storedWidgets)
+
+        if (storedWidgets) {
+            setCreatedWidgetsList(
+                storedWidgets.map((widget) => {
+                    return {
+                        key: widget,
+                        el: widgets[widget].el,
+                        data: widgets[widget].data
+                    }
+                }))
+        }
+    }, [storedWidgets]);
 
 // if (!layouts) return null
     if (screenWidth > 320) {
@@ -217,9 +228,9 @@ const Dashboard = () => {
                     </div>
                 </div>
                 <CreateWidget
-                    widgets={widgets}
+                    addWidget={addWidgetByKeyOnClick}
                 />
-                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', overflow: "auto"}}>
                     <div
                         className="remove_btn"
                         onClick={() => null}
@@ -237,24 +248,24 @@ const Dashboard = () => {
                         &#10006;
                     </div>
                 </div>
-                {/*{layouts ? (*/}
-                    <Grid
-                        currentCompactType={currentCompactType}
-                        layouts={layouts}
-                        setLayouts={setLayouts}
-                        allWidgets={allWidgets}
-                        setAllWidgets={setAllWidgets}
-                        breakpoints={breakpoints(isMobileVer)}
-                        cols={cols(isMobileVer)}
-                        isAdaptive={isAdaptive}
-                        isMobileVer={isMobileVer}
-                        widgetList={widgetList}
-                        removeByKeyOnClick={removeByKeyOnClick}
-                        removeAllOnClick={removeAllOnClick}
-                        addWidgetByKeyOnClick={addWidgetByKeyOnClick}
-                        onLayoutChange={handleLayoutChange}
-                        widgets={widgets}
-                    />
+                {/*{createdWidgetsList.length>0 ? (*/}
+                <Grid
+                    currentCompactType={currentCompactType}
+                    layouts={layouts}
+                    setLayouts={setLayouts}
+                    allWidgets={createdWidgetsList}
+                    setAllWidgets={setCreatedWidgetsList}
+                    breakpoints={breakpoints(isMobileVer)}
+                    cols={cols(isMobileVer)}
+                    isAdaptive={isAdaptive}
+                    isMobileVer={isMobileVer}
+                    storedWidgets={storedWidgets}
+                    removeByKeyOnClick={removeByKeyOnClick}
+                    removeAllOnClick={removeAllOnClick}
+                    addWidgetByKeyOnClick={addWidgetByKeyOnClick}
+                    onLayoutChange={handleLayoutChange}
+                    widgets={widgets}
+                />
                 {/*) : (*/}
                 {/*    <div style={{margin: "auto", fontSize: '32px', textAlign: "center"}}>There's no widgets added</div>*/}
                 {/*)}*/}
