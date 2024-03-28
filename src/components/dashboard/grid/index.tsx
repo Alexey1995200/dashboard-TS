@@ -49,11 +49,11 @@ const Grid = ({
                   breakpoints,
                   cols,
                   widgets,
-                  onLayoutChange,
+                  handleLayoutChange,
                   addWidgetByKeyOnClick,
                   removeByKeyOnClick,
                   removeAllOnClick,
-                  storedWidgets
+                  storedWidgets,
               }) => {
 
     const gridLayoutRef = useRef(null);
@@ -78,7 +78,7 @@ const Grid = ({
                 isResizable={true}
                 isBounded={false}
                 allowOverlap={false}
-                onLayoutChange={(layout, layouts) => onLayoutChange(layout, layouts)}
+                onLayoutChange={(layout, layouts) => handleLayoutChange(layout, layouts)}
                 // preventCollision={true}
             >
                 {allWidgets.map((widget) => {

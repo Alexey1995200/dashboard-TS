@@ -30,6 +30,17 @@ interface IBpArrItem {
 }
 
 type IBpArr = IBpArrItem[];
+
+export const saveToLS = (key: string, value: any) => {
+    if (global.localStorage) {
+        global.localStorage.setItem(
+            key,
+            JSON.stringify({
+                value
+            })
+        );
+    }
+};
 export const breakpointsArr: IBpArr = [
     {device: 'phone', resolution: 360 - 1, type: 'desktop'},
     {device: 'WQVGA', resolution: 480 - 1, type: 'desktop'},
