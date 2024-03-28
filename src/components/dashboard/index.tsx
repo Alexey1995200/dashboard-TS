@@ -7,12 +7,12 @@ import {
     resetGlobal, resetSettings, resetTable,
 } from "./../../assets/svg";
 import CreateWidget from "./create";
-import {getFromLS, isMobileVerByUserAgent} from "./utils";
+import {getFromLS, isMobileVerByUserAgent, saveToLS} from "./utils";
 import {breakpoints, calculateW, cols, screenWidth, widgets, WIDGETS_KEYS} from "./const";
 
 const Dashboard = () => {
     const [currentCompactType, setCurrentCompactType] = useState<string>('vertical')
-    const [fetchedLayout, setFetchedLayout] = useState()
+    const [fetchedLayouts, setFetchedLayouts] = useState()
     const [isMobileVer, setIsMobileVer] = useState(() => {
         const isMobile = getFromLS('isMobile')
         return isMobile ? isMobile : isMobileVerByUserAgent()
@@ -41,103 +41,98 @@ const Dashboard = () => {
             localStorage.clear()
         }
     };
-    const saveToLS = (key: string, value: any) => {
-        if (global.localStorage) {
-            global.localStorage.setItem(
-                key,
-                JSON.stringify({
-                    value
-                })
-            );
-        }
-    };
 
     useEffect(() => {
-        fetch('/DB')
+        setCurrentCompactType(getFromLS('rgl_compactType'))
+        fetch('/rgl_layout')
             .then((response) => response.json())
             .then((response) => {
-                console.log(response, 'qweasd')
-                if (!!JSON.parse(response).value) {
+                if (JSON.parse(response).value) {
                     setFetchedLayout(JSON.parse(response).value);
                 } else {
-                    console.error('saved position is empty');
-                    setFetchedLayout(undefined);
+                    // setFetchedLayout(null);
                 }
             })
-            .catch((error) => console.log(error))
-        fetch('/WIDGETS')                           //todo fetch json err to bool or if null - nothing else etc
+            .catch((err) => console.log(err))
+        fetch('/rgl_layouts')
             .then((response) => response.json())
             .then((response) => {
-                if (!!JSON.parse(response).value) {
-                    console.log(response, 'qwerqwe')
-                    const keys = [];
-                    JSON.parse(response).value.forEach(obj => {
-                        keys.push(obj.key);
-                    });
-                    setStoredWidgets(keys)
-                    console.log('qweasd allwidget seted', keys)
+                if (JSON.parse(response).value) {
+                    setFetchedLayouts(JSON.parse(response).value);
                 } else {
-                    console.error('saved position is empty');
-                    setStoredWidgets([]);
+                    // setFetchedLayout(null);
                 }
             })
-            .catch((error) => console.log(error))
-        console.log(storedWidgets, 'qwerqwe storedwidgets')
-
+            .catch((err) => console.log(err))
+        fetch('/rgl_createdWidgetsList')
+            .then((response) => response.json())
+            .then((response) => {
+                if (JSON.parse(response)) {
+                    const keys: string[] = [];
+                    const data: IWidgetData[] = [];
+                    JSON.parse(response).value.forEach((obj: IWidget) => {
+                        keys.push(obj.key)
+                        data.push(obj.data)
+                    });
+                    setStoredWidgetsKeys(keys)
+                    setStoredWidgetsData(data)
+                } else {
+                    console.error('saved position is empty');
+                    setStoredWidgetsKeys([]);
+                }
+            })
+            .catch((err) => console.log(err))
     }, []);
 
     useEffect(() => {
-        setLayouts(fetchedLayout)
-    }, [fetchedLayout]);
+        setLayouts(fetchedLayouts)
+    }, [fetchedLayouts]);
     const forcedMobileVersion = () => {
         setIsMobileVer(true)
-        setIsAdaptive(true)
         saveToLS('isMobile', true)
-        saveToLS('isAdaptive', true)
     }
     const forcedDesktopVersion = () => {
         setIsMobileVer(false)
-        setIsAdaptive(true)
         saveToLS('isMobile', false)
-        saveToLS('isAdaptive', true)
     }
     const changeCompactType = () => {
         if (currentCompactType === 'vertical') {
+            saveToLS('rgl_compactType', 'horizontal')
             setCurrentCompactType('horizontal')
-            console.log('compact', 'vertical-horizontal')
         } else if (currentCompactType === 'horizontal') {
+            saveToLS('rgl_compactType', null)
             setCurrentCompactType(null)
-            console.log('compact', 'horizontal-null')
         } else if (currentCompactType === null) {
+            saveToLS('rgl_compactType', 'vertical')
             setCurrentCompactType('vertical')
-            console.log('compact', 'null-vertical')
         }
         // "horizontal" | "vertical" | null.
     }
-    const uploadRGLData = async (data) => {
-        console.log('Before fetch:', JSON.stringify(data));
+    const uploadRGLData = async (data: ILayouts | IWidget[] | IWidgetData[], location:string) => {
         try {
             const response = await fetch('/DB_upload', {
                 method: 'PUT',
                 body: JSON.stringify(data),
                 headers: {
                     'Content-Type': 'application/json',
+                    'Save-Location':location
                 },
             });
-            console.log('sended resp', response)
             const json = await response.json();
-            console.log('Success:', JSON.stringify(json));
         } catch (error) {
             console.error('Error:', error);
         }
     };
 
 
-    const handleLayoutChange = (layout, layouts) => {
+    const handleLayoutChange = (layout: IWidgetData[], layouts: ILayouts) => {
         if (createdWidgetsList.length > 0) {
-            console.log('allWidgets', createdWidgetsList, layouts)
-            uploadRGLData(layouts)
-            uploadRGLData(createdWidgetsList)
+            // console.log('qweqaz',layout, layouts, createdWidgetsList)
+            // setLayouts(layouts)
+            // setLayout(layout)
+            uploadRGLData(layout, 'layout')
+            uploadRGLData(layouts, 'layouts')
+            uploadRGLData(createdWidgetsList, 'createdWidgetsList')
             // saveToLS('savedPosition', layouts);
             // prevLayoutsRef.current = layouts; // Update the ref instead of the state
         }

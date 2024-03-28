@@ -118,7 +118,6 @@ export const handlers = [
         //@ts-ignore
         const searchUrl = ('lstorage?', request.url)
         const regex = /[?&]([^=#]+)=([^&#]*)/g;
-        console.log('lst', searchUrl.match(regex))
         return (localStorage)
     }),
     // http.get('/localstorage',  ((breakpoint) => {
@@ -126,65 +125,50 @@ export const handlers = [
     //         (localStorage.getItem('rgl'))?.['savedPosition']
     //
     //     }
-    //     // console.log('lstorage', key, value)
     //     // return (localStorage.getItem(key))?.[value]
     //     // const json = JSON.parse(localStorage.getItem('rgl'));
     //     // return json.savedPosition[breakpoint] || [Object.keys(json.savedPosition)[0]];
     // })),
 
     //@ts-ignore
-    http.get('/localstorage', ((key:string, value:string) => {
+    http.get('/localstorage', (key:string, value:string) => {
         //@ts-ignore
         return (localStorage.getItem(key))?.[value]
-    })),
+    }),
 
-    http.get('/DB', () => {
-        if (localStorage.getItem('rgl_DB')) {
-            return HttpResponse.json(localStorage.getItem('rgl_DB'))
-        } else return HttpResponse.error()
+    http.get('/rgl_layout', () => {
+            if (localStorage.getItem('rgl_layout')) {
+                return HttpResponse.json(localStorage.getItem('rgl_layout'))
+            } else return HttpResponse.error()
         },
     ),
-    http.get('/WIDGETS', () => {
-        if (localStorage.getItem('rgl_widgets')) {
-            return HttpResponse.json(localStorage.getItem('rgl_widgets'))
-
-            // const rgl_widgets = localStorage.getItem('rgl_widgets')
-            // if (!!rgl_widgets){
-            //
-            //     const regex = /null/g
-            //     const fix = rgl_widgets.replace('null', '"Infinity"')
-            //     console.log('fixed', fix, 'unfixed', rgl_widgets)
-            //     return HttpResponse.json(fix)
-            // }
-        } else return new HttpResponse(null, { status: 418 })
+    http.get('/rgl_layouts', () => {
+            if (localStorage.getItem('rgl_layouts')) {
+                return HttpResponse.json(localStorage.getItem('rgl_layouts'))
+            } else return HttpResponse.error()
+        },
+    ),
+    http.get('/rgl_createdWidgetsList', () => {
+            const localStorageItem = localStorage.getItem('rgl_widgets');
+            if (localStorageItem) {
+                const item: string = localStorageItem;
+                const fix = item.replace(/null/g, '999999')
+                return HttpResponse.json(fix)
+            } else return new HttpResponse(null, { status: 418 })
         },
     ),
 
     http.put('/DB_upload', async ({request},) => {
+        const location = request.headers.get('save-location')
         const data = await request.json()
-        if (!!data){
-            console.log('handler DB_upl used if')
-            if (Object.keys(data).some(key => resolutionNamesCheck(key))) {
-                global.localStorage.setItem(
-                    "rgl_DB",
-                    JSON.stringify({
-                        "value":
-                        data
-                    })
-                );
-            }
-            else
-                console.log('handler DB_upl used else')
-            // if (Object.keys(data).some(key => widgetNamesCheck(key)))
-            {
-                global.localStorage.setItem(
-                    "rgl_widgets",
-                    JSON.stringify({
-                        "value":
-                        data
-                    })
-                );
-            }
+        if (data){
+            global.localStorage.setItem(
+                `rgl_${location}`,
+                JSON.stringify({
+                    "value":
+                    data
+                })
+            );
         } else return new HttpResponse(null, { status: 418 })
     })
 

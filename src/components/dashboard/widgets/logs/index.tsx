@@ -79,15 +79,12 @@ const ProjectLogs = () => {
         fetch('db/logs/users')
             .then((response) => response.json())
             .then((response) => {
-                // console.log('resp', response.users)
                 setUser(response.users)
             })
         fetch('db/logs/')
             .then((response) => response.json())
             .then((response) => {
-                // console.log('resp', response)
                 setLogs(response.logs)
-                // console.log('type', typeof logs)
             })
     }, []);
     const LogContentComponent = (logs: ILogs): string => {
@@ -105,7 +102,6 @@ const ProjectLogs = () => {
     const getDimensions = () => {
         if (logBuilderRef.current) {
             const {width, height} = logBuilderRef.current.getBoundingClientRect();
-            // console.log('debug ', width, height)
             return [width, height];
         }
         return [0, 0];

@@ -22,7 +22,16 @@ export const widgetNamesCheck = (some:string) => {
     const widgetNames = ['OverallProgress', 'ProgressBar', 'LaunchDate', 'Risks', 'Budget', 'OverdueTasks', 'Summary', 'AvgTime', 'UpcTasks', 'ProjectLogs'];
     return widgetNames.includes(some);
 }
-
+export const saveToLS = (key: string, value: any) => {
+    if (global.localStorage) {
+        global.localStorage.setItem(
+            key,
+            JSON.stringify({
+                value
+            })
+        );
+    }
+};
 export const isMobileVerByUserAgent = () => {
     return (
         useragent.toLowerCase().includes('ipad') ||
