@@ -258,7 +258,7 @@ const Dashboard = () => {
                     removeByKeyOnClick={removeByKeyOnClick}
                     removeAllOnClick={removeAllOnClick}
                     addWidgetByKeyOnClick={addWidgetByKeyOnClick}
-                    onLayoutChange={handleLayoutChange}
+                    handleLayoutChange={handleLayoutChange}
                     widgets={widgets}
                 />
                 {/*) : (*/}
