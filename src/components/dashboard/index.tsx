@@ -1,5 +1,5 @@
 import Grid from "./grid/index";
-import React, {useEffect, useRef, useState} from "react";
+import React, {ReactElement, useEffect, useRef, useState} from "react";
 import {
     compactHorizontal, compactNone, compactVertical,
     Desktop, Mobile,
@@ -9,7 +9,14 @@ import CreateWidget from "./create";
 import {getFromLS, isMobileVerByUserAgent} from "./utils";
 import {breakpoints, calculateW, cols, saveToLS, screenWidth, widgets, WIDGETS_KEYS} from "./const";
 
-interface IWidgetData {
+
+export interface IWidget {
+    key: string;
+    data: IWidgetData;
+    el?: ({}: {}) => Element | ReactElement<any, any> | null | undefined;
+}
+
+export interface IWidgetData {
     i: string;
     w: number;
     h: number;
@@ -19,28 +26,29 @@ interface IWidgetData {
     minH?: number;
     moved?: boolean;
     static?: boolean;
+    maxH?: number;
+    maxW?: number;
+    isResizable?: boolean;
+    isDraggable?: boolean | undefined;
+    // resizeHandles?: ResizeHandle[] | undefined;
+    isBounded?: boolean | undefined;
 }
 
-interface ILayouts {
+export interface ILayouts {
     [key: string]: IWidgetData[];
 }
-
-interface IWidget {
-    key: string;
-    data: IWidgetData;
-    el?: () => {};
+export interface IWidgets {
+    [key: string]: IWidget;
 }
-
-
 const Dashboard = () => {
-    const [currentCompactType, setCurrentCompactType] = useState<string | null>('vertical')
+    const [currentCompactType, setCurrentCompactType] = useState<"vertical" | "horizontal" | null | undefined>('vertical')
     const [fetchedLayouts, setFetchedLayouts] = useState<ILayouts | undefined>()
     const [fetchedLayout, setFetchedLayout] = useState<ILayouts | undefined>()
     const [isMobileVer, setIsMobileVer] = useState(() => {
         const isMobile = getFromLS('isMobile')
         return isMobile ? isMobile : isMobileVerByUserAgent()
     })
-    const [layout, setLayout]=useState<IWidgetData[]>()
+    const [layout, setLayout] = useState<IWidgetData[]>()
     const [layouts, setLayouts] = useState<ILayouts>();
     const [createdWidgetsList, setCreatedWidgetsList] = useState<IWidget[]>([])
     const [storedWidgetsKeys, setStoredWidgetsKeys] = useState<string[]>()
@@ -124,14 +132,14 @@ const Dashboard = () => {
             .catch((err) => console.log(err))
     }, []);
 
-    const uploadRGLData = async (data: ILayouts | IWidget[] | IWidgetData[], location:string) => {
+    const uploadRGLData = async (data: ILayouts | IWidget[] | IWidgetData[], location: string) => {
         try {
             const response = await fetch('/DB_upload', {
                 method: 'PUT',
                 body: JSON.stringify(data),
                 headers: {
                     'Content-Type': 'application/json',
-                    'Save-Location':location
+                    'Save-Location': location
                 },
             });
             const json = await response.json();
@@ -143,33 +151,30 @@ const Dashboard = () => {
 
     const handleLayoutChange = (layout: IWidgetData[], layouts: ILayouts) => {
         if (createdWidgetsList.length > 0) {
-            console.log('qweqaz',layout, layouts, createdWidgetsList)
-            setLayouts(layouts)
-            setLayout(layout)
+
             uploadRGLData(layout, 'layout')
             uploadRGLData(layouts, 'layouts')
             uploadRGLData(createdWidgetsList, 'createdWidgetsList')
-            // saveToLS('savedPosition', layouts);
             // prevLayoutsRef.current = layouts; // Update the ref instead of the state
         }
     };
 
-    const removeByKeyOnClick = (key:string) => {
+    const removeByKeyOnClick = (key: string) => {
         setCreatedWidgetsList(createdWidgetsList.filter(widget => widget.key !== key));
         if (createdWidgetsList.length < 2) {
-            uploadRGLData([],'createdWidgetsList')
+            uploadRGLData([], 'createdWidgetsList')
         }
     }
     const removeAllOnClick = () => {
         setCreatedWidgetsList(createdWidgetsList.filter(widget => widget !== widget))
-        uploadRGLData([],'createdWidgetsList')
+        uploadRGLData([], 'createdWidgetsList')
     }
 
     const uniqueID = () => Math.random().toString(16).slice(-4);
 
-    const addWidgetByKeyOnClick = (widget:string) => {
-        console.log('qweqweqwe',createdWidgetsList, fetchedLayouts, fetchedLayout, storedWidgetsKeys)
-        const newWidget:IWidget = {
+    const addWidgetByKeyOnClick = (widget: string) => {
+        console.log('qweqweqwe', createdWidgetsList, fetchedLayouts, fetchedLayout, storedWidgetsKeys)
+        const newWidget: IWidget = {
             key: widget,
             el: widgets[widget].el,
             data: widgets[widget].data
@@ -183,16 +188,16 @@ const Dashboard = () => {
     useEffect(() => {
         setCurrentCompactType(getFromLS('rgl_compactType'))
         if (storedWidgetsKeys) {
-            const fixed:IWidget[] = storedWidgetsKeys.map((widget) => {
+            const fixed: IWidget[] = storedWidgetsKeys.map((widget) => {
 
-                if (storedWidgetsData){
-                    console.log({...getObjectByI(storedWidgetsData, widget),y:Infinity},'qweasdzxcrty')
+                if (storedWidgetsData) {
+                    console.log({...getObjectByI(storedWidgetsData, widget), y: Infinity}, 'qweasdzxcrty')
                     return {
-                        key:widget,
-                        el:widgets[widget].el,
-                        data: {...getObjectByI(storedWidgetsData, widget), y:Infinity}
+                        key: widget,
+                        el: widgets[widget].el,
+                        data: {...getObjectByI(storedWidgetsData, widget), y: Infinity}
                     }
-                }else
+                } else
                     console.log(`stored data wasn't used`)
                 return {
                     key: widget,
