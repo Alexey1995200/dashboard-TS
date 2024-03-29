@@ -23,6 +23,32 @@ export const colorFilter = {
 export const useragent: string = window.navigator.userAgent
 export const screenWidth: number = window.innerWidth
 
+export interface MobileBreakpoints {
+    galaxyY: number;
+    galaxyS3: number;
+    F3: number;
+    Tab7in: number;
+    Tab: number;
+}
+
+export interface DesktopBreakpoints {
+    FHD: number;
+    WQVGA: number;
+    FourK: number;
+    qHD: number;
+    VGA: number;
+    WVGA: number;
+    XGA: number;
+    WXGA: number;
+    FourKRetina: number;
+    phone: number;
+    HDp: number;
+    WXGAHD: number;
+    WQHD: number
+}
+
+export type Breakpoints = MobileBreakpoints | DesktopBreakpoints;
+
 interface IBpArrItem {
     device: string;
     resolution: number;
@@ -30,6 +56,17 @@ interface IBpArrItem {
 }
 
 type IBpArr = IBpArrItem[];
+
+export const saveToLS = (key: string, value: any) => {
+    if (global.localStorage) {
+        global.localStorage.setItem(
+            key,
+            JSON.stringify({
+                value
+            })
+        );
+    }
+};
 export const breakpointsArr: IBpArr = [
     {device: 'phone', resolution: 360 - 1, type: 'desktop'},
     {device: 'WQVGA', resolution: 480 - 1, type: 'desktop'},
@@ -79,36 +116,14 @@ export const breakpoints = (isMobileVer: boolean) => {
 // interface ICols = {
 //     string:number
 // }
-interface MobileBreakpoints {
-    galaxyY: number;
-    galaxyS3: number;
-    F3: number;
-    Tab7in: number;
-    Tab: number;
-}
-interface DesktopBreakpoints {
-    FHD: number;
-    WQVGA: number;
-    FourK: number;
-    qHD: number;
-    VGA: number;
-    WVGA: number;
-    XGA: number;
-    WXGA: number;
-    FourKRetina: number;
-    phone: number;
-    HDp: number;
-    WXGAHD: number;
-    WQHD: number
-}
-type Breakpoints = MobileBreakpoints | DesktopBreakpoints;
+
 export const cols = (isMobileVer: boolean): Breakpoints => {
     return isMobileVer ? {
-            galaxyY: 1, galaxyS3: 2, F3: 4, Tab7in: 6, Tab: 8, // Tab2: 8,
-        } : {
-            phone: 4, WQVGA: 6, VGA: 8, WVGA: 10, qHD: 12, XGA: 13, WXGA: 16, WXGAHD: 17, HDp: 20,
-            FHD: 24, WQHD: 32, FourK: 48, FourKRetina: 52,
-        }
+        galaxyY: 1, galaxyS3: 2, F3: 4, Tab7in: 6, Tab: 8, // Tab2: 8,
+    } : {
+        phone: 4, WQVGA: 6, VGA: 8, WVGA: 10, qHD: 12, XGA: 13, WXGA: 16, WXGAHD: 17, HDp: 20,
+        FHD: 24, WQHD: 32, FourK: 48, FourKRetina: 52,
+    }
 }
 export const calculateH = (expectedH: number): number => ((expectedH + gridMargins[1]) / (gridRowHeight + gridMargins[1]))
 // export const calculateW = (expectedWidth) => (expectedWidth + gridMargins[0]) / ((screenSize - (gridMargins[0] * (cols[currentBreakpoint] - 1))) / cols[currentBreakpoint] + gridMargins[0]);
@@ -118,8 +133,8 @@ export const calculateW = (expectedW: number): number => {
     const col: number = cols(isMobile())[currentBreakpoint as keyof Breakpoints];
     return (
         (expectedW + gridMargins[0])
-        / (((breakpoint - (gridMargins[0] * (col)))/ col)
-        + gridMargins[0])
+        / (((breakpoint - (gridMargins[0] * (col))) / col)
+            + gridMargins[0])
     )
 }  //don't give exact width, but pretty close
 export const WIDGETS_KEYS = {

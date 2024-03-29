@@ -1,36 +1,63 @@
-//@ts-nocheck
 import Grid from "./grid/index";
-import React, {useEffect, useRef, useState} from "react";
+import React, {ReactElement, useEffect, useRef, useState} from "react";
 import {
     compactHorizontal, compactNone, compactVertical,
     Desktop, Mobile,
     resetGlobal, resetSettings, resetTable,
 } from "./../../assets/svg";
 import CreateWidget from "./create";
-import {getFromLS, isMobileVerByUserAgent, saveToLS} from "./utils";
-import {breakpoints, calculateW, cols, screenWidth, widgets, WIDGETS_KEYS} from "./const";
+import {getFromLS, isMobileVerByUserAgent} from "./utils";
+import {breakpoints, calculateW, cols, saveToLS, screenWidth, widgets, WIDGETS_KEYS} from "./const";
 
+export interface IWidget {
+    key: string;
+    data: IWidgetData;
+    el?: ({}: {}) => Element | ReactElement<any, any> | null | undefined;
+}
+
+export interface IWidgetData {
+    i: string;
+    w: number;
+    h: number;
+    x: number;
+    y: number | string | null;
+    minW?: number;
+    minH?: number;
+    moved?: boolean;
+    static?: boolean;
+    maxH?: number;
+    maxW?: number;
+    isResizable?: boolean;
+    isDraggable?: boolean | undefined;
+    // resizeHandles?: ResizeHandle[] | undefined;
+    isBounded?: boolean | undefined;
+}
+
+export interface ILayouts {
+    [key: string]: IWidgetData[];
+}
+export interface IWidgets {
+    [key: string]: IWidget;
+}
 const Dashboard = () => {
-    const [currentCompactType, setCurrentCompactType] = useState<string>('vertical')
-    const [fetchedLayouts, setFetchedLayouts] = useState()
+    const [currentCompactType, setCurrentCompactType] = useState<"vertical" | "horizontal" | null | undefined>('vertical')
+    const [fetchedLayouts, setFetchedLayouts] = useState<ILayouts | undefined>()
+    const [fetchedLayout, setFetchedLayout] = useState<ILayouts | undefined>()
     const [isMobileVer, setIsMobileVer] = useState(() => {
         const isMobile = getFromLS('isMobile')
         return isMobile ? isMobile : isMobileVerByUserAgent()
     })
-    const [isAdaptive, setIsAdaptive] = useState(true) //todo remove
-    const [layouts, setLayouts] = useState();
-    const [createdWidgetsList, setCreatedWidgetsList] = useState([])  //todo rename as list etc
-
-    const [storedWidgets, setStoredWidgets] = useState()//stored? rename
-    // const [storedWidgetsCopy, setStoredWidgetsCopy] = useState()//stored? rename
+    const [layout, setLayout] = useState<IWidgetData[]>()
+    const [layouts, setLayouts] = useState<ILayouts>();
+    const [createdWidgetsList, setCreatedWidgetsList] = useState<IWidget[]>([])
+    const [storedWidgetsKeys, setStoredWidgetsKeys] = useState<string[]>()
+    const [storedWidgetsData, setStoredWidgetsData] = useState<IWidgetData[]>()
 
 
     const resetLocalSettings = () => {
         setIsMobileVer(isMobileVerByUserAgent()) // Call the function to get the boolean value
-        setIsAdaptive(true)
     }
     const resetLocalTable = () => {
-        localStorage.removeItem("rgl_DB");
         setLayouts(undefined);
         //todo fix this shit later
     }
@@ -40,10 +67,30 @@ const Dashboard = () => {
             resetLocalTable()
             localStorage.clear()
         }
-    };
+    }
+    const forcedMobileVersion = () => {
+        setIsMobileVer(true)
+        saveToLS('isMobile', true)
+    }
+    const forcedDesktopVersion = () => {
+        setIsMobileVer(false)
+        saveToLS('isMobile', false)
+    }
+    const changeCompactType = () => {
+        if (currentCompactType === 'vertical') {
+            saveToLS('rgl_compactType', 'horizontal')
+            setCurrentCompactType('horizontal')
+        } else if (currentCompactType === 'horizontal') {
+            saveToLS('rgl_compactType', null)
+            setCurrentCompactType(null)
+        } else if (currentCompactType === null) {
+            saveToLS('rgl_compactType', 'vertical')
+            setCurrentCompactType('vertical')
+        }
+        // "horizontal" | "vertical" | null.
+    }
 
     useEffect(() => {
-        setCurrentCompactType(getFromLS('rgl_compactType'))
         fetch('/rgl_layout')
             .then((response) => response.json())
             .then((response) => {
@@ -84,38 +131,14 @@ const Dashboard = () => {
             .catch((err) => console.log(err))
     }, []);
 
-    useEffect(() => {
-        setLayouts(fetchedLayouts)
-    }, [fetchedLayouts]);
-    const forcedMobileVersion = () => {
-        setIsMobileVer(true)
-        saveToLS('isMobile', true)
-    }
-    const forcedDesktopVersion = () => {
-        setIsMobileVer(false)
-        saveToLS('isMobile', false)
-    }
-    const changeCompactType = () => {
-        if (currentCompactType === 'vertical') {
-            saveToLS('rgl_compactType', 'horizontal')
-            setCurrentCompactType('horizontal')
-        } else if (currentCompactType === 'horizontal') {
-            saveToLS('rgl_compactType', null)
-            setCurrentCompactType(null)
-        } else if (currentCompactType === null) {
-            saveToLS('rgl_compactType', 'vertical')
-            setCurrentCompactType('vertical')
-        }
-        // "horizontal" | "vertical" | null.
-    }
-    const uploadRGLData = async (data: ILayouts | IWidget[] | IWidgetData[], location:string) => {
+    const uploadRGLData = async (data: ILayouts | IWidget[] | IWidgetData[], location: string) => {
         try {
             const response = await fetch('/DB_upload', {
                 method: 'PUT',
                 body: JSON.stringify(data),
                 headers: {
                     'Content-Type': 'application/json',
-                    'Save-Location':location
+                    'Save-Location': location
                 },
             });
             const json = await response.json();
@@ -127,56 +150,64 @@ const Dashboard = () => {
 
     const handleLayoutChange = (layout: IWidgetData[], layouts: ILayouts) => {
         if (createdWidgetsList.length > 0) {
-            // console.log('qweqaz',layout, layouts, createdWidgetsList)
-            // setLayouts(layouts)
-            // setLayout(layout)
+
             uploadRGLData(layout, 'layout')
             uploadRGLData(layouts, 'layouts')
             uploadRGLData(createdWidgetsList, 'createdWidgetsList')
-            // saveToLS('savedPosition', layouts);
             // prevLayoutsRef.current = layouts; // Update the ref instead of the state
         }
     };
 
-    const removeByKeyOnClick = (key) => {
+    const removeByKeyOnClick = (key: string) => {
         setCreatedWidgetsList(createdWidgetsList.filter(widget => widget.key !== key));
-        if (createdWidgetsList.length<2){
-            uploadRGLData([])
+        if (createdWidgetsList.length < 2) {
+            uploadRGLData([], 'createdWidgetsList')
         }
     }
     const removeAllOnClick = () => {
         setCreatedWidgetsList(createdWidgetsList.filter(widget => widget !== widget))
-        uploadRGLData([])
+        uploadRGLData([], 'createdWidgetsList')
     }
 
     const uniqueID = () => Math.random().toString(16).slice(-4);
 
-    const addWidgetByKeyOnClick = (widget) => {
-        const newWidget = {
+    const addWidgetByKeyOnClick = (widget: string) => {
+        console.log('qweqweqwe', createdWidgetsList, fetchedLayouts, fetchedLayout, storedWidgetsKeys)
+        const newWidget: IWidget = {
             key: widget,
             el: widgets[widget].el,
             data: widgets[widget].data
         }
-        console.log("ADD WIDGET", newWidget, createdWidgetsList)
-        setCreatedWidgetsList([...createdWidgetsList, newWidget]);
-        // setLayouts([...layouts])
+        if (!createdWidgetsList.some(w => w.key === widget)) {
+            setCreatedWidgetsList([...createdWidgetsList, newWidget])
+        }
     }
+    const getObjectByI = (array: IWidgetData[], targetI: string) => array.find(obj => obj.i === targetI)
 
     useEffect(() => {
-        console.log('qwerqwe useefect', storedWidgets, !!storedWidgets)
+        setCurrentCompactType(getFromLS('rgl_compactType'))
+        if (storedWidgetsKeys) {
+            const fixed: IWidget[] = storedWidgetsKeys.map((widget) => {
 
-        if (storedWidgets) {
-            setCreatedWidgetsList(
-                storedWidgets.map((widget) => {
+                if (storedWidgetsData) {
+                    console.log({...getObjectByI(storedWidgetsData, widget), y: Infinity}, 'qweasdzxcrty')
                     return {
                         key: widget,
                         el: widgets[widget].el,
-                        data: widgets[widget].data
+                        data: {...getObjectByI(storedWidgetsData, widget), y: Infinity}
                     }
-                }))
+                } else
+                    console.log(`stored data wasn't used`)
+                return {
+                    key: widget,
+                    el: widgets[widget].el,
+                    data: widgets[widget].data
+                }
+            })
+            setCreatedWidgetsList(fixed)
         }
-    }, [storedWidgets]);
-
+    }, [storedWidgetsData]);
+    console.log(layouts)
 // if (!layouts) return null
     if (screenWidth > 320) {
         return (
@@ -247,14 +278,12 @@ const Dashboard = () => {
                 <Grid
                     currentCompactType={currentCompactType}
                     layouts={layouts}
-                    setLayouts={setLayouts}
                     allWidgets={createdWidgetsList}
                     setAllWidgets={setCreatedWidgetsList}
                     breakpoints={breakpoints(isMobileVer)}
                     cols={cols(isMobileVer)}
-                    isAdaptive={isAdaptive}
                     isMobileVer={isMobileVer}
-                    storedWidgets={storedWidgets}
+                    storedWidgets={storedWidgetsKeys}
                     removeByKeyOnClick={removeByKeyOnClick}
                     removeAllOnClick={removeAllOnClick}
                     addWidgetByKeyOnClick={addWidgetByKeyOnClick}

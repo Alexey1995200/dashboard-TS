@@ -8,7 +8,7 @@ export const getFromLS = (key: string) => {
                 return JSON.parse(item).value;
             }
         } catch (e) {
-            return null;
+            return undefined;
         }
     }
     return null; // Return null if localStorage is not available or item is null

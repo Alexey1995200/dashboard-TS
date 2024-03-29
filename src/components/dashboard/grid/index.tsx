@@ -1,20 +1,10 @@
-//@ts-nocheck
-import React, {useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
+import React, {ReactElement, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import RGL, {Responsive, WidthProvider} from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './styles.css'
-import OverallProgress from './../widgets/overallProgress'
-import ProgressBar from "./../widgets/progressBar";
-import LaunchDate from "./../widgets/launchDate";
-import Risks from "./../widgets/risks";
-import Budget from "./../widgets/budget";
-import OverdueTasks from "./../widgets/overdueTasks";
-import Summary from "./../widgets/summary";
-import AvgTime from "./../widgets/avgTime";
-import UpcTasks from "./../widgets/upcomingDeadlines";
-import ProjectLogs from "./../widgets/logs";
-import {gridMargins, gridRowHeight} from "./../const";
+import {Breakpoints, gridMargins, gridRowHeight} from "./../const";
+import {ILayouts, IWidget, IWidgetData, IWidgets} from "../index";
 const ReactGridLayout = WidthProvider(RGL);
 
 // {
@@ -42,19 +32,26 @@ const ReactGridLayout = WidthProvider(RGL);
 //     )
 // }
 
+interface IGrid {
+    allWidgets:IWidget[];
+    currentCompactType:"vertical" | "horizontal" | null | undefined;
+    layouts:ILayouts;
+    breakpoints:Breakpoints;
+    cols:Breakpoints;
+    widgets:IWidgets;
+    handleLayoutChange:(layout: IWidgetData[], layouts: ILayouts)=>void;
+    removeByKeyOnClick:()=>{};
+}
+
 const Grid = ({
                   allWidgets,
                   currentCompactType,
                   layouts,
                   breakpoints,
                   cols,
-                  widgets,
-                  onLayoutChange,
-                  addWidgetByKeyOnClick,
+                  handleLayoutChange,
                   removeByKeyOnClick,
-                  removeAllOnClick,
-                  storedWidgets
-              }) => {
+              }:IGrid) => {
 
     const gridLayoutRef = useRef(null);
     // const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -66,7 +63,7 @@ const Grid = ({
             <ResponsiveGridLayout
                 ref={gridLayoutRef}
                 className={'grid_wrapper'}
-                layouts={layouts}
+                layouts={layouts as ReactGridLayout.Layout}
                 breakpoints={breakpoints}
                 cols={cols}
                 compactType={currentCompactType}
@@ -78,7 +75,7 @@ const Grid = ({
                 isResizable={true}
                 isBounded={false}
                 allowOverlap={false}
-                onLayoutChange={(layout, layouts) => onLayoutChange(layout, layouts)}
+                onLayoutChange={(layout, layouts) => handleLayoutChange(layout, layouts)}
                 // preventCollision={true}
             >
                 {allWidgets.map((widget) => {
