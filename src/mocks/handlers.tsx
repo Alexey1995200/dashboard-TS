@@ -8,7 +8,6 @@ import {logs, users} from "../DB/logs";
 import {defaultDBposition} from "../DB/gridDB";
 import {resolutionNamesCheck} from "../components/dashboard/utils";
 
-// @ts-ignore
 export const handlers = [
 
     http.get('/db/colors', async () => {
@@ -113,13 +112,11 @@ export const handlers = [
             defaultDBposition
         })
     }),
-    //@ts-ignore
-    http.get('/localstorage?', async ({request}) => {
-        //@ts-ignore
-        const searchUrl = ('lstorage?', request.url)
-        const regex = /[?&]([^=#]+)=([^&#]*)/g;
-        return (localStorage)
-    }),
+    // http.get('/localstorage?', async ({request}) => {
+    //     const searchUrl = ('lstorage?', request.url)
+    //     const regex = /[?&]([^=#]+)=([^&#]*)/g;
+    //     return (localStorage)
+    // }),
     // http.get('/localstorage',  ((breakpoint) => {
     //     return HttpResponse.json{
     //         (localStorage.getItem('rgl'))?.['savedPosition']
@@ -130,11 +127,9 @@ export const handlers = [
     //     // return json.savedPosition[breakpoint] || [Object.keys(json.savedPosition)[0]];
     // })),
 
-    //@ts-ignore
-    http.get('/localstorage', (key:string, value:string) => {
-        //@ts-ignore
-        return (localStorage.getItem(key))?.[value]
-    }),
+    // http.get('/localstorage', (key:string, value:string) => {
+    //     return (localStorage.getItem(key))?.[value]
+    // }),
 
     http.get('/rgl_layout', () => {
             if (localStorage.getItem('rgl_layout')) {
@@ -148,15 +143,15 @@ export const handlers = [
             } else return HttpResponse.error()
         },
     ),
-    http.get('/rgl_createdWidgetsList', () => {
-            const localStorageItem = localStorage.getItem('rgl_widgets');
-            if (localStorageItem) {
-                const item: string = localStorageItem;
-                const fix = item.replace(/null/g, '999999')
-                return HttpResponse.json(fix)
-            } else return new HttpResponse(null, { status: 418 })
-        },
-    ),
+    // http.get('/rgl_createdWidgetsList', () => {
+    //         const localStorageItem = localStorage.getItem('rgl_widgets');
+    //         if (localStorageItem) {
+    //             const item: string = localStorageItem;
+    //             const fix = item.replace(/null/g, '999999')
+    //             return HttpResponse.json(fix)
+    //         } else return new HttpResponse(null, { status: 418 })
+    //     },
+    // ),
 
     http.put('/DB_upload', async ({request},) => {
         const location = request.headers.get('save-location')

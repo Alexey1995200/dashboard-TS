@@ -2,47 +2,22 @@ import Grid from "./grid/index";
 import React, {ReactElement, useEffect, useRef, useState} from "react";
 import {
     compactHorizontal, compactNone, compactVertical,
-    Desktop, Mobile,
+    Desktop, Mobile, newWidget,
     resetGlobal, resetSettings, resetTable,
 } from "./../../assets/svg";
-import CreateWidget from "./create";
+
 import {getFromLS, isMobileVerByUserAgent} from "./utils";
-import {breakpoints, calculateW, cols, saveToLS, screenWidth, widgets, WIDGETS_KEYS} from "./const";
+import {breakpoints, calculateW, cols, saveToLS, screenWidth, uploadRGLData, widgets, WIDGETS_KEYS} from "./const";
+import CreateNewWidgetMenu from "./createNewWidgetMenu";
+import {ILayouts, IWidget, IWidgetData} from "./interfaces";
 
-export interface IWidget {
-    key: string;
-    data: IWidgetData;
-    el?: ({}: {}) => Element | ReactElement<any, any> | null | undefined;
-}
 
-export interface IWidgetData {
-    i: string;
-    w: number;
-    h: number;
-    x: number;
-    y: number | string | null;
-    minW?: number;
-    minH?: number;
-    moved?: boolean;
-    static?: boolean;
-    maxH?: number;
-    maxW?: number;
-    isResizable?: boolean;
-    isDraggable?: boolean | undefined;
-    // resizeHandles?: ResizeHandle[] | undefined;
-    isBounded?: boolean | undefined;
-}
 
-export interface ILayouts {
-    [key: string]: IWidgetData[];
-}
-export interface IWidgets {
-    [key: string]: IWidget;
-}
 const Dashboard = () => {
+    const [isWidgetMenuVisible, setIsWidgetMenuVisible] = useState<boolean>(false)
     const [currentCompactType, setCurrentCompactType] = useState<"vertical" | "horizontal" | null | undefined>('vertical')
-    const [fetchedLayouts, setFetchedLayouts] = useState<ILayouts | undefined>()
-    const [fetchedLayout, setFetchedLayout] = useState<ILayouts | undefined>()
+    // const [fetchedLayouts, setFetchedLayouts] = useState<ILayouts | undefined>()
+    // const [fetchedLayout, setFetchedLayout] = useState<ILayouts | undefined>()
     const [isMobileVer, setIsMobileVer] = useState(() => {
         const isMobile = getFromLS('isMobile')
         return isMobile ? isMobile : isMobileVerByUserAgent()
@@ -53,21 +28,15 @@ const Dashboard = () => {
     const [storedWidgetsKeys, setStoredWidgetsKeys] = useState<string[]>()
     const [storedWidgetsData, setStoredWidgetsData] = useState<IWidgetData[]>()
 
+    const changeWidgetMenuVisibility = () => {
+        setIsWidgetMenuVisible(!isWidgetMenuVisible);
+    };
 
     const resetLocalSettings = () => {
         setIsMobileVer(isMobileVerByUserAgent()) // Call the function to get the boolean value
+        global.localStorage.clear()
     }
-    const resetLocalTable = () => {
-        setLayouts(undefined);
-        //todo fix this shit later
-    }
-    const resetLocalStorage = () => {
-        if (global.localStorage) {
-            resetLocalSettings()
-            resetLocalTable()
-            localStorage.clear()
-        }
-    }
+
     const forcedMobileVersion = () => {
         setIsMobileVer(true)
         saveToLS('isMobile', true)
@@ -90,89 +59,86 @@ const Dashboard = () => {
         // "horizontal" | "vertical" | null.
     }
 
-    useEffect(() => {
+    const setRGLParams = (layoutData:IWidgetData[]) => {
+        const keys: string[] = [];
+        const data: IWidgetData[] = [];
+        layoutData.forEach((obj: IWidgetData) => {
+            keys.push(obj.i)
+            data.push(obj)
+        });
+        setStoredWidgetsKeys(keys)
+        setStoredWidgetsData(data)
+    }
+
+    const fetchData = () => {
         fetch('/rgl_layout')
             .then((response) => response.json())
             .then((response) => {
                 if (JSON.parse(response).value) {
-                    setFetchedLayout(JSON.parse(response).value);
-                } else {
-                    // setFetchedLayout(null);
+                    setRGLParams(JSON.parse(response).value)
                 }
             })
-            .catch((err) => console.log(err))
-        fetch('/rgl_layouts')
-            .then((response) => response.json())
-            .then((response) => {
-                if (JSON.parse(response).value) {
-                    setFetchedLayouts(JSON.parse(response).value);
-                } else {
-                    // setFetchedLayout(null);
-                }
-            })
-            .catch((err) => console.log(err))
-        fetch('/rgl_createdWidgetsList')
-            .then((response) => response.json())
-            .then((response) => {
-                if (JSON.parse(response)) {
-                    const keys: string[] = [];
-                    const data: IWidgetData[] = [];
-                    JSON.parse(response).value.forEach((obj: IWidget) => {
-                        keys.push(obj.key)
-                        data.push(obj.data)
-                    });
-                    setStoredWidgetsKeys(keys)
-                    setStoredWidgetsData(data)
-                } else {
-                    console.error('saved position is empty');
-                    setStoredWidgetsKeys([]);
-                }
-            })
-            .catch((err) => console.log(err))
+            .catch((err) => console.log('err', err))
+        // fetch('/rgl_layouts')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         if (JSON.parse(response).value) {
+        //             setFetchedLayouts(JSON.parse(response).value);
+        //         } else {
+        //             // setFetchedLayout(null);
+        //         }
+        //     })
+        //     .catch((err) => console.log('err', err))
+        // fetch('/rgl_createdWidgetsList')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         console.log('qwe', response)
+        //         if (response) {
+        //             const keys: string[] = [];
+        //             const data: IWidgetData[] = [];
+        //             JSON.parse(response).value.forEach((obj: IWidget) => {
+        //                 keys.push(obj.key)
+        //                 data.push(obj.data)
+        //             });
+        //             console.log('qwe', keys, data)
+        //             setStoredWidgetsKeys(keys)
+        //             setStoredWidgetsData(data)
+        //         } else {
+        //             console.error('saved position is empty');
+        //             setStoredWidgetsKeys([]);
+        //         }
+        //     })
+        //     .catch((err) => console.log('err', err))
+    }
+
+    useEffect(() => {
+        fetchData()
     }, []);
-
-    const uploadRGLData = async (data: ILayouts | IWidget[] | IWidgetData[], location: string) => {
-        try {
-            const response = await fetch('/DB_upload', {
-                method: 'PUT',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Save-Location': location
-                },
-            });
-            const json = await response.json();
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
 
     const handleLayoutChange = (layout: IWidgetData[], layouts: ILayouts) => {
         if (createdWidgetsList.length > 0) {
-
             uploadRGLData(layout, 'layout')
             uploadRGLData(layouts, 'layouts')
-            uploadRGLData(createdWidgetsList, 'createdWidgetsList')
+            // uploadRGLData(createdWidgetsList, 'createdWidgetsList')
             // prevLayoutsRef.current = layouts; // Update the ref instead of the state
+
+            setRGLParams(layout)
         }
     };
 
     const removeByKeyOnClick = (key: string) => {
         setCreatedWidgetsList(createdWidgetsList.filter(widget => widget.key !== key));
-        if (createdWidgetsList.length < 2) {
-            uploadRGLData([], 'createdWidgetsList')
-        }
+        // if (createdWidgetsList.length < 2) {
+        //     uploadRGLData([], 'createdWidgetsList')
+        // }
     }
     const removeAllOnClick = () => {
         setCreatedWidgetsList(createdWidgetsList.filter(widget => widget !== widget))
-        uploadRGLData([], 'createdWidgetsList')
     }
 
     const uniqueID = () => Math.random().toString(16).slice(-4);
 
-    const addWidgetByKeyOnClick = (widget: string) => {
-        console.log('qweqweqwe', createdWidgetsList, fetchedLayouts, fetchedLayout, storedWidgetsKeys)
+    const addWidgetByKeyOnClick = (widget: string): void => {
         const newWidget: IWidget = {
             key: widget,
             el: widgets[widget].el,
@@ -185,16 +151,16 @@ const Dashboard = () => {
     const getObjectByI = (array: IWidgetData[], targetI: string) => array.find(obj => obj.i === targetI)
 
     useEffect(() => {
-        setCurrentCompactType(getFromLS('rgl_compactType'))
+        if (getFromLS('rgl_compactType') !== null) {
+            setCurrentCompactType(getFromLS('rgl_compactType'))
+        }
         if (storedWidgetsKeys) {
             const fixed: IWidget[] = storedWidgetsKeys.map((widget) => {
-
                 if (storedWidgetsData) {
-                    console.log({...getObjectByI(storedWidgetsData, widget), y: Infinity}, 'qweasdzxcrty')
                     return {
                         key: widget,
                         el: widgets[widget].el,
-                        data: {...getObjectByI(storedWidgetsData, widget), y: Infinity}
+                        data: {...widgets[widget].data, ...getObjectByI(storedWidgetsData, widget)}
                     }
                 } else
                     console.log(`stored data wasn't used`)
@@ -212,6 +178,11 @@ const Dashboard = () => {
     if (screenWidth > 320) {
         return (
             <div className={'wrapper'}>
+                {isWidgetMenuVisible &&
+                    <CreateNewWidgetMenu
+                        changeWidgetMenuVisibility={changeWidgetMenuVisibility}
+                        createWidget={addWidgetByKeyOnClick}
+                    />}
                 <div className={'settings'}
                      style={screenWidth < 460 ? {flexDirection: "column"} : {flexDirection: 'row'}}>
                     <div className={'choose_device same'}>
@@ -233,7 +204,6 @@ const Dashboard = () => {
                     </div>
                     <div className={'change_params same'}>
                         <button onClick={changeCompactType}
-                            // className={currentCompactType ? 'active' : 'inactive'}
                         >
                             {(currentCompactType === 'vertical') ?
                                 <img src={compactVertical} alt="compactVertical"/>
@@ -245,48 +215,30 @@ const Dashboard = () => {
                         </button>
                     </div>
                     <div className={'resets same'}>
-                        <button onClick={resetLocalTable}><img src={resetTable} alt="Reset Table"/>
-                        </button>
+                        {/*<button><img src={resetTable} alt="Reset Table"/>*/}
+                        {/*</button>*/}
                         <button onClick={resetLocalSettings}><img src={resetSettings}
                                                                   alt="Reset Setting"/></button>
-                        <button onClick={resetLocalStorage}><img src={resetGlobal} alt="Reset All"/>
+                        {/*<button onClick={resetLocalStorage}><img src={resetGlobal} alt="Reset All"/>*/}
+                        {/*</button>*/}
+                        <button onClick={changeWidgetMenuVisibility}><img src={newWidget} alt="Reset All"/>
                         </button>
                     </div>
                 </div>
-                <CreateWidget
-                    addWidget={addWidgetByKeyOnClick}
-                />
-                <div style={{display: 'flex', justifyContent: 'space-between', overflow: "auto"}}>
-                    <div
-                        className="remove_btn"
-                        onClick={() => null}
-                    >
-                        DEBUG
-                    </div>
-                    {Object.keys(widgets).map((widgetKey) => {
-                        return (<button
-                            onClick={() => addWidgetByKeyOnClick(widgetKey)}>{widgetKey}</button>)
-                    })}
-                    <div
-                        className="remove_btn"
-                        onClick={() => removeAllOnClick()}
-                    >
-                        &#10006;
-                    </div>
-                </div>
+
                 {/*{createdWidgetsList.length>0 ? (*/}
                 <Grid
                     currentCompactType={currentCompactType}
                     layouts={layouts}
                     allWidgets={createdWidgetsList}
-                    setAllWidgets={setCreatedWidgetsList}
+                    // setAllWidgets={setCreatedWidgetsList}
                     breakpoints={breakpoints(isMobileVer)}
                     cols={cols(isMobileVer)}
-                    isMobileVer={isMobileVer}
-                    storedWidgets={storedWidgetsKeys}
+                    // isMobileVer={isMobileVer}
+                    // storedWidgets={storedWidgetsKeys}
                     removeByKeyOnClick={removeByKeyOnClick}
-                    removeAllOnClick={removeAllOnClick}
-                    addWidgetByKeyOnClick={addWidgetByKeyOnClick}
+                    // removeAllOnClick={removeAllOnClick}
+                    // addWidgetByKeyOnClick={addWidgetByKeyOnClick}
                     handleLayoutChange={handleLayoutChange}
                     widgets={widgets}
                 />

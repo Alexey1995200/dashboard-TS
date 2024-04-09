@@ -1,0 +1,24 @@
+.createNewWidget-wrapper {
+  //background: gray;
+  background: radial-gradient(circle, rgba(42, 42, 42, 0.5) 0%, rgba(0, 0, 0, 0.75) 100%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  height: 100dvh;
+  width: 100dvw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  .createNewWidget {
+    border-radius: 32px;
+    background-color: #d3d3d3;
+    width: 50dvw;
+    height: auto;
+    min-width: 640px;
+    min-height: 320px;
+    max-width: 1600px;
+    //max-height: 900px;
+  }
+}

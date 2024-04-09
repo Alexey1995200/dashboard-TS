@@ -9,6 +9,17 @@ import Summary from "./widgets/summary";
 import AvgTime from "./widgets/avgTime";
 import UpcTasks from "./widgets/upcomingDeadlines";
 import ProjectLogs from "./widgets/logs";
+import {
+    AvgTimeIco,
+    BudgetIco,
+    LaunchDateIco,
+    OverallProgressIco,
+    OverdueIco,
+    ProgressBarIco, ProjectLogsIco,
+    RiskIco,
+    SummaryIco, upcTasksIco
+} from "../../assets/svg";
+import {Breakpoints, IBpArr, ILayouts, IWidget, IWidgetData, TBreakpoints} from "./interfaces";
 
 export const gridMargins: [number, number] = [10, 10]// Margin between items [x, y] in px
 export const gridRowHeight: number = 1
@@ -22,41 +33,6 @@ export const colorFilter = {
 };
 export const useragent: string = window.navigator.userAgent
 export const screenWidth: number = window.innerWidth
-
-export interface MobileBreakpoints {
-    galaxyY: number;
-    galaxyS3: number;
-    F3: number;
-    Tab7in: number;
-    Tab: number;
-}
-
-export interface DesktopBreakpoints {
-    FHD: number;
-    WQVGA: number;
-    FourK: number;
-    qHD: number;
-    VGA: number;
-    WVGA: number;
-    XGA: number;
-    WXGA: number;
-    FourKRetina: number;
-    phone: number;
-    HDp: number;
-    WXGAHD: number;
-    WQHD: number
-}
-
-export type Breakpoints = MobileBreakpoints | DesktopBreakpoints;
-
-interface IBpArrItem {
-    device: string;
-    resolution: number;
-    type: string;
-}
-
-type IBpArr = IBpArrItem[];
-
 export const saveToLS = (key: string, value: any) => {
     if (global.localStorage) {
         global.localStorage.setItem(
@@ -88,41 +64,41 @@ export const breakpointsArr: IBpArr = [
     {device: 'Tab', resolution: 780 - 1, type: 'mobile'}
 ];
 export const currentBreakpoint: string = getCurrentBreakpoint(isMobile(), screenWidth).device
-export const breakpoints = (isMobileVer: boolean) => {
+export const breakpoints = (isMobileVer: boolean): TBreakpoints => {
     return isMobileVer ? {
-        galaxyY: 320 - 1,
-        galaxyS3: 360 - 1,
-        F3: 486 - 1,
-        Tab7in: 600 - 1,
-        Tab: 780 - 1,
+        ['galaxyY']: 320 - 10,
+        ['galaxyS3']: 360 - 10,
+        ['F3']: 486 - 10,
+        ['Tab7in']: 600 - 10,
+        ['Tab']: 780 - 10,
         // Tab2: 800 - 1,
 
     } : {
-        phone: 360 - 10,
-        WQVGA: 480 - 10,
-        VGA: 640 - 10,
-        WVGA: 800 - 10,
-        qHD: 960 - 10,
-        XGA: 1024 - 10,
-        WXGA: 1279 - 10,
-        WXGAHD: 1366 - 10,
-        HDp: 1600 - 10,
-        FHD: 1920 - 10,
-        WQHD: 2560 - 10,
-        FourK: 3840 - 10,
-        FourKRetina: 4096 - 10,
+        ['phone']: 360 - 10,
+        ['WQVGA']: 480 - 10,
+        ['VGA']: 640 - 10,
+        ['WVGA']: 800 - 10,
+        ['qHD']: 960 - 10,
+        ['XGA']: 1024 - 10,
+        ['WXGA']: 1279 - 10,
+        ['WXGAHD']: 1366 - 10,
+        ['HDp']: 1600 - 10,
+        ['FHD']: 1920 - 10,
+        ['WQHD']: 2560 - 10,
+        ['FourK']: 3840 - 10,
+        ['FourKRetina']: 4096 - 10,
     }
 }
 // interface ICols = {
 //     string:number
 // }
 
-export const cols = (isMobileVer: boolean): Breakpoints => {
+export const cols = (isMobileVer: boolean): TBreakpoints => {
     return isMobileVer ? {
-        galaxyY: 1, galaxyS3: 2, F3: 4, Tab7in: 6, Tab: 8, // Tab2: 8,
+        ['galaxyY']: 1, ['galaxyS3']: 2, ['F3']: 4, ['Tab7in']: 6, ['Tab']: 8, // ['Tab2']: 8,
     } : {
-        phone: 4, WQVGA: 6, VGA: 8, WVGA: 10, qHD: 12, XGA: 13, WXGA: 16, WXGAHD: 17, HDp: 20,
-        FHD: 24, WQHD: 32, FourK: 48, FourKRetina: 52,
+        ['phone']: 4, ['WQVGA']: 6, ['VGA']: 8, ['WVGA']: 10, ['qHD']: 12, ['XGA']: 13, ['WXGA']: 16, ['WXGAHD']: 17, ['HDp']: 20,
+        ['FHD']: 24, ['WQHD']: 32, ['FourK']: 48, ['FourKRetina']: 52,
     }
 }
 export const calculateH = (expectedH: number): number => ((expectedH + gridMargins[1]) / (gridRowHeight + gridMargins[1]))
@@ -130,7 +106,7 @@ export const calculateH = (expectedH: number): number => ((expectedH + gridMargi
 export const calculateW = (expectedW: number): number => {
     // const breakpoint = breakpoints()[currentBreakpoint]
     const breakpoint: number = screenWidth
-    const col: number = cols(isMobile())[currentBreakpoint as keyof Breakpoints];
+    const col: number = cols(isMobile())[currentBreakpoint as keyof TBreakpoints];
     return (
         (expectedW + gridMargins[0])
         / (((breakpoint - (gridMargins[0] * (col))) / col)
@@ -291,3 +267,33 @@ export const widgets = {
             }
         },
 }
+export const widgetsIcons = {
+    [WIDGETS_KEYS.OverallProgress]: {ico:OverallProgressIco},
+    [WIDGETS_KEYS.ProgressBar]: {ico:ProgressBarIco},
+    [WIDGETS_KEYS.LaunchDate]: {ico:LaunchDateIco},
+    [WIDGETS_KEYS.Risks]: {ico:RiskIco},
+    [WIDGETS_KEYS.Budget]: {ico:BudgetIco},
+    [WIDGETS_KEYS.OverdueTasks]: {ico:OverdueIco},
+    [WIDGETS_KEYS.Summary]: {ico:SummaryIco},
+    [WIDGETS_KEYS.AvgTime]: {ico:AvgTimeIco},
+    [WIDGETS_KEYS.UpcTasks]: {ico:upcTasksIco},
+    [WIDGETS_KEYS.ProjectLogs]: {ico:ProjectLogsIco},
+}
+
+
+export const uploadRGLData = async (data: ILayouts | IWidget[] | IWidgetData[], location: string) => {
+    try {
+        const response = await fetch('/DB_upload', {
+            method: 'PUT',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+                'Save-Location': location
+            },
+        });
+        const json = await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+

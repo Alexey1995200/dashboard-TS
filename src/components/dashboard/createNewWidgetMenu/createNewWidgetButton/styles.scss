@@ -1,0 +1,28 @@
+.createWidget-menu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 16px;
+
+  .createWidget-menu__button {
+    margin: 4px;
+    padding: 16px;
+    font-size: 16px;
+    transition: all 0.2s;
+    background-color: #cacaca;
+    border-radius: 16px;
+    display: grid;
+    grid-template-columns: 1fr 20fr;
+    //display: flex;
+    //flex-direction: row;
+    //gap: 4px;
+    align-items: center;
+    //justify-content: space-between;
+
+    &:hover {
+        background-color: #b2b2b2;
+    }
+    img{
+      height: 32px;
+    }
+  }
+}

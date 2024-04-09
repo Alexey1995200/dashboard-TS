@@ -25,14 +25,19 @@ async function enableMocking() {
 
 enableMocking().then(() => {
 
-    // @ts-ignore
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(
-        <QueryClientProvider client={queryClient}>
-            <React.StrictMode>
-                <Layout/>
-            </React.StrictMode>
-        </QueryClientProvider>
-    );
+    const root = document.getElementById('root')
+
+    if (root !== null) {
+        const rootDOM = ReactDOM.createRoot(root);
+        rootDOM.render(
+            <QueryClientProvider client={queryClient}>
+                <React.StrictMode>
+                    <Layout/>
+                </React.StrictMode>
+            </QueryClientProvider>
+        );
+    } else {
+        return <div>something broken</div>
+    }
 })
 reportWebVitals();

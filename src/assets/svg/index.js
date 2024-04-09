@@ -5,6 +5,18 @@ import waiting from './dashboard/wait.svg'
 import finish from  './dashboard/finish.svg'
 import {ReactComponent as Desktop} from './desktop.svg'
 import {ReactComponent as Mobile} from './mobile.svg'
+//dashboard
+import newWidget from './magic.svg'
+import ProgressBarIco from './progressBar.svg'
+import OverallProgressIco from'./progress.svg'
+import LaunchDateIco from './calendar.svg'
+import RiskIco from './caution.svg'
+import BudgetIco from './budget.svg'
+import OverdueIco from './overdue.svg'
+import SummaryIco from './info.svg'
+import AvgTimeIco from './avgTime.svg'
+import upcTasksIco from './newTask.svg'
+import ProjectLogsIco from './log.svg'
 //dashboard-settings
 import movement from './movement.svg'
 import resize from './resize.svg'
@@ -29,4 +41,4 @@ import compactVertical from './align/alignTop.svg'
 import compactHorizontal from './align/alignLeft.svg'
 import compactNone from './align/alignNone.svg'
 
-export {waiting, finish, alert, checked, comment, copy, tag, update, priority, react, user, auth, movement, resize, Desktop, Mobile, reset, resetSettings, resetTable, resetGlobal, compactVertical, compactHorizontal, compactNone, Burger}
+export {waiting, finish, alert, checked, comment, copy, tag, update, priority, react, user, auth, movement, resize, Desktop, Mobile, reset, resetSettings, resetTable, resetGlobal, compactVertical, compactHorizontal, compactNone, Burger, newWidget, ProgressBarIco, OverallProgressIco, LaunchDateIco, RiskIco, BudgetIco, OverdueIco, SummaryIco, AvgTimeIco, upcTasksIco, ProjectLogsIco}

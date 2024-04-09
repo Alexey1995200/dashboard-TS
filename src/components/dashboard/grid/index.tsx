@@ -1,10 +1,10 @@
-import React, {ReactElement, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
-import RGL, {Responsive, WidthProvider} from 'react-grid-layout';
+import React, {ComponentType, ReactElement, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
+import RGL, {Layouts, Responsive, ResponsiveProps, WidthProvider} from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './styles.css'
-import {Breakpoints, gridMargins, gridRowHeight} from "./../const";
-import {ILayouts, IWidget, IWidgetData, IWidgets} from "../index";
+import {gridMargins, gridRowHeight} from "../const";
+import {Breakpoints, ILayouts, IWidget, IWidgetData, IWidgets} from "../interfaces";
 const ReactGridLayout = WidthProvider(RGL);
 
 // {
@@ -35,12 +35,12 @@ const ReactGridLayout = WidthProvider(RGL);
 interface IGrid {
     allWidgets:IWidget[];
     currentCompactType:"vertical" | "horizontal" | null | undefined;
-    layouts:ILayouts;
+    layouts:ILayouts | undefined;
     breakpoints:Breakpoints;
     cols:Breakpoints;
     widgets:IWidgets;
     handleLayoutChange:(layout: IWidgetData[], layouts: ILayouts)=>void;
-    removeByKeyOnClick:()=>{};
+    removeByKeyOnClick:(key: string) => void;
 }
 
 const Grid = ({
@@ -63,12 +63,11 @@ const Grid = ({
             <ResponsiveGridLayout
                 ref={gridLayoutRef}
                 className={'grid_wrapper'}
-                layouts={layouts as ReactGridLayout.Layout}
+                layouts={layouts as Layouts}
                 breakpoints={breakpoints}
                 cols={cols}
-                compactType={currentCompactType}
                 rowHeight={gridRowHeight}
-                currentCompactType={currentCompactType}
+                compactType={currentCompactType}
                 draggableHandle=".dragHandle"
                 margin={gridMargins}
                 isDraggable={true}
@@ -79,17 +78,14 @@ const Grid = ({
                 // preventCollision={true}
             >
                 {allWidgets.map((widget) => {
-                    const WidgetEl = widget.el
+                    const WidgetEl: any = widget.el                 //todo ts-fix
                     return (
                         <div
                             className={"widget"}
                             key={widget.key}
                             data-grid={widget.data}
                         >
-
-                            <WidgetEl
-
-                            />
+                            <WidgetEl/>
                             <span
                                 className="remove_btn"
                                 style={{

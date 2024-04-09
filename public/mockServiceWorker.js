@@ -270,7 +270,7 @@ function sendToClient(client, message, transferrables = []) {
 async function respondWithMock(response) {
   // Setting response status code to 0 is a no-op.
   // However, when responding with a "Response.error()", the produced Response
-  // instance will have status code set to 0. Since it's not possible to create
+  // instance will have status code set to 0. Since it's not possible to createNewWidgetButton
   // a Response instance with status code 0, handle that use-case separately.
   if (response.status === 0) {
     return Response.error()

@@ -1,21 +1,22 @@
 import './styles.scss'
 import {auth, Burger, react, user} from "../../../assets/svg";
 import {colorFilter} from "../../dashboard/const";
+import {useState} from "react";
 
 interface ISideBar {
-    changeSideBarVisibility:()=>void
+    changeSideBarVisibility: () => void
 }
 
 const Header = ({
                     changeSideBarVisibility
-                }:ISideBar) => {
-
+                }: ISideBar) => {
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
     return (
         <div className={'header__wrapper'}>
             <div className="header__left">
                 <Burger
                     color={'white'}
-                    style={{margin:'auto 32px'}}
+                    style={{margin: 'auto 32px'}}
                     onClick={changeSideBarVisibility}
                 />
 
@@ -32,19 +33,25 @@ const Header = ({
             </div>
             <div className="header__right">
                 <div className={'account'}>
-
-                    <img src={auth} alt="AUTH" style={{margin:'4px', padding:'4px'}}/>
-                    <div className={'account__info'}>
-                    <span className={'info__name'}>
-                    UserName Placeholder
-                        {/*{user.name}*/}
-                </span>
-                        <span className={'info__position'}>
-                    manager position
-                            {/*{user.position}*/}
-                </span>
-                    </div>
-                    <img src={user} alt="USER" style={{margin:'4px'}}/>
+                    {isLoggedIn ?
+                        <>
+                            <div className={'account__info'}>
+                        <span className={'info__name'}>
+                        UserName Placeholder
+                            {/*{user.name}*/}
+                        </span>
+                                <span className={'info__position'}>
+                        manager position
+                                    {/*{user.position}*/}
+                        </span>
+                            </div>
+                            <img src={user} alt="USER" style={{margin: '4px'}}
+                                 onClick={() => setIsLoggedIn(!isLoggedIn)}/>
+                        </>
+                        :
+                        <img className={'account__auth'} src={auth} alt="AUTH" style={{margin: '4px', padding: '4px'}}
+                             onClick={() => setIsLoggedIn(!isLoggedIn)}/>
+                    }
                 </div>
             </div>
         </div>

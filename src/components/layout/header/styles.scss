@@ -6,15 +6,14 @@
   color: white;
   overflow: unset;
   position: fixed;
-  //height: 10dvh;
-  min-height: 48px;
-  max-height: 96px;
+  height: 48px;
   top: 0;
   justify-content: space-between;
 
-  .header__left{
+  .header__left {
     display: flex;
     flex-direction: row;
+
     .navBar__wrapper {
       display: flex;
       flex-direction: row;
@@ -37,7 +36,7 @@
     }
   }
 
-  .header__right{
+  .header__right {
     display: flex;
     align-self: end;
 
@@ -81,23 +80,33 @@
   }
 
 
-
-
-
 }
 
 @media (max-width: 800px) {
   .header__wrapper {
-    flex-direction: column;
-    .header__left{
+    //flex-direction: column;
+    .header__left {
       .navBar__wrapper {
         display: none;
       }
     }
+
     .header__logo {
-      top:25%;
-      height: 32px;
-      width: 32px;
+      //top:25%;
+      //height: 32px;
+      //width: 32px;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .header__wrapper {
+    .header__right {
+      .account {
+        .account__info{
+          display: none;
+        }
+      }
     }
   }
 }
