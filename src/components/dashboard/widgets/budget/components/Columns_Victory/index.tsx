@@ -1,22 +1,23 @@
-import * as V from 'victory';
 import {VictoryAxis, VictoryBar, VictoryChart, VictoryGroup, VictoryLegend} from "victory";
 import React from "react";
+import {palette} from "../../../../../../assets/colors";
+import {IWidgetEl} from "../../../../interfaces";
 
-const colors = [
-    '#2e3432',
-    '#45af6a',
-    '#b2b2b2',
-]
-const data = [
-    {
-        x: 0,
-        y: 52000
-    }, {
-        x: 1,
-        y: 42000
-    }
-]
-const VictoryColumns = ({columnsData}) => {
+interface IColumnData {
+    id: number,
+    type: string,
+    text: string,
+    value: number,
+    color: string
+}
+
+interface IVictory {
+    columnsData: IColumnData[]
+}
+
+type TVictoryColumns = IVictory & IWidgetEl
+
+const VictoryColumns = ({columnsData}: TVictoryColumns) => {
 
     return (
         <div className={'vColumns'}>
@@ -65,13 +66,7 @@ const VictoryColumns = ({columnsData}) => {
                                 data:
                                     {
                                         fill: ({datum}) =>
-                                            datum.id === 1
-                                                ? "#2e3432"
-                                                : datum.id === 2
-                                                    ? "#45af6a"
-                                                    : datum.id === 3
-                                                        ? "#b2b2b2"
-                                                        : "gray"
+                                            datum.color
                                     },
                             }
                         }

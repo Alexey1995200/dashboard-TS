@@ -9,11 +9,17 @@ import {
 import {getFromLS, isMobileVerByUserAgent} from "./utils";
 import {breakpoints, calculateW, cols, saveToLS, screenWidth, uploadRGLData, widgets, WIDGETS_KEYS} from "./const";
 import CreateNewWidgetMenu from "./createNewWidgetMenu";
-import {ILayouts, IWidget, IWidgetData} from "./interfaces";
+import {ILayouts, IWidget, IWidgetData, TCurrentTheme} from "./interfaces";
 
+ interface IDashBoard {
+     isDarkTheme:boolean,
+     currentTheme:TCurrentTheme
+}
 
-
-const Dashboard = () => {
+const Dashboard = ({
+                       isDarkTheme,
+                       currentTheme,
+                   }:IDashBoard) => {
     const [isWidgetMenuVisible, setIsWidgetMenuVisible] = useState<boolean>(false)
     const [currentCompactType, setCurrentCompactType] = useState<"vertical" | "horizontal" | null | undefined>('vertical')
     // const [fetchedLayouts, setFetchedLayouts] = useState<ILayouts | undefined>()
@@ -79,36 +85,6 @@ const Dashboard = () => {
                 }
             })
             .catch((err) => console.log('err', err))
-        // fetch('/rgl_layouts')
-        //     .then((response) => response.json())
-        //     .then((response) => {
-        //         if (JSON.parse(response).value) {
-        //             setFetchedLayouts(JSON.parse(response).value);
-        //         } else {
-        //             // setFetchedLayout(null);
-        //         }
-        //     })
-        //     .catch((err) => console.log('err', err))
-        // fetch('/rgl_createdWidgetsList')
-        //     .then((response) => response.json())
-        //     .then((response) => {
-        //         console.log('qwe', response)
-        //         if (response) {
-        //             const keys: string[] = [];
-        //             const data: IWidgetData[] = [];
-        //             JSON.parse(response).value.forEach((obj: IWidget) => {
-        //                 keys.push(obj.key)
-        //                 data.push(obj.data)
-        //             });
-        //             console.log('qwe', keys, data)
-        //             setStoredWidgetsKeys(keys)
-        //             setStoredWidgetsData(data)
-        //         } else {
-        //             console.error('saved position is empty');
-        //             setStoredWidgetsKeys([]);
-        //         }
-        //     })
-        //     .catch((err) => console.log('err', err))
     }
 
     useEffect(() => {
@@ -241,6 +217,7 @@ const Dashboard = () => {
                     // addWidgetByKeyOnClick={addWidgetByKeyOnClick}
                     handleLayoutChange={handleLayoutChange}
                     widgets={widgets}
+                    currentTheme={currentTheme}
                 />
                 {/*) : (*/}
                 {/*    <div style={{margin: "auto", fontSize: '32px', textAlign: "center"}}>There's no widgets added</div>*/}

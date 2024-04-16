@@ -1,30 +1,31 @@
 import {format} from "date-fns";
 import './styles.scss'
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {finishTimestampMS} from "../../../../DB/db";
 import {use} from "msw/lib/core/utils/internal/requestHandlerUtils";
+import {IWidgetEl} from "../../interfaces";
+import {palette, theme} from "../../../../assets/colors";
 
 // const isProjectOnTime = () => {
 //     if ((finishDate - new Date()) > 0) return true
 // }
+interface ISummaryElement {
+    startDate: 'string',
+    endDate: 'string',
+    projectLeader: 'string',
+    overallStatus: 'string',
+}
 
-
-
-
-
-const Summary = () => {
-
-    const [summaryScale, setSummaryScale]=useState(1)
+const Summary = ({currentTheme}:IWidgetEl) => {
+    const [summaryScale, setSummaryScale]=useState<number>(1)
     const summaryRef = useRef<HTMLDivElement>(null);
-    const [summDB, setSummDB] =useState([
-        {
-            startDate: 'string',
-            endDate: 'string',
-            projectLeader: 'string',
-            overallStatus: 'string'
-        }
-    ])
-    const [finishTimestampMS, setFinishTimestampMS] = useState(0)
+    const [summDB, setSummDB] =useState<ISummaryElement[]>([{
+        startDate: 'string',
+        endDate: 'string',
+        projectLeader: 'string',
+        overallStatus: 'string',
+    }])
+    const [finishTimestampMS, setFinishTimestampMS] = useState<number>(0)
     const getDimensions = () => {
         if (summaryRef.current) {
             const { width, height } = summaryRef.current.getBoundingClientRect();
@@ -58,9 +59,14 @@ const Summary = () => {
             resizeObserver.disconnect();
         };
     }, []);
-
+    const themeFontColor = useMemo(() => {
+        return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
+    }, [currentTheme]);
+    const themeBackgroundColor = useMemo(() => {
+        return currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white;
+    }, [currentTheme]);
     return (
-        <div className={'summary__wrapper'} ref={summaryRef}>
+        <div className={'summary__wrapper'} ref={summaryRef} style={{backgroundColor:themeBackgroundColor, color:themeFontColor}}>
             <div className={'centered_title dragHandle'}
                  style={{
                      transform: `scale(${summaryScale > 1.25 ? summaryScale / 1.25 : 1})`,

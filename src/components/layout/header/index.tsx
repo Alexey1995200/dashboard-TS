@@ -1,21 +1,31 @@
 import './styles.scss'
-import {auth, Burger, react, user} from "../../../assets/svg";
+import {auth, Burger, darkTheme, lighTheme, react, user} from "../../../assets/svg";
 import {colorFilter} from "../../dashboard/const";
 import {useState} from "react";
+import {TCurrentTheme} from "../../dashboard/interfaces";
+import {palette} from "../../../assets/colors";
 
 interface ISideBar {
     changeSideBarVisibility: () => void
+    changeDarkThemeState: () => void
+    isDarkTheme: boolean,
+    currentTheme: TCurrentTheme
 }
 
 const Header = ({
-                    changeSideBarVisibility
+                    changeSideBarVisibility,
+                    changeDarkThemeState,
+                    isDarkTheme,
+                    currentTheme
                 }: ISideBar) => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+
+
     return (
         <div className={'header__wrapper'}>
             <div className="header__left">
                 <Burger
-                    color={'white'}
+                    color={palette.white}
                     style={{margin: 'auto 32px'}}
                     onClick={changeSideBarVisibility}
                 />
@@ -53,9 +63,11 @@ const Header = ({
                              onClick={() => setIsLoggedIn(!isLoggedIn)}/>
                     }
                 </div>
+                <img src={isDarkTheme ? darkTheme : lighTheme} alt={'changeTheme'} onClick={changeDarkThemeState}
+                     style={{height: '36px'}}/>
             </div>
         </div>
     )
 }
 
-export default Header
+export default Header;

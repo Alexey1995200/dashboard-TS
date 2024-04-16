@@ -1,8 +1,9 @@
 import {comment, copy, priority, tag, update, alert, checked} from "../../../../assets/svg";
 import './styles.scss'
 import {format, getTime} from "date-fns";
-import {useEffect, useRef, useState} from "react";
-import {users} from "../../../../DB/logs";
+import {useEffect, useMemo, useRef, useState} from "react";
+import {palette, theme} from "../../../../assets/colors";
+import {IWidgetEl} from "../../interfaces";
 
 
 interface ILog {
@@ -67,7 +68,7 @@ const LOG_DESCRIPTION_COMPONENTS_MAPPING = {
     [LOG_TYPES.FINISHED]: FinishedTask,
 }
 
-const ProjectLogs = () => {
+const ProjectLogs = ({currentTheme}:IWidgetEl) => {
     const [logs, setLogs] = useState([])
     const [user, setUser] = useState([])
     const [isAllLogsShown, setIsAllLogsShown] = useState(false);
@@ -121,12 +122,19 @@ const ProjectLogs = () => {
             resizeObserver.disconnect();
         };
     }, []);
-
+    const themeFontColor = useMemo(() => {
+        return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
+    }, [currentTheme]);
+    const themeBackgroundColor = useMemo(() => {
+        return currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white;
+    }, [currentTheme]);
 
     return (
-        <div className={'logBuilder'} ref={logBuilderRef}>
+        <div className={'logBuilder'} ref={logBuilderRef} style={{
+            backgroundColor:themeBackgroundColor,
+            color:themeFontColor
+                    }}>
             <div className={'centered_title dragHandle'}
-
                  style={{
                      transform: `scale(${logBuilderScale > 1.25 ? logBuilderScale / 1.25 : 1})`,
                      padding: `${logBuilderScale > 1.5 ? logBuilderScale * 8 / 1.5 : 0}px`
@@ -142,7 +150,15 @@ const ProjectLogs = () => {
                                      fontSize: `${logBuilderScale > 3 ? logBuilderScale * 8 / 2 : 12}px`
                                  }}
                                  key={log.recordNum}>
-                                <img src={LOG_ICONS_MAPPING[log.type]} className={'el__ico'} alt={''}/>
+                                <img
+                                    src={LOG_ICONS_MAPPING[log.type]}
+                                    className={'el__ico'}
+                                    alt={''}
+                                    style={{
+                                        backgroundColor:themeBackgroundColor,
+                                        border: `2px solid ${themeBackgroundColor}`,
+                                    }}
+                                />
                                 <div className={'el__upper'}>
                                     <div className={'el__title'}>
                                         {LOG_TITLE_MAPPING[log.type]}

@@ -1,5 +1,4 @@
 .avgTime__wrapper {
-  background-color: white;
   padding: 8px 0;
   display: flex;
   flex-direction: column;
@@ -16,7 +15,6 @@
     margin: auto;
     flex-direction: row;
     justify-content: space-between;
-    background-color: white;
     //padding: 0 42px;
     .user{
       display: flex;
@@ -30,7 +28,6 @@
         border-top: 1px solid lightgray;
         border-right: 1px solid lightgray;
         border-left: 1px double lightgray;
-
       }
       .user__name{
       font-size: 8px;
