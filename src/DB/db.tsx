@@ -1,8 +1,5 @@
 import {format} from "date-fns";
-const mainColors = {
-    '0%': '#33a885',
-    '100%': '#44ae69',
-};
+
 const finishTimestampMS = 1735682399000
 const finishDate:Date = new Date(finishTimestampMS);
 const isProjectOnTime = ():boolean => (finishTimestampMS - new Date().getTime()) > 0;
@@ -15,4 +12,4 @@ const summDB =[
     }
 ]
 
-export {mainColors, summDB, finishDate, finishTimestampMS}
+export {summDB, finishDate, finishTimestampMS}

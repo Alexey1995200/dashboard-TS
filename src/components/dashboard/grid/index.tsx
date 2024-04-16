@@ -4,7 +4,8 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './styles.css'
 import {gridMargins, gridRowHeight} from "../const";
-import {Breakpoints, ILayouts, IWidget, IWidgetData, IWidgets} from "../interfaces";
+import {Breakpoints, ILayouts, IWidget, IWidgetData, IWidgets, TCurrentTheme} from "../interfaces";
+import {theme} from "../../../assets/colors";
 const ReactGridLayout = WidthProvider(RGL);
 
 // {
@@ -41,6 +42,7 @@ interface IGrid {
     widgets:IWidgets;
     handleLayoutChange:(layout: IWidgetData[], layouts: ILayouts)=>void;
     removeByKeyOnClick:(key: string) => void;
+    currentTheme:TCurrentTheme
 }
 
 const Grid = ({
@@ -51,6 +53,7 @@ const Grid = ({
                   cols,
                   handleLayoutChange,
                   removeByKeyOnClick,
+                  currentTheme
               }:IGrid) => {
 
     const gridLayoutRef = useRef(null);
@@ -76,6 +79,7 @@ const Grid = ({
                 allowOverlap={false}
                 onLayoutChange={(layout, layouts) => handleLayoutChange(layout, layouts)}
                 // preventCollision={true}
+                style={{backgroundColor:currentTheme ? theme.dashboard.grid.BGColor[currentTheme] : 'b2b2b2'}}
             >
                 {allWidgets.map((widget) => {
                     const WidgetEl: any = widget.el                 //todo ts-fix
@@ -85,7 +89,9 @@ const Grid = ({
                             key={widget.key}
                             data-grid={widget.data}
                         >
-                            <WidgetEl/>
+                            <WidgetEl
+                                currentTheme={currentTheme}
+                            />
                             <span
                                 className="remove_btn"
                                 style={{

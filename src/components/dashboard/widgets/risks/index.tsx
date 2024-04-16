@@ -1,11 +1,22 @@
 import './styles.scss'
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {format} from "date-fns";
+import {palette, theme} from "../../../../assets/colors";
+import {IRisks, IWidgetEl} from "../../interfaces";
 
-const Risks = ({}) => {
-    const [risksScale, setRisksScale] = useState(1)
+interface IOverTaskElement {
+    task: string,
+    deadline: string,
+    days: number,
+    employee: string,
+    employeeId: number,
+    employeeShort: string,
+}
+
+const Risks = ({currentTheme}: IWidgetEl) => {
+    const [risksScale, setRisksScale] = useState<number>(1)
     const risksRef = useRef<HTMLDivElement>(null);
-    const [overTasks, setOverTasks] = useState([{
+    const [overTasks, setOverTasks] = useState<IOverTaskElement[]>([{
         task: 'status upd for board',
         deadline: format(new Date(32503676461000), "dd.MM.yyyy"),
         days: Math.floor((946681261001) / (1000 * 60 * 60 * 24)),
@@ -50,12 +61,6 @@ const Risks = ({}) => {
     const taskMedRisk = (overTasks.filter(task => task.days >= 7 && task.days <= 14)).length;
     const taskHiRisk = (overTasks.filter(task => task.days >= 14)).length;
 
-    interface IRisks {
-        id: number;
-        num: number;
-        description: string;
-    }
-
     const risks: IRisks[] = [
         {
             id: 0,
@@ -71,21 +76,22 @@ const Risks = ({}) => {
             description: 'Overdue hi.risk'
         },
     ]
-
+    const themeFontColor = useMemo(() => {
+        return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
+    }, [currentTheme]);
+    const themeBackgroundColor = useMemo(() => {
+        return currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white;
+    }, [currentTheme]);
     return (
-        <div className={'risks__wrapper'} ref={risksRef}>
-            <div
-                className={'centered_title dragHandle'}
+        <div className={'risks__wrapper'} ref={risksRef} style={{backgroundColor:themeBackgroundColor, color:themeFontColor}}>
+            <div className={'centered_title dragHandle'}
                 style={{
                     transform: `scale(${risksScale > 1.25 ? risksScale / 1.25 : 1})`,
                     paddingTop: `${risksScale > 1.5 ? risksScale * 4 / 1.5 : 0}px`
                 }}> Risks
             </div>
-            <div
-                className={'risks'}
-                style={{fontSize: `${risksScale > 1.25 ? 12 * risksScale / 1.25 : 12}px`}}
-
-            >
+            <div className={'risks'}
+                style={{fontSize: `${risksScale > 1.25 ? 12 * risksScale / 1.25 : 12}px`}}>
                 {risks.every(risk => risk.num <= 0) ? <div className={'goodNews'}>all good</div> :
                     risks.map((risk) => (
                             <div key={risk.id}
@@ -104,9 +110,7 @@ const Risks = ({}) => {
                             </div>
                         )
                     )
-
                 }
-
             </div>
         </div>
 

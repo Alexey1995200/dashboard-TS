@@ -2,13 +2,9 @@ import {ConfigProvider, Progress} from "antd";
 import './styles.scss'
 import {waiting} from "../../../../assets/svg";
 import {useEffect, useState} from "react";
-
-interface IProgBar {
-    tasks: ITasks[];
-    percentage: number;
-
-}
-
+import {strokeColor} from "../../const";
+import {IWidgetEl} from "../../interfaces";
+import {palette, theme} from "../../../../assets/colors";
 interface ITasks {
     id: number;
     title: string;
@@ -19,16 +15,10 @@ const task: ITasks[] = [{
     title: "",
     percentage: 0,
 }]
-const ProgressBar = () => {
-    const [colors, setColors] = useState({})
-    const [percentage, setPercentage] = useState(0)
-    const [tasks, setTasks] = useState<ITasks[]>(task)  //todo like here
+const ProgressBar = ({currentTheme}:IWidgetEl) => {
+    const [percentage, setPercentage] = useState<number>(0)
+    const [tasks, setTasks] = useState<ITasks[]>(task)
     useEffect(() => {
-        fetch('/db/colors')
-            .then((response) => response.json())
-            .then((respColors) => {
-                setColors(respColors.mainColors)
-            })
         fetch('/db/progressDB/percentage')
             .then((response) => response.json())
             .then((response) => {
@@ -43,10 +33,14 @@ const ProgressBar = () => {
     return (
         <div
             className={'progressBar'}
+            style={{
+                backgroundColor:currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white,
+                color:currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black
+            }}
         >
             <Progress
                 percent={percentage}
-                strokeColor={colors}
+                strokeColor={strokeColor}
                 showInfo={false}
                 className={'progressBar__bar dragHandle'}
             />
@@ -76,10 +70,11 @@ const ProgressBar = () => {
                                         components: {
                                             Progress: {
                                                 circleTextFontSize: '16px',
+                                                circleTextColor: currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black
                                             },
                                         },
                                     }}
-                                > <Progress type="dashboard" percent={task.percentage} strokeColor={colors}
+                                > <Progress type="dashboard" percent={task.percentage} strokeColor={strokeColor}
                                             strokeWidth={12} size={60} gapDegree={0.001}/>
                                 </ConfigProvider>
                             )}

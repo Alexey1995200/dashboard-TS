@@ -20,6 +20,12 @@ import {
     SummaryIco, upcTasksIco
 } from "../../assets/svg";
 import {Breakpoints, IBpArr, ILayouts, IWidget, IWidgetData, TBreakpoints} from "./interfaces";
+import {palette, theme} from "../../assets/colors";
+
+export const strokeColor={
+    '0%': palette.gumdropGreen,
+    '100%': palette.freshGreens,
+}
 
 export const gridMargins: [number, number] = [10, 10]// Margin between items [x, y] in px
 export const gridRowHeight: number = 1
@@ -230,7 +236,7 @@ export const widgets = {
             el: AvgTime,
             data: {
                 i: WIDGETS_KEYS.AvgTime,
-                w: Math.ceil(calculateW(276)), h: calculateH(164),
+                w: Math.ceil(calculateW(386)), h: calculateH(164),
                 minW: Math.ceil(calculateW(386)), maxW: calculateW(450),
                 minH: calculateH(164), maxH: calculateH(200),
                 isResizable: false,

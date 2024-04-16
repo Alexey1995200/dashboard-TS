@@ -1,9 +1,14 @@
 import {ReactElement} from "react";
 
+export interface IWidgetEl {
+    currentTheme?:TCurrentTheme
+}
+
 export interface IWidget {
     key: string;
     data: IWidgetData;
     el?: ({}) => Element | ReactElement | undefined;
+    currentTheme?:TCurrentTheme|undefined
 }
 
 export interface IWidgetData {
@@ -38,7 +43,6 @@ export interface MobileBreakpoints {
 export interface DesktopBreakpoints {
     [key:string]: number
 }
-// todo
 
 export type TBreakpoints = MobileBreakpoints | DesktopBreakpoints;
 
@@ -54,3 +58,11 @@ export interface IBpArrItem {
 }
 
 export type IBpArr = IBpArrItem[];
+
+export type TCurrentTheme = 'dark' | 'light'
+
+export interface IRisks {
+    id: number;
+    num: number;
+    description: string;
+}

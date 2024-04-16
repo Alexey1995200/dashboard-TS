@@ -2,10 +2,12 @@ import { ConfigProvider, Progress } from "antd";
 import React, {useEffect, useRef, useState} from "react";
 import './styles.scss';
 import { useIsFetching } from '@tanstack/react-query'
-const OverallProgress = () => {
+import {strokeColor} from "../../const";
+import {palette, theme} from "../../../../assets/colors";
+import {IWidgetEl} from "../../interfaces";
+const OverallProgress = ({currentTheme}:IWidgetEl) => {
     const [overallScale, setOverallScale]=useState(1)
-    const [colors, setColors] = useState({})
-    const [percentage, setPercentage] = useState(50)
+    const [percentage, setPercentage] = useState(Math.random()*100)
     const overallProgressRef = useRef<HTMLDivElement>(null);
     const getDimensions = () => {
         if (overallProgressRef.current) {
@@ -13,21 +15,15 @@ const OverallProgress = () => {
             return [width, height]
         }
     };
-
     const handleResize = () => {
         const dimensions = getDimensions();
         if (!dimensions) return;
         const [width, height] = dimensions
         setOverallScale((Math.min(width, height)/120));
     };
-
     useEffect(() => {
         handleResize(); // Initial render
-        fetch('/db/colors')                                         //todo optimize fetch duplicates
-            .then((response) => response.json())
-            .then((respColors) => {
-                setColors(respColors.mainColors)
-            })
+
         fetch('/db/progressDB/percentage')
             .then((response) => response.json())
             .then((response) => {
@@ -52,7 +48,6 @@ const OverallProgress = () => {
     // if (isLoading) return 'Loading...'
     //
     // if (error) return 'An error has occurred: ' + error.message
-
     const isFetching = useIsFetching()
     return (
     // isFetching ? (
@@ -62,6 +57,10 @@ const OverallProgress = () => {
         <div
             ref={overallProgressRef}
             className={'overallProgress'}
+            style={{
+                backgroundColor: currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white,
+                color:currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black,
+            }}
         >
             <div className={'centered_title overallProgress__title dragHandle'} style={{ transform: `scale(${overallScale > 1.25 ? overallScale/1.25 : 1})` }}>Overall Progress</div>
             <ConfigProvider
@@ -69,6 +68,7 @@ const OverallProgress = () => {
                     components: {
                         Progress: {
                             circleTextFontSize: '24',
+                            circleTextColor: currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black
                         },
                     },
                 }}
@@ -80,7 +80,7 @@ const OverallProgress = () => {
                     type="dashboard"
                     percent={Math.round(percentage)}
                     gapDegree={180}
-                    strokeColor={colors}
+                    strokeColor={strokeColor}
                     className={'antProgOverall'}
                 />
             </ConfigProvider>

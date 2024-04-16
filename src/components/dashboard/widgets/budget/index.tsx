@@ -1,6 +1,8 @@
 import './styles.scss'
 import VictoryColumns from "./components/Columns_Victory";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
+import {IWidgetEl} from "../../interfaces";
+import {palette, theme} from "../../../../assets/colors";
 
 interface IBudjData{
     id:number;
@@ -12,9 +14,9 @@ interface IBudjData{
 
 
 
-const Budget = ({}) => {
+const Budget = ({currentTheme}:IWidgetEl) => {
     const [budgetScale, setBudgetScale]=useState(1)
-    const [data, setData] = useState([{
+    const [data, setData] = useState<IBudjData[]>([{
         id: 1,
         type: 'Type(title)',
         text: 'Title',
@@ -65,11 +67,23 @@ const Budget = ({}) => {
 
 
 
+    const themeFontColor = useMemo(() => {
+        return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
+    }, [currentTheme]);
 
+    const themeBackgroundColor = useMemo(() => {
+        return currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white;
+    }, [currentTheme]);
 
 
     return (
-        <div className={'budget__wrapper'} ref={budgetRef}>
+        <div className={'budget__wrapper'}
+             ref={budgetRef}
+             style={{
+                 backgroundColor: themeBackgroundColor,
+                 color:themeFontColor
+             }}
+        >
             <h3 className={'centered_title dragHandle'}
                 style={{
                     transform: `scale(${budgetScale > 1.25 ? budgetScale/1.5 : 1})`,
@@ -85,8 +99,15 @@ const Budget = ({}) => {
                     <div className={'columns__categories'}>
                         {/*<div className={'placeholder'} content={''}/>*/}
                         {data.map((column) => (
-                                <div className={'column__category'} key={column.id} style={{ fontSize: `${budgetScale > 1.25 ? 8*budgetScale/1.5 : 8}px` }}>
-                                    <div className={`category__color ${column.color}`} content={''}/>
+                                <div className={'column__category'}
+                                     key={column.id}
+                                     style={{ fontSize: `${budgetScale > 1.25 ? 8*budgetScale/1.5 : 8}px` }}
+                                >
+                                    <div
+                                        className={`category__color`}
+                                        content={''}
+                                        style={{ backgroundColor: column.color}}
+                                    />
                                     <div className={'category__title'}>{column.type}</div>
                                 </div>
                             )

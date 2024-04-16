@@ -1,12 +1,14 @@
 import './styles.scss'
 import {ConfigProvider, Progress} from "antd";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
+import {strokeColor} from "../../const";
+import {palette, theme} from "../../../../assets/colors";
+import {IWidgetEl} from "../../interfaces";
 
-const UpcTasks = () => {
+const UpcTasks = ({currentTheme}:IWidgetEl) => {
 
     const [upcomingScale, setUpcomingScale] = useState(1)
     const upcomingRef = useRef<HTMLDivElement>(null);
-    const [colors, setColors] = useState({})
     const [tasks, setTasks] = useState([{
         employee: 'employee',
         employeeId: 0,
@@ -31,11 +33,6 @@ const UpcTasks = () => {
 
     useEffect(() => {
         handleResize();
-        fetch('/db/colors')
-            .then((response) => response.json())
-            .then((respColors) => {
-                setColors(respColors.mainColors)
-            })
         fetch('db/upcDeadlinesDB/tasks')
             .then((response) => response.json())
             .then((response) => {
@@ -50,11 +47,19 @@ const UpcTasks = () => {
         };
     }, []);
 
-const test = () => {
-    setTasks([])
-}
+    const themeFontColor = useMemo(() => {
+        return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
+    }, [currentTheme]);
+    const themeBackgroundColor = useMemo(() => {
+        return currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white;
+    }, [currentTheme]);
+
     return <div className={'upcoming__wrapper'} ref={upcomingRef}
-                   style={{gap: `${upcomingScale > 1.25 ? 4 * upcomingScale : 4}px`}}>
+                   style={{
+                       gap: `${upcomingScale > 1.25 ? 4 * upcomingScale : 4}px`,
+                       backgroundColor:themeBackgroundColor,
+                       color:themeFontColor,
+                   }}>
                 <h3 className={'centered_title dragHandle'}
                     style={{
                         transform: `scale(${upcomingScale > 1.25 ? upcomingScale / 1.25 : 1})`,
@@ -63,14 +68,14 @@ const test = () => {
                 >Upcoming Tasks</h3>
                 <div className={'upcoming__table'}>
                     <div className={'table__header'}
-                         style={{fontSize: `${upcomingScale >= 2.5 ? 16 : upcomingScale > 1.5 ? 10 * (upcomingScale / 1.5) : 10}px`}}>
+                         style={{fontSize: `${upcomingScale >= 2.5 ? 16 : upcomingScale > 1.5 ? 11 * (upcomingScale / 1.5) : 11}px`}}>
                         <div className={'el'}>Employee</div>
                         <div className={'el'}>Task</div>
                         <div className={'el'}>Deadline</div>
                         <div className={'el'}>Workload</div>
                     </div>
                     <div className={'table__body'}
-                         style={{fontSize: `${upcomingScale >= 2.5 ? 16 : upcomingScale > 1.5 ? 10 * (upcomingScale / 1.5) : 10}px`}}>
+                         style={{fontSize: `${upcomingScale >= 2.5 ? 16 : upcomingScale > 1.5 ? 11 * (upcomingScale / 1.5) : 11}px`}}>
 
                         {tasks.every(task => task.workload === 100)
                         ? <div className={'goodNews'}> all tasks completed </div>
@@ -82,12 +87,13 @@ const test = () => {
                                         theme={{
                                             components: {
                                                 Progress: {
-                                                    fontSize: upcomingScale >= 2.5 ? 16 : upcomingScale > 1.5 ? 10 * (upcomingScale / 1.5) : 10,
-                                                    fontSizeSM: upcomingScale >= 2.5 ? 16 : upcomingScale > 1.5 ? 10 * (upcomingScale / 1.5) : 10
+                                                    fontSize: upcomingScale >= 2.5 ? 16 : upcomingScale > 1.5 ? 11 * (upcomingScale / 1.5) : 11,
+                                                    fontSizeSM: upcomingScale >= 2.5 ? 16 : upcomingScale > 1.5 ? 11 * (upcomingScale / 1.5) : 11,
+                                                    colorText:themeFontColor,
                                                 },
                                             },
                                         }}
-                                    ><Progress percent={task.workload} strokeColor={colors} size={"small"}/>
+                                    ><Progress percent={task.workload} strokeColor={strokeColor} size={"small"}/>
                                     </ConfigProvider>
                                     </div>
                                 </div>

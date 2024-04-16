@@ -1,22 +1,24 @@
 import './styles.scss'
 import {finish} from "../../../../assets/svg";
-import {useEffect, useRef, useState} from "react";
-const LaunchDate = ({}) => {
-    const [launchDateScale, setLaunchDateScale]=useState(1)
+import {useEffect, useMemo, useRef, useState} from "react";
+import {palette, theme} from '../../../../assets/colors';
+import {IWidgetEl, TCurrentTheme} from "../../interfaces";
+
+const LaunchDate = ({currentTheme}: IWidgetEl) => {
+    const [launchDateScale, setLaunchDateScale] = useState<number>(1)
     const launchDateRef = useRef<HTMLDivElement>(null);
-    const [finishDate, setFinishDate] = useState(new Date())
-    const [finishDateTimeStampMS, setFinishDateTimeStampMS] = useState(new Date().getTime())
+    const [finishDate, setFinishDate] = useState<string>('0')
+    const [finishDateTimeStampMS, setFinishDateTimeStampMS] = useState<number>(0)
     const getDimensions = () => {
         if (launchDateRef.current) {
-            const { width, height } = launchDateRef.current.getBoundingClientRect();
-            
+            const {width, height} = launchDateRef.current.getBoundingClientRect();
             return [width, height];
-        } return [0, 0];
+        }
+        return [0, 0];
     };
     const handleResize = () => {
         const [width, height] = getDimensions();
-        
-        setLaunchDateScale((Math.min(width, height)/120));
+        setLaunchDateScale((Math.min(width, height) / 120));
     };
 
     useEffect(() => {
@@ -41,22 +43,36 @@ const LaunchDate = ({}) => {
     }, []);
 
     interface IOptions {
-        weekday:'long',
-        day:'numeric',
+        weekday: 'long',
+        day: 'numeric',
         month: 'long'
     }
 
-    const options:IOptions = {weekday: 'long',day: 'numeric',month: 'long',};
+    const options: IOptions = {weekday: 'long', day: 'numeric', month: 'long',};
     const localDate = new Date();
     const timeLeftMS = finishDateTimeStampMS - localDate.getTime();
     const daysLeft = Math.floor(timeLeftMS / (1000 * 60 * 60 * 24));
+
+    const themeFontColor = useMemo(() => {
+        return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
+    }, [currentTheme]);
+    const themeBackgroundColor = useMemo(() => {
+        return currentTheme ? theme.dashboard.grid.widget.launchDate[currentTheme] : palette.white;
+    }, [currentTheme]);
+
     return (
-        <div className={'launchDate'} ref={launchDateRef}>
-            <div className={'launchDate__title centered_title dragHandle'} style={{ transform: `scale(${launchDateScale > 1.25 ? launchDateScale/1.25 : 1})` }}><p>Project</p><p>Launch Date</p></div>
-            <div className={'launchDate__body'} style={{ transform: `scale(${launchDateScale > 1.25 ? launchDateScale : 1})` }}>
+        <div className={'launchDate'}
+             ref={launchDateRef}
+             style={{backgroundColor: themeBackgroundColor, color: themeFontColor}}>
+            <div className={'launchDate__title centered_title dragHandle'}
+                 style={{transform: `scale(${launchDateScale > 1.25 ? launchDateScale / 1.25 : 1})`}}><p>Project</p>
+                <p>Launch Date</p></div>
+            <div className={'launchDate__body'}
+                 style={{transform: `scale(${launchDateScale > 1.25 ? launchDateScale/ 1.25 : 1})`}}>
                 <img src={finish} alt='🏁'/>
                 <div className={'launchDate__timer'}>
-                    <div className={'launchDate__date'}>{new Date(finishDate).toLocaleDateString(undefined, options)}</div>
+                    <div
+                        className={'launchDate__date'}>{new Date(finishDate).toLocaleDateString(undefined, options)}</div>
                     <div className={'launchDate__daysLeft'}>{daysLeft} Days</div>
                 </div>
             </div>
