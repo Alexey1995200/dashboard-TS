@@ -19,10 +19,10 @@ import {
     RiskIco,
     SummaryIco, upcTasksIco
 } from "../../assets/svg";
-import {Breakpoints, IBpArr, ILayouts, IWidget, IWidgetData, TBreakpoints} from "./interfaces";
-import {palette, theme} from "../../assets/colors";
+import {IBpArr, TBreakpoints} from "./interfaces";
+import {palette} from "../../assets/colors";
 
-export const strokeColor={
+export const strokeColor = {
     '0%': palette.gumdropGreen,
     '100%': palette.freshGreens,
 }
@@ -39,16 +39,7 @@ export const colorFilter = {
 };
 export const useragent: string = window.navigator.userAgent
 export const screenWidth: number = window.innerWidth
-export const saveToLS = (key: string, value: any) => {
-    if (global.localStorage) {
-        global.localStorage.setItem(
-            key,
-            JSON.stringify({
-                value
-            })
-        );
-    }
-};
+export const isSystemThemeDark = window.matchMedia("(prefers-color-scheme: dark)").matches
 export const breakpointsArr: IBpArr = [
     {device: 'phone', resolution: 360 - 1, type: 'desktop'},
     {device: 'WQVGA', resolution: 480 - 1, type: 'desktop'},
@@ -95,10 +86,6 @@ export const breakpoints = (isMobileVer: boolean): TBreakpoints => {
         ['FourKRetina']: 4096 - 10,
     }
 }
-// interface ICols = {
-//     string:number
-// }
-
 export const cols = (isMobileVer: boolean): TBreakpoints => {
     return isMobileVer ? {
         ['galaxyY']: 1, ['galaxyS3']: 2, ['F3']: 4, ['Tab7in']: 6, ['Tab']: 8, // ['Tab2']: 8,
@@ -108,9 +95,10 @@ export const cols = (isMobileVer: boolean): TBreakpoints => {
     }
 }
 export const calculateH = (expectedH: number): number => ((expectedH + gridMargins[1]) / (gridRowHeight + gridMargins[1]))
-// export const calculateW = (expectedWidth) => (expectedWidth + gridMargins[0]) / ((screenSize - (gridMargins[0] * (cols[currentBreakpoint] - 1))) / cols[currentBreakpoint] + gridMargins[0]);
+// old version of formula
+// export const calculateW = (expectedWidth) => (expectedWidth + gridMargins[0]) /
+// ((screenSize - (gridMargins[0] * (cols[currentBreakpoint] - 1))) / cols[currentBreakpoint] + gridMargins[0]);
 export const calculateW = (expectedW: number): number => {
-    // const breakpoint = breakpoints()[currentBreakpoint]
     const breakpoint: number = screenWidth
     const col: number = cols(isMobile())[currentBreakpoint as keyof TBreakpoints];
     return (
@@ -131,6 +119,18 @@ export const WIDGETS_KEYS = {
     UpcTasks: 'UpcTasks',
     ProjectLogs: 'ProjectLogs'
 };
+export const widgetsIcons = {
+    [WIDGETS_KEYS.OverallProgress]: {ico: OverallProgressIco},
+    [WIDGETS_KEYS.ProgressBar]: {ico: ProgressBarIco},
+    [WIDGETS_KEYS.LaunchDate]: {ico: LaunchDateIco},
+    [WIDGETS_KEYS.Risks]: {ico: RiskIco},
+    [WIDGETS_KEYS.Budget]: {ico: BudgetIco},
+    [WIDGETS_KEYS.OverdueTasks]: {ico: OverdueIco},
+    [WIDGETS_KEYS.Summary]: {ico: SummaryIco},
+    [WIDGETS_KEYS.AvgTime]: {ico: AvgTimeIco},
+    [WIDGETS_KEYS.UpcTasks]: {ico: upcTasksIco},
+    [WIDGETS_KEYS.ProjectLogs]: {ico: ProjectLogsIco},
+}
 export const widgets = {
     [WIDGETS_KEYS.OverallProgress]:
         {
@@ -139,8 +139,8 @@ export const widgets = {
             data: {
                 i: WIDGETS_KEYS.OverallProgress,
                 w: Math.ceil(calculateW(120)),
-                h: Math.ceil(calculateH(120)),
-                minH: Math.ceil(calculateH(90)),
+                h: Math.ceil(calculateH(130)),
+                minH: Math.ceil(calculateH(130)),
                 minW: Math.ceil(calculateW(100)),
                 x: 0,
                 y: Infinity
@@ -273,33 +273,7 @@ export const widgets = {
             }
         },
 }
-export const widgetsIcons = {
-    [WIDGETS_KEYS.OverallProgress]: {ico:OverallProgressIco},
-    [WIDGETS_KEYS.ProgressBar]: {ico:ProgressBarIco},
-    [WIDGETS_KEYS.LaunchDate]: {ico:LaunchDateIco},
-    [WIDGETS_KEYS.Risks]: {ico:RiskIco},
-    [WIDGETS_KEYS.Budget]: {ico:BudgetIco},
-    [WIDGETS_KEYS.OverdueTasks]: {ico:OverdueIco},
-    [WIDGETS_KEYS.Summary]: {ico:SummaryIco},
-    [WIDGETS_KEYS.AvgTime]: {ico:AvgTimeIco},
-    [WIDGETS_KEYS.UpcTasks]: {ico:upcTasksIco},
-    [WIDGETS_KEYS.ProjectLogs]: {ico:ProjectLogsIco},
-}
 
 
-export const uploadRGLData = async (data: ILayouts | IWidget[] | IWidgetData[], location: string) => {
-    try {
-        const response = await fetch('/DB_upload', {
-            method: 'PUT',
-            body: JSON.stringify(data),
-            headers: {
-                'Content-Type': 'application/json',
-                'Save-Location': location
-            },
-        });
-        const json = await response.json();
-    } catch (error) {
-        console.error('Error:', error);
-    }
-};
+
 

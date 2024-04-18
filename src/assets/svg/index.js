@@ -26,6 +26,7 @@ import reset from './reset.svg'
 import resetSettings from './resetSettings.svg'
 import resetTable from './resetTable.svg'
 import resetGlobal from './resetGlobal.svg'
+import clear from './broom.svg'
 //logs
 import alert from './logsIcons/alert.svg'
 import checked from './logsIcons/checked.svg'
@@ -43,4 +44,4 @@ import compactVertical from './align/alignTop.svg'
 import compactHorizontal from './align/alignLeft.svg'
 import compactNone from './align/alignNone.svg'
 
-export {waiting, finish, alert, checked, comment, copy, tag, update, priority, react, user, auth, movement, resize, Desktop, Mobile, reset, resetSettings, resetTable, resetGlobal, compactVertical, compactHorizontal, compactNone, Burger, newWidget, ProgressBarIco, OverallProgressIco, LaunchDateIco, RiskIco, BudgetIco, OverdueIco, SummaryIco, AvgTimeIco, upcTasksIco, ProjectLogsIco, darkTheme, lighTheme}
+export {waiting, finish, alert, checked, comment, copy, tag, update, priority, react, user, auth, movement, resize, Desktop, Mobile, reset, resetSettings, resetTable, resetGlobal, compactVertical, compactHorizontal, compactNone, Burger, newWidget, ProgressBarIco, OverallProgressIco, LaunchDateIco, RiskIco, BudgetIco, OverdueIco, SummaryIco, AvgTimeIco, upcTasksIco, ProjectLogsIco, darkTheme, lighTheme, clear}

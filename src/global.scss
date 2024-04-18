@@ -36,6 +36,7 @@
     display: flex;
     gap: 8px;
     justify-content: space-around;
+
     img {
       height: 32px
     }
@@ -62,29 +63,31 @@
 }
 
 
-.widget{
-  .remove_btn{
+.widget {
+  .remove_btn {
     font-size: 24px;
     transition: color 0.25s;
     color: darkgray;
   }
-  &:hover .remove_btn{
+
+  &:hover .remove_btn {
     color: rgba(139, 0, 0, 0.5);
-    &:hover{
+
+    &:hover {
       color: red;
     }
   }
 }
 
-.remove_btn{
+.remove_btn {
   font-size: 24px;
   transition: color 0.25s;
   color: darkgray;
-  &:hover{
+
+  &:hover {
     color: red;
   }
 }
-
 
 
 .active {
@@ -117,6 +120,6 @@
   }
 }
 
-.test{
+.test {
   width: 360px;
 }

@@ -66,6 +66,16 @@ export const theme = {
         },
     },
     dashboard: {
+        color: {
+            default: palette.black,
+            light: palette.black,
+            dark: palette.white,
+        },
+        BGColor: {
+            default: palette.pinball,
+            light: palette.pinball,
+            dark: palette.littleBlackDress,
+        },
         toolbar: {
             BGColor: {
                 default: palette.tangledWeb,

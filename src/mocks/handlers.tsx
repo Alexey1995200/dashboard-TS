@@ -5,8 +5,6 @@ import {overTasks} from "../DB/overdueDB";
 import {budgetData, overBudgetPercent} from "../DB/budgetDB";
 import {upcTasks} from "../DB/upcDeadlinesDB";
 import {logs, users} from "../DB/logs";
-import {defaultDBposition} from "../DB/gridDB";
-import {resolutionNamesCheck} from "../components/dashboard/utils";
 
 export const handlers = [
 
@@ -67,11 +65,8 @@ export const handlers = [
             upcTasks
         })
     }),
-
-
     // {
     //     user: {
-    //
     //     },
     //     project: {
     //         projectName: "",
@@ -79,15 +74,11 @@ export const handlers = [
     //         startDate: "",
     //         endDate: "",
     //         budget: {
-    //
     //         }
     //     },
     //     tasks: {
-    //
     //     }
     // },
-
-
     http.get('db/logs', async () => {
         //await delay(5000)
         return HttpResponse.json({
@@ -100,12 +91,7 @@ export const handlers = [
             users
         })
     }),
-    http.get('db/gird/defaultDBposition', async () => {
-        //await delay(5000)
-        return HttpResponse.json({
-            defaultDBposition
-        })
-    }),
+
     // http.get('/localstorage?', async ({request}) => {
     //     const searchUrl = ('lstorage?', request.url)
     //     const regex = /[?&]([^=#]+)=([^&#]*)/g;
@@ -163,22 +149,5 @@ export const handlers = [
 
 // return JSON.parse(global.localStorage.getItem(key))?.[value] || null;
 
-
-    // http.post('/gridParams/currentBreakpoint', async ({ request }) => {
-    //     setCurrentBreakpoint.set(response)
-    //
-    //     // Don't forget to declare a semantic "201 Created"
-    //     // response and send back the newly created post!
-    //     return HttpResponse.json(newPost, { status: 201 })
-    // }),
-    // http.post('/breakpoints', () => {
-    //     // Note that you DON'T have to stringify the JSON!
-    //     return HttpResponse.json({
-    //         user: {
-    //             id: 'abc-123',
-    //             name: 'John Maverick',
-    //         },
-    //     })
-    // }),
 
 ]
