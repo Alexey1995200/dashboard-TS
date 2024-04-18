@@ -3,7 +3,6 @@ import VictoryColumns from "./components/Columns_Victory";
 import {useEffect, useMemo, useRef, useState} from "react";
 import {IWidgetEl} from "../../interfaces";
 import {palette, theme} from "../../../../assets/colors";
-
 interface IBudjData{
     id:number;
     type:string;
@@ -11,9 +10,6 @@ interface IBudjData{
     value:number;
     color:string
 }
-
-
-
 const Budget = ({currentTheme}:IWidgetEl) => {
     const [budgetScale, setBudgetScale]=useState(1)
     const [data, setData] = useState<IBudjData[]>([{
@@ -43,7 +39,6 @@ const Budget = ({currentTheme}:IWidgetEl) => {
         
         setBudgetScale((Math.min(width, height)/165));
     };
-
     useEffect(() => {
         handleResize();
         fetch('db/budgetDB/data')
@@ -64,18 +59,12 @@ const Budget = ({currentTheme}:IWidgetEl) => {
             resizeObserver.disconnect();
         };
     }, []);
-
-
-
     const themeFontColor = useMemo(() => {
         return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
     }, [currentTheme]);
-
     const themeBackgroundColor = useMemo(() => {
         return currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white;
     }, [currentTheme]);
-
-
     return (
         <div className={'budget__wrapper'}
              ref={budgetRef}
@@ -97,7 +86,6 @@ const Budget = ({currentTheme}:IWidgetEl) => {
                         />
                     </div>
                     <div className={'columns__categories'}>
-                        {/*<div className={'placeholder'} content={''}/>*/}
                         {data.map((column) => (
                                 <div className={'column__category'}
                                      key={column.id}

@@ -1,6 +1,6 @@
 import {comment, copy, priority, tag, update, alert, checked} from "../../../../assets/svg";
 import './styles.scss'
-import {format, getTime} from "date-fns";
+import {getTime} from "date-fns";
 import {useEffect, useMemo, useRef, useState} from "react";
 import {palette, theme} from "../../../../assets/colors";
 import {IWidgetEl} from "../../interfaces";
@@ -67,7 +67,6 @@ const LOG_DESCRIPTION_COMPONENTS_MAPPING = {
     [LOG_TYPES.COMMENT]: NewComment,
     [LOG_TYPES.FINISHED]: FinishedTask,
 }
-
 const ProjectLogs = ({currentTheme}:IWidgetEl) => {
     const [logs, setLogs] = useState([])
     const [user, setUser] = useState([])
@@ -97,7 +96,6 @@ const ProjectLogs = ({currentTheme}:IWidgetEl) => {
     const daysLeft = (timestamp: number) => Math.floor((localtimestamp - timestamp) / (1000 * 60 * 60 * 24))
     const localDate = new Date();
     const localtimestamp = getTime(localDate)
-
     const [logBuilderScale, setLogBuilderScale] = useState(1)
     const logBuilderRef = useRef<HTMLDivElement>(null);
     const getDimensions = () => {
@@ -111,7 +109,6 @@ const ProjectLogs = ({currentTheme}:IWidgetEl) => {
         const [width, height] = getDimensions();
         setLogBuilderScale((Math.min(width, height) / 120));
     };
-
     useEffect(() => {
         handleResize();
         const resizeObserver = new ResizeObserver(handleResize);
@@ -128,7 +125,6 @@ const ProjectLogs = ({currentTheme}:IWidgetEl) => {
     const themeBackgroundColor = useMemo(() => {
         return currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white;
     }, [currentTheme]);
-
     return (
         <div className={'logBuilder'} ref={logBuilderRef} style={{
             backgroundColor:themeBackgroundColor,
@@ -173,9 +169,6 @@ const ProjectLogs = ({currentTheme}:IWidgetEl) => {
                                     <p>
                                         {LogContentComponent({log})}
                                     </p>
-                                    {/*<LogContentComponent*/}
-                                    {/*    log={log}*/}
-                                    {/*/>*/}
                                 </div>
                             </div>
                         ))
@@ -191,16 +184,4 @@ const ProjectLogs = ({currentTheme}:IWidgetEl) => {
             }
         </div>)
 }
-
-
-// map((log) => {
-//   return (
-//       <LogComponent
-//           {...log}
-//       />
-//   )
-// })
-//
-
-
 export default ProjectLogs

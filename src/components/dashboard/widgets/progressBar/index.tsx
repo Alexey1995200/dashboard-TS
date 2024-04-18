@@ -78,11 +78,9 @@ const ProgressBar = ({currentTheme}:IWidgetEl) => {
                                             strokeWidth={12} size={60} gapDegree={0.001}/>
                                 </ConfigProvider>
                             )}
-
                     </div>
                     )
                 )}
-
             </div>
         </div>
     )

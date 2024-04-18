@@ -1,6 +1,6 @@
 import CreateWidgetButtons from "./createNewWidgetButton";
 import './style.scss'
-import {useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 
 interface ICNWM {
     changeWidgetMenuVisibility: () => void;
@@ -13,11 +13,9 @@ const CreateNewWidgetMenu = ({changeWidgetMenuVisibility, createWidget}: ICNWM) 
     };
     return (
         <div className={'createNewWidget-wrapper'}
-
              onClick={changeWidgetMenuVisibility}
              style={{backgroundColor: '#80000000'}}
         >
-
             <div className={'createNewWidget'}
                  onClick={handleClick}
             >
@@ -27,28 +25,7 @@ const CreateNewWidgetMenu = ({changeWidgetMenuVisibility, createWidget}: ICNWM) 
 
                 />
             </div>
-
         </div>
-
-
-        // <div style={{display: 'flex', justifyContent: 'space-between', overflow: "auto"}}>
-        //     <div
-        //         className="remove_btn"
-        //         onClick={() => null}
-        //     >
-        //         DEBUG
-        //     </div>
-        //     {Object.keys(widgets).map((widgetKey) => {
-        //         return (<button
-        //             onClick={() => addWidgetByKeyOnClick(widgetKey)}>{widgetKey}</button>)
-        //     })}
-        //     <div
-        //         className="remove_btn"
-        //         onClick={() => removeAllOnClick()}
-        //     >
-        //         &#10006;
-        //     </div>
-        // </div>
     )
 }
 export default CreateNewWidgetMenu

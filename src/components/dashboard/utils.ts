@@ -1,4 +1,5 @@
-import {breakpointsArr, useragent, screenWidth} from "./const";
+import {breakpointsArr, useragent} from "./const";
+import {ILayouts, IWidget, IWidgetData} from "./interfaces";
 
 export const getFromLS = (key: string) => {
     if (localStorage) {
@@ -11,18 +12,9 @@ export const getFromLS = (key: string) => {
             return undefined;
         }
     }
-    return null; // Return null if localStorage is not available or item is null
+    return null; // return null if localStorage is not available or item is null
 };
-export const resolutionNamesCheck = (some:string) => {
-    const resolutionNames = ['phone', 'WQVGA', 'VGA', 'WVGA', 'qHD', 'XGA', 'WXGA', 'WXGAHD', 'HDp', 'FHD', 'WQHD', 'FourK', 'FourKRetina', 'galaxyY', 'galaxyS3', 'F3', 'Tab7in', 'Tab', 'Tab2']
-    return resolutionNames.includes(some)
-}
-
-export const widgetNamesCheck = (some:string) => {
-    const widgetNames = ['OverallProgress', 'ProgressBar', 'LaunchDate', 'Risks', 'Budget', 'OverdueTasks', 'Summary', 'AvgTime', 'UpcTasks', 'ProjectLogs'];
-    return widgetNames.includes(some);
-}
-export const saveToLS = (key: string, value: any) => {
+export const saveToLS = (key: string, value: string|boolean|null) => {
     if (global.localStorage) {
         global.localStorage.setItem(
             key,
@@ -41,12 +33,25 @@ export const isMobileVerByUserAgent = () => {
         useragent.toLowerCase().includes('mobile')
     );
 }
-
 export const isMobile = ():boolean => {
     const isMobile = getFromLS('isMobile')
     return isMobile ? isMobile : isMobileVerByUserAgent()
 }
-
+export const uploadRGLData = async (data: ILayouts | IWidget[] | IWidgetData[], location: string) => {
+    try {
+        const response = await fetch('/DB_upload', {
+            method: 'PUT',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+                'Save-Location': location
+            },
+        });
+        const json = await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
 export const getCurrentBreakpoint = (isMobileVer:boolean, screenWidth:number) => {
     let arrByType       // const [arrByType, setArrByType] = useState([])
     if (isMobileVer) {
@@ -59,4 +64,3 @@ export const getCurrentBreakpoint = (isMobileVer:boolean, screenWidth:number) =>
         return arrByType[arrByType.length - 1]
     } else return filteredArr[0]
 }
-

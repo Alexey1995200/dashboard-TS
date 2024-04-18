@@ -15,7 +15,6 @@ const AvgTime = ({currentTheme}:IWidgetEl) => {
     const themeFontColor = useMemo(() => {
         return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
     }, [currentTheme]);
-
     const themeBackgroundColor = useMemo(() => {
         return currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white;
     }, [currentTheme]);

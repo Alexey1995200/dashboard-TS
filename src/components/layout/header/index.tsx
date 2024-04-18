@@ -4,14 +4,12 @@ import {colorFilter} from "../../dashboard/const";
 import {useState} from "react";
 import {TCurrentTheme} from "../../dashboard/interfaces";
 import {palette} from "../../../assets/colors";
-
 interface ISideBar {
     changeSideBarVisibility: () => void
     changeDarkThemeState: () => void
     isDarkTheme: boolean,
     currentTheme: TCurrentTheme
 }
-
 const Header = ({
                     changeSideBarVisibility,
                     changeDarkThemeState,
@@ -19,8 +17,6 @@ const Header = ({
                     currentTheme
                 }: ISideBar) => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
-
-
     return (
         <div className={'header__wrapper'}>
             <div className="header__left">
@@ -52,7 +48,6 @@ const Header = ({
                         </span>
                                 <span className={'info__position'}>
                         manager position
-                                    {/*{user.position}*/}
                         </span>
                             </div>
                             <img src={user} alt="USER" style={{margin: '4px'}}

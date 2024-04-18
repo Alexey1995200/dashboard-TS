@@ -2,7 +2,7 @@ import './styles.scss'
 import {finish} from "../../../../assets/svg";
 import {useEffect, useMemo, useRef, useState} from "react";
 import {palette, theme} from '../../../../assets/colors';
-import {IWidgetEl, TCurrentTheme} from "../../interfaces";
+import {IWidgetEl} from "../../interfaces";
 
 const LaunchDate = ({currentTheme}: IWidgetEl) => {
     const [launchDateScale, setLaunchDateScale] = useState<number>(1)
@@ -20,7 +20,6 @@ const LaunchDate = ({currentTheme}: IWidgetEl) => {
         const [width, height] = getDimensions();
         setLaunchDateScale((Math.min(width, height) / 120));
     };
-
     useEffect(() => {
         handleResize();
         fetch('/db/finDate')
@@ -41,25 +40,21 @@ const LaunchDate = ({currentTheme}: IWidgetEl) => {
             resizeObserver.disconnect();
         };
     }, []);
-
     interface IOptions {
         weekday: 'long',
         day: 'numeric',
         month: 'long'
     }
-
     const options: IOptions = {weekday: 'long', day: 'numeric', month: 'long',};
     const localDate = new Date();
     const timeLeftMS = finishDateTimeStampMS - localDate.getTime();
     const daysLeft = Math.floor(timeLeftMS / (1000 * 60 * 60 * 24));
-
     const themeFontColor = useMemo(() => {
         return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
     }, [currentTheme]);
     const themeBackgroundColor = useMemo(() => {
         return currentTheme ? theme.dashboard.grid.widget.launchDate[currentTheme] : palette.white;
     }, [currentTheme]);
-
     return (
         <div className={'launchDate'}
              ref={launchDateRef}
@@ -79,5 +74,4 @@ const LaunchDate = ({currentTheme}: IWidgetEl) => {
         </div>
     )
 }
-
 export default LaunchDate

@@ -3,7 +3,6 @@ import {useEffect, useMemo, useRef, useState} from "react";
 import {format} from "date-fns";
 import {palette, theme} from "../../../../assets/colors";
 import {IRisks, IWidgetEl} from "../../interfaces";
-
 interface IOverTaskElement {
     task: string,
     deadline: string,
@@ -12,7 +11,6 @@ interface IOverTaskElement {
     employeeId: number,
     employeeShort: string,
 }
-
 const Risks = ({currentTheme}: IWidgetEl) => {
     const [risksScale, setRisksScale] = useState<number>(1)
     const risksRef = useRef<HTMLDivElement>(null);
@@ -36,7 +34,6 @@ const Risks = ({currentTheme}: IWidgetEl) => {
         const [width, height] = getDimensions();
         setRisksScale((Math.min(width, height) / 165));
     };
-
     useEffect(() => {
         handleResize();
         fetch('/db/overdueDB/tasks')
@@ -113,7 +110,6 @@ const Risks = ({currentTheme}: IWidgetEl) => {
                 }
             </div>
         </div>
-
     )
 }
 

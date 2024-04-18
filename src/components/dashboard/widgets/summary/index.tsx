@@ -1,21 +1,13 @@
-import {format} from "date-fns";
 import './styles.scss'
 import {useEffect, useMemo, useRef, useState} from "react";
-import {finishTimestampMS} from "../../../../DB/db";
-import {use} from "msw/lib/core/utils/internal/requestHandlerUtils";
 import {IWidgetEl} from "../../interfaces";
 import {palette, theme} from "../../../../assets/colors";
-
-// const isProjectOnTime = () => {
-//     if ((finishDate - new Date()) > 0) return true
-// }
 interface ISummaryElement {
     startDate: 'string',
     endDate: 'string',
     projectLeader: 'string',
     overallStatus: 'string',
 }
-
 const Summary = ({currentTheme}:IWidgetEl) => {
     const [summaryScale, setSummaryScale]=useState<number>(1)
     const summaryRef = useRef<HTMLDivElement>(null);
@@ -29,13 +21,12 @@ const Summary = ({currentTheme}:IWidgetEl) => {
     const getDimensions = () => {
         if (summaryRef.current) {
             const { width, height } = summaryRef.current.getBoundingClientRect();
-            
+
             return [width, height];
         } return [0, 0];
     };
     const handleResize = () => {
         const [width, height] = getDimensions();
-        
         setSummaryScale((Math.min(width, height)/165));
     };
     const isProjectOnTime = ():boolean => (finishTimestampMS - new Date().getTime()) > 0;

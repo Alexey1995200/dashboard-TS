@@ -4,47 +4,19 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './styles.css'
 import {gridMargins, gridRowHeight} from "../const";
-import {Breakpoints, ILayouts, IWidget, IWidgetData, IWidgets, TCurrentTheme} from "../interfaces";
+import {Breakpoints, ILayouts, IWidget, IWidgetData, IWidgetEl, IWidgets, TCurrentTheme} from "../interfaces";
 import {theme} from "../../../assets/colors";
-const ReactGridLayout = WidthProvider(RGL);
-
-// {
-//     key: 'UpcTasks24343',
-//     el: UpcTasks
-// }
-// const test = (widget) => {
-//     const MyWidget = widget.el
-//     return (
-//         <div>
-//             <MyWidget  />
-//         </div>
-//     )
-// }
-
-// {
-//     key: 'UpcTasks24343',
-//     el: <UpcTasks />
-// }
-// const test = (widget) => {
-//     return (
-//         <div>
-//             {widget.el} // CAN'T PASS PROPS
-//         </div>
-//     )
-// }
-
 interface IGrid {
-    allWidgets:IWidget[];
-    currentCompactType:"vertical" | "horizontal" | null | undefined;
-    layouts:ILayouts | undefined;
-    breakpoints:Breakpoints;
-    cols:Breakpoints;
-    widgets:IWidgets;
-    handleLayoutChange:(layout: IWidgetData[], layouts: ILayouts)=>void;
-    removeByKeyOnClick:(key: string) => void;
-    currentTheme:TCurrentTheme
+    allWidgets: IWidget[];
+    currentCompactType: "vertical" | "horizontal" | null | undefined;
+    layouts: ILayouts | undefined;
+    breakpoints: Breakpoints;
+    cols: Breakpoints;
+    widgets: IWidgets;
+    handleLayoutChange: (layout: IWidgetData[], layouts: ILayouts) => void;
+    removeByKeyOnClick: (key: string) => void;
+    currentTheme: TCurrentTheme
 }
-
 const Grid = ({
                   allWidgets,
                   currentCompactType,
@@ -54,13 +26,9 @@ const Grid = ({
                   handleLayoutChange,
                   removeByKeyOnClick,
                   currentTheme
-              }:IGrid) => {
-
+              }: IGrid) => {
     const gridLayoutRef = useRef(null);
-    // const ResponsiveGridLayout = WidthProvider(Responsive);
-    const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);      //todo ask why it useMemo?
-
-
+    const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);
     return (
         <div>
             <ResponsiveGridLayout
@@ -78,35 +46,38 @@ const Grid = ({
                 isBounded={false}
                 allowOverlap={false}
                 onLayoutChange={(layout, layouts) => handleLayoutChange(layout, layouts)}
-                // preventCollision={true}
-                style={{backgroundColor:currentTheme ? theme.dashboard.grid.BGColor[currentTheme] : 'b2b2b2'}}
+                style={{backgroundColor: currentTheme ? theme.dashboard.grid.BGColor[currentTheme] : 'b2b2b2'}}
             >
-                {allWidgets.map((widget) => {
-                    const WidgetEl: any = widget.el                 //todo ts-fix
-                    return (
-                        <div
-                            className={"widget"}
-                            key={widget.key}
-                            data-grid={widget.data}
-                        >
-                            <WidgetEl
-                                currentTheme={currentTheme}
-                            />
-                            <span
-                                className="remove_btn"
-                                style={{
-                                    position: "absolute",
-                                    right: "2px",
-                                    top: 0,
-                                    cursor: "pointer"
-                                }}
-                                onClick={() => removeByKeyOnClick(widget.key)}
+                {allWidgets &&
+                    allWidgets.map((widget) => {
+                        const WidgetEl: React.FC<IWidgetEl> = widget.el
+                        return (
+                            <div
+                                className={"widget"}
+                                key={widget.key}
+                                data-grid={widget.data}
                             >
+                                <WidgetEl
+                                    currentTheme={currentTheme}
+                                />
+                                <span
+                                    className="remove_btn"
+                                    style={{
+                                        position: "absolute",
+                                        right: "2px",
+                                        top: 0,
+                                        cursor: "pointer"
+                                    }}
+                                    onClick={() => removeByKeyOnClick(widget.key)}
+                                >
                             &#10006;
                         </span>
-                        </div>
-                    )
-                })}
+                            </div>
+                        )
+                    })
+
+                }
+
 
             </ResponsiveGridLayout>
         </div>
@@ -114,41 +85,3 @@ const Grid = ({
 };
 
 export default Grid;
-
-
-// {/*{allWidgets.map((widget) => {*/}
-// {/*    const WidgetEl = widget.el*/}
-// {/*    return (*/}
-// {/*        <div*/}
-// {/*            className={"widget"}*/}
-// {/*            key={widget.key}>*/}
-// {/*            <WidgetEl*/}
-// {/*            />*/}
-// {/*            /!*<div style={{*!/*/}
-// {/*            /!*    background: 'gray',*!/*/}
-// {/*            /!*    fontSize: '24px',*!/*/}
-// {/*            /!*    margin: 'auto',*!/*/}
-// {/*            /!*    height: '100%',*!/*/}
-// {/*            /!*    textAlign: 'center'*!/*/}
-// {/*            /!*}}>*!/*/}
-// {/*            /!*    <div style={{*!/*/}
-// {/*            /!*        position: 'relative',*!/*/}
-// {/*            /!*        top: '50%',*!/*/}
-// {/*            /!*        transform: 'translate(0, -50%)'*!/*/}
-// {/*            /!*    }}>{widget.key}</div>*!/*/}
-// {/*            /!*</div>*!/*/}
-// {/*            <span*/}
-// {/*                className="remove_btn"*/}
-// {/*                style={{*/}
-// {/*                    position: "absolute",*/}
-// {/*                    right: "2px",*/}
-// {/*                    top: 0,*/}
-// {/*                    cursor: "pointer"*/}
-// {/*                }}*/}
-// {/*                onClick={() => removeByKeyOnClick(widget.key)}*/}
-// {/*            >*/}
-// {/*            &#10006;*/}
-// {/*        </span>*/}
-// {/*        </div>*/}
-// {/*    )*/}
-// {/*})}*/}

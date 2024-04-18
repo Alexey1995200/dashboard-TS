@@ -7,7 +7,7 @@ export interface IWidgetEl {
 export interface IWidget {
     key: string;
     data: IWidgetData;
-    el?: ({}) => Element | ReactElement | undefined;
+    el:React.FC<IWidgetEl>
     currentTheme?:TCurrentTheme|undefined
 }
 

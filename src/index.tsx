@@ -7,9 +7,7 @@ import './normalize.css'
 import {
     QueryClient,
     QueryClientProvider,
-    useQuery,
 } from '@tanstack/react-query'
-import Dashboard from "./components/dashboard";
 import Layout from "./components/layout";
 import './global.scss'
 
@@ -24,9 +22,7 @@ async function enableMocking() {
 }
 
 enableMocking().then(() => {
-
     const root = document.getElementById('root')
-
     if (root !== null) {
         const rootDOM = ReactDOM.createRoot(root);
         rootDOM.render(

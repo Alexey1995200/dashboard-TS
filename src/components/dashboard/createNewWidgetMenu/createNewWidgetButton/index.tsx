@@ -15,6 +15,5 @@ const CreateWidgetButtons = ({createWidget}: ICreateWidget) => {
                 })}
         </div>
     )
-    // return null
 }
 export default CreateWidgetButtons
