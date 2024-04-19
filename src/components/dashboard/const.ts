@@ -237,9 +237,9 @@ export const widgets = {
             data: {
                 i: WIDGETS_KEYS.AvgTime,
                 w: Math.ceil(calculateW(386)), h: calculateH(164),
-                minW: Math.ceil(calculateW(386)), maxW: calculateW(450),
-                minH: calculateH(164), maxH: calculateH(200),
-                isResizable: false,
+                minW: Math.ceil(calculateW(386)), maxW: calculateW(800),
+                minH: calculateH(164), maxH: calculateH(480),
+                isResizable: true,
                 x: 0,
                 y: Infinity
             }

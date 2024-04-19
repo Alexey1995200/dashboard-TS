@@ -34,4 +34,12 @@ const totalPercentage = tasks.reduce((accumulator, object) => {
 );
 const percentage: number = totalPercentage / tasks.length
 
-export {percentage, tasks}
+const avgData = [
+    {x: 'Georg', y: 5.3},
+    {x: 'Kate', y: 4.5},
+    {x: 'Nancy', y: 3.7},
+    {x: 'Paula', y: 7.7},
+    {x: 'Richard', y: 6.4}
+]
+
+export {percentage, tasks, avgData}

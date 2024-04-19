@@ -67,7 +67,7 @@ const LOG_DESCRIPTION_COMPONENTS_MAPPING = {
     [LOG_TYPES.COMMENT]: NewComment,
     [LOG_TYPES.FINISHED]: FinishedTask,
 }
-const ProjectLogs = ({currentTheme}:IWidgetEl) => {
+const ProjectLogs = ({currentTheme}: IWidgetEl) => {
     const [logs, setLogs] = useState([])
     const [user, setUser] = useState([])
     const [isAllLogsShown, setIsAllLogsShown] = useState(false);
@@ -127,9 +127,9 @@ const ProjectLogs = ({currentTheme}:IWidgetEl) => {
     }, [currentTheme]);
     return (
         <div className={'logBuilder'} ref={logBuilderRef} style={{
-            backgroundColor:themeBackgroundColor,
-            color:themeFontColor
-                    }}>
+            backgroundColor: themeBackgroundColor,
+            color: themeFontColor
+        }}>
             <div className={'centered_title dragHandle'}
                  style={{
                      transform: `scale(${logBuilderScale > 1.25 ? logBuilderScale / 1.25 : 1})`,
@@ -151,7 +151,7 @@ const ProjectLogs = ({currentTheme}:IWidgetEl) => {
                                     className={'el__ico'}
                                     alt={''}
                                     style={{
-                                        backgroundColor:themeBackgroundColor,
+                                        backgroundColor: themeBackgroundColor,
                                         border: `2px solid ${themeBackgroundColor}`,
                                     }}
                                 />

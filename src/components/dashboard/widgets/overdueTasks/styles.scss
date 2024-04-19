@@ -40,7 +40,6 @@
         padding: 4px;
         align-items: center;
 
-
         &.days {
           display: flex;
           justify-content: flex-end;
@@ -55,7 +54,6 @@
           position: relative;
           left: -4px
         }
-
 
         &.days_lite {
           color: goldenrod;
@@ -73,7 +71,6 @@
             width: 16px;
             background-color: peachpuff;
             border-radius: 100%;
-
           }
         }
 
@@ -87,7 +84,6 @@
             border-radius: 100%;
           }
         }
-
       }
 
       div:nth-child(1) {
@@ -107,5 +103,4 @@
       }
     }
   }
-
 }

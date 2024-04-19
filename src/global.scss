@@ -58,10 +58,7 @@
   button {
     padding: 8px;
   }
-
-
 }
-
 
 .widget {
   .remove_btn {
@@ -89,15 +86,11 @@
   }
 }
 
-
 .active {
-  //filter: brightness(0) saturate(100%) invert(43%) sepia(8%) saturate(2413%) hue-rotate(88deg) brightness(106%) contrast(102%);
   svg {
     color: #45af6a;
     transition: all 0.25s ease-in-out;
   }
-
-  //transition: all 0.25s ease-in-out;
 }
 
 .inactive {
@@ -106,17 +99,11 @@
     transition: all 0.5s ease-in-out
   }
 
-  //filter: brightness(0) saturate(100%) invert(26%) sepia(57%) saturate(6032%) hue-rotate(340deg) brightness(93%) contrast(85%);
-  //transition: all 0.5s ease-in-out;
-
   &:hover {
     svg {
       color: #e3953e;
       transition: all 0.25s ease-in-out;
     }
-
-    //filter: brightness(0) saturate(100%) invert(77%) sepia(23%) saturate(1942%) hue-rotate(329deg) brightness(93%) contrast(91%);
-    //transition: all 0.25s ease-in-out;
   }
 }
 

@@ -6,6 +6,7 @@ import './styles.css'
 import {gridMargins, gridRowHeight} from "../const";
 import {Breakpoints, ILayouts, IWidget, IWidgetData, IWidgetEl, IWidgets, TCurrentTheme} from "../interfaces";
 import {theme} from "../../../assets/colors";
+
 interface IGrid {
     allWidgets: IWidget[];
     currentCompactType: "vertical" | "horizontal" | null | undefined;
@@ -17,6 +18,7 @@ interface IGrid {
     removeByKeyOnClick: (key: string) => void;
     currentTheme: TCurrentTheme
 }
+
 const Grid = ({
                   allWidgets,
                   currentCompactType,

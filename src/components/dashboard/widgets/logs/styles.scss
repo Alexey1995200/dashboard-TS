@@ -1,115 +1,9 @@
-//.logs__wrapper {
-//  padding: 4px;
-//  height: 100%;
-//  width: 100%;
-//  display: flex;
-//  flex-direction: column;
-//  flex: 1;
-//
-//  .logs__title {
-//    padding-bottom: 24px;
-//  }
-//
-//  .logs__list {
-//    display: flex;
-//    flex-direction: column;
-//    overflow-y: auto;
-//    height: 100%;
-//    //gap: 10px;
-//
-//    .logs__el {
-//      display: flex;
-//      flex-direction: column;
-//      text-align: left;
-//
-//      .el__header {
-//        display: flex;
-//        flex-direction: row;
-//
-//        .img {
-//          width: 36px;
-//          display: flex;
-//          justify-content: center;
-//
-//          .ico {
-//            height: 16px;
-//            width: 16px;
-//          }
-//        }
-//
-//        .header__title {
-//          display: flex;
-//          flex-direction: row;
-//          flex: 1;
-//          justify-content: space-between;
-//          padding: 0 14px 12px 14px;
-//
-//          .title__text {
-//            font-size: 12px;
-//            font-weight: 700;
-//          }
-//
-//          .title__days {
-//            font-weight: unset;
-//            color: gray;
-//            font-size: 8px;
-//          }
-//        }
-//      }
-//
-//      .el__body {
-//
-//        display: flex;
-//        flex-direction: row;
-//
-//        .body__line_placeholder {
-//          max-width: 36px;
-//          min-width: 36px;
-//          flex: 1;
-//          display: flex;
-//          min-height: 58px;
-//          flex-direction: column;
-//          padding-bottom: 8px;
-//
-//          .body__line {
-//            background-color: lightgray;
-//            width: 2px;
-//            display: flex;
-//            height: 4px;
-//            flex: 1;
-//            align-self: center;
-//          }
-//        }
-//
-//
-//        .body__text {
-//          padding-left: 14px;
-//          padding-right: 4px;
-//          font-size: 12px;
-//
-//        }
-//      }
-//    }
-//  }
-//
-//  .logs__button {
-//    color: gray;
-//    text-decoration: underline;
-//    padding-bottom: 16px;
-//    text-align: center;
-//  }
-//}
-
-
 .logBuilder {
-  //overflow-y: auto;
   height: 100%;
   width: 100%;
   display: flex;
-
   flex-direction: column;
   gap: 16px;
-
 
   .logBuilder__body {
     display: flex;
@@ -118,7 +12,6 @@
     overflow-y: auto;
     height: 100%;
     background-color: inherit;
-
 
     .logs__el_wrapper {
       font-size: 12px;
@@ -130,7 +23,6 @@
       background-color: inherit;
 
       .el__ico {
-
         position: absolute;
         height: 24px;
         width: 24px;
@@ -160,16 +52,13 @@
         padding-bottom: 8px;
 
       }
-
     }
-
-
   }
+
   .logs__button {
     color: gray;
     text-decoration: underline;
     padding-bottom: 16px;
     text-align: center;
-
   }
 }

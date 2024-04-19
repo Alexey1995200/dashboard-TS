@@ -1,6 +1,6 @@
 import {delay, http, HttpResponse} from 'msw'
 import {finishDate, finishTimestampMS, summDB} from '../DB/db'
-import {percentage, tasks} from "../DB/progressDB";
+import {avgData, percentage, tasks} from "../DB/progressDB";
 import {overTasks} from "../DB/overdueDB";
 import {budgetData, overBudgetPercent} from "../DB/budgetDB";
 import {upcTasks} from "../DB/upcDeadlinesDB";
@@ -65,20 +65,7 @@ export const handlers = [
             upcTasks
         })
     }),
-    // {
-    //     user: {
-    //     },
-    //     project: {
-    //         projectName: "",
-    //         projectLeader: "",
-    //         startDate: "",
-    //         endDate: "",
-    //         budget: {
-    //         }
-    //     },
-    //     tasks: {
-    //     }
-    // },
+
     http.get('db/logs', async () => {
         //await delay(5000)
         return HttpResponse.json({
@@ -91,26 +78,12 @@ export const handlers = [
             users
         })
     }),
-
-    // http.get('/localstorage?', async ({request}) => {
-    //     const searchUrl = ('lstorage?', request.url)
-    //     const regex = /[?&]([^=#]+)=([^&#]*)/g;
-    //     return (localStorage)
-    // }),
-    // http.get('/localstorage',  ((breakpoint) => {
-    //     return HttpResponse.json{
-    //         (localStorage.getItem('rgl'))?.['savedPosition']
-    //
-    //     }
-    //     // return (localStorage.getItem(key))?.[value]
-    //     // const json = JSON.parse(localStorage.getItem('rgl'));
-    //     // return json.savedPosition[breakpoint] || [Object.keys(json.savedPosition)[0]];
-    // })),
-
-    // http.get('/localstorage', (key:string, value:string) => {
-    //     return (localStorage.getItem(key))?.[value]
-    // }),
-
+    http.get('db/progressDB/avgData', async () => {
+        //await delay(5000)
+        return HttpResponse.json({
+            avgData
+        })
+    }),
     http.get('/rgl_layout', () => {
             if (localStorage.getItem('rgl_layout')) {
                 return HttpResponse.json(localStorage.getItem('rgl_layout'))
@@ -123,20 +96,10 @@ export const handlers = [
             } else return HttpResponse.error()
         },
     ),
-    // http.get('/rgl_createdWidgetsList', () => {
-    //         const localStorageItem = localStorage.getItem('rgl_widgets');
-    //         if (localStorageItem) {
-    //             const item: string = localStorageItem;
-    //             const fix = item.replace(/null/g, '999999')
-    //             return HttpResponse.json(fix)
-    //         } else return new HttpResponse(null, { status: 418 })
-    //     },
-    // ),
-
     http.put('/DB_upload', async ({request},) => {
         const location = request.headers.get('save-location')
         const data = await request.json()
-        if (data){
+        if (data) {
             global.localStorage.setItem(
                 `rgl_${location}`,
                 JSON.stringify({
@@ -144,10 +107,6 @@ export const handlers = [
                     data
                 })
             );
-        } else return new HttpResponse(null, { status: 418 })
+        } else return new HttpResponse(null, {status: 418})
     })
-
-// return JSON.parse(global.localStorage.getItem(key))?.[value] || null;
-
-
 ]

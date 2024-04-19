@@ -40,11 +40,13 @@ const LaunchDate = ({currentTheme}: IWidgetEl) => {
             resizeObserver.disconnect();
         };
     }, []);
+
     interface IOptions {
         weekday: 'long',
         day: 'numeric',
         month: 'long'
     }
+
     const options: IOptions = {weekday: 'long', day: 'numeric', month: 'long',};
     const localDate = new Date();
     const timeLeftMS = finishDateTimeStampMS - localDate.getTime();
@@ -63,7 +65,7 @@ const LaunchDate = ({currentTheme}: IWidgetEl) => {
                  style={{transform: `scale(${launchDateScale > 1.25 ? launchDateScale / 1.25 : 1})`}}><p>Project</p>
                 <p>Launch Date</p></div>
             <div className={'launchDate__body'}
-                 style={{transform: `scale(${launchDateScale > 1.25 ? launchDateScale/ 1.25 : 1})`}}>
+                 style={{transform: `scale(${launchDateScale > 1.25 ? launchDateScale / 1.25 : 1})`}}>
                 <img src={finish} alt='🏁'/>
                 <div className={'launchDate__timer'}>
                     <div
