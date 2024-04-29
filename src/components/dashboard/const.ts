@@ -39,6 +39,7 @@ export const colorFilter = {
 };
 export const useragent: string = window.navigator.userAgent
 export const screenWidth: number = window.innerWidth
+export const screenHeight: number = window.innerHeight
 export const isSystemThemeDark = window.matchMedia("(prefers-color-scheme: dark)").matches
 export const breakpointsArr: IBpArr = [
     {device: 'phone', resolution: 360 - 1, type: 'desktop'},

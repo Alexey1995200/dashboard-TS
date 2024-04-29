@@ -1,12 +1,9 @@
 import './styles.scss'
 import React from "react";
 import {widgets, widgetsIcons} from "../../const";
-
-
 interface ICreateWidget {
     createWidget: (widget: string) => void;
 }
-
 const CreateWidgetButtons = ({createWidget}: ICreateWidget) => {
     return (
         <div className="createWidget-menu">

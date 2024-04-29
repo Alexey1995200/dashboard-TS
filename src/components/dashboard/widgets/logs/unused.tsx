@@ -99,4 +99,11 @@
 // }
 //
 // export default ProjectLogsUnused
+
+// fetch('db/logs/users')
+//     .then((response) => response.json())
+//     .then((response) => {
+//         setUser(response.users)
+//     })
+
 export {}

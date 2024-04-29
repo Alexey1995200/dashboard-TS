@@ -1,7 +1,7 @@
-import {ReactElement} from "react";
-
 export interface IWidgetEl {
     currentTheme?:TCurrentTheme
+    themeFontColor?:string
+    themeBackgroundColor?:string
 }
 
 export interface IWidget {
@@ -61,8 +61,3 @@ export type IBpArr = IBpArrItem[];
 
 export type TCurrentTheme = 'dark' | 'light'
 
-export interface IRisks {
-    id: number;
-    num: number;
-    description: string;
-}

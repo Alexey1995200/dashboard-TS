@@ -6,7 +6,7 @@
   color: white;
   overflow: unset;
   position: fixed;
-  height: 48px;
+  //height: 48px;
   top: 0;
   justify-content: space-between;
 
@@ -42,9 +42,14 @@
     .account {
       align-self: center;
 
+      .account__auth {
+        margin: 4px;
+        padding: 4px;
+      }
+
       img {
         height: 36px;
-        width: 36px;
+        //width: 36px;
       }
 
       display: flex;

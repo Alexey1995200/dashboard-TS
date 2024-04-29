@@ -1,14 +1,13 @@
 import './styles.scss'
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {IWidgetEl} from "../../interfaces";
-import {palette, theme} from "../../../../assets/colors";
 interface ISummaryElement {
     startDate: 'string',
     endDate: 'string',
     projectLeader: 'string',
     overallStatus: 'string',
 }
-const Summary = ({currentTheme}:IWidgetEl) => {
+const Summary = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
     const [summaryScale, setSummaryScale]=useState<number>(1)
     const summaryRef = useRef<HTMLDivElement>(null);
     const [summDB, setSummDB] =useState<ISummaryElement[]>([{
@@ -50,12 +49,6 @@ const Summary = ({currentTheme}:IWidgetEl) => {
             resizeObserver.disconnect();
         };
     }, []);
-    const themeFontColor = useMemo(() => {
-        return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
-    }, [currentTheme]);
-    const themeBackgroundColor = useMemo(() => {
-        return currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white;
-    }, [currentTheme]);
     return (
         <div className={'summary__wrapper'} ref={summaryRef} style={{backgroundColor:themeBackgroundColor, color:themeFontColor}}>
             <div className={'centered_title dragHandle'}

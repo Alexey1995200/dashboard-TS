@@ -1,36 +1,26 @@
 import './styles.scss'
-import {VictoryAxis, VictoryBar, VictoryChart, VictoryLabel, VictoryTheme} from 'victory';
-import {palette, theme} from "../../../../assets/colors";
+import {VictoryAxis, VictoryBar, VictoryChart, VictoryLabel} from 'victory';
+import {palette} from "../../../../assets/colors";
 import {IWidgetEl} from "../../interfaces";
 import React, {useEffect, useMemo, useRef, useState} from "react";
-
 interface IAvgTime {
     x: string,
     y: number
 }
+const generateRandomPlaceholderData = () => {
+    const length = Math.floor(Math.random() * 10) + 5; // length range 5-15 "users"
+    return Array.from({ length }, () => ({
+        x: Math.ceil(Math.random() * 1000).toString(),
+        y: Math.ceil(Math.random() * 10)
+    }));
+};
 
-const AvgTime = ({currentTheme}: IWidgetEl) => {
-    const [avgScale, setAvgScale] = useState<number>(1)
+const AvgTime = ({themeFontColor, themeBackgroundColor}: IWidgetEl) => {
     const avgRef = useRef<HTMLDivElement>(null);
+    const [avgScale, setAvgScale] = useState<number>(1)
     const [widgetWidth, setWidgetWidth] = useState<number>(0)
     const [widgetHeight, setWidgetHeight] = useState<number>(0)
-    const [data, setData] = useState<IAvgTime[]>([
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-        {x: Math.ceil(Math.random() * 1000).toString(), y: Math.ceil(Math.random() * 10)},
-    ])
+    const [data, setData] = useState<IAvgTime[]>(generateRandomPlaceholderData())
     const getDimensions = () => {
         if (avgRef.current) {
             const {width, height} = avgRef.current.getBoundingClientRect();
@@ -55,7 +45,7 @@ const AvgTime = ({currentTheme}: IWidgetEl) => {
             .then((response) => {
                 setData(response.avgData)
             })
-        const resizeObserver = new ResizeObserver(handleResize);
+        const resizeObserver = new ResizeObserver(handleResize);//todo read about event listener / resize observer
         if (avgRef.current) {
             resizeObserver.observe(avgRef.current);
         }
@@ -63,12 +53,6 @@ const AvgTime = ({currentTheme}: IWidgetEl) => {
             resizeObserver.disconnect();
         };
     }, []);
-    const themeFontColor = useMemo(() => {
-        return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
-    }, [currentTheme]);
-    const themeBackgroundColor = useMemo(() => {
-        return currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white;
-    }, [currentTheme]);
     const cutName = (name: string, maxLength: number) => {
         if (name.length > maxLength) {//maxLength-1 if needed
             return name.substring(0, maxLength) + "..."
@@ -94,9 +78,7 @@ const AvgTime = ({currentTheme}: IWidgetEl) => {
             >Avg Handle Time in days for Prjct-Task
             </div>
             <div className={'bar'} style={{padding: `${widgetWidth * .25} ${widgetWidth * .125}px`,}}>
-
                 <VictoryChart
-
                     width={(widgetWidth - 80)}
                     height={widgetHeight * .80}
                 >
@@ -108,7 +90,7 @@ const AvgTime = ({currentTheme}: IWidgetEl) => {
                         x="x"
                         y="y"
                         labels={({datum}) => datum.y}
-                        labelComponent={<VictoryLabel dy={-4} style={{fontSize: '14px', fill: themeFontColor}}/>}
+                        labelComponent={<VictoryLabel dy={-4} style={{fontWeight: 600, fontSize: '14px', fill: themeFontColor}}/>}
                         style={{
                             data:
                                 {fill: palette.freshGreen},
@@ -117,54 +99,10 @@ const AvgTime = ({currentTheme}: IWidgetEl) => {
                     <VictoryAxis
                         style={{
                             axis: {stroke: "transparent"},
-                            tickLabels: {fontSize: 10, padding: 4, stroke: themeFontColor}
+                            tickLabels: {fontSize: 10, padding: 4, stroke: themeFontColor, fontWeight: 100}
                         }}/>
                 </VictoryChart>
-
-                {/*<svg width={widgetWidth-80} height={114} style={{paddingLeft:widgetWidth*.05}}>*/}
-                {/*    <VictoryBar*/}
-                {/*        alignment='middle'*/}
-                {/*        standalone={false}*/}
-                {/*        width={(widgetWidth-80)*.9}*/}
-                {/*        height={114}*/}
-                {/*        padding={*/}
-                {/*            {*/}
-                {/*                left: 20,*/}
-                {/*                right: 20,*/}
-                {/*                top:20,*/}
-                {/*            }*/}
-                {/*        }*/}
-                {/*        data={data}*/}
-                {/*        barWidth={36}*/}
-                {/*        x="x"*/}
-                {/*        y="y"*/}
-                {/*        labels={({ datum }) => datum.y}*/}
-                {/*        labelComponent={<VictoryLabel dy={-4} style={{ fontSize:'14px', backgroundColor:'red', fill:themeFontColor}}/>}*/}
-                {/*        style={{*/}
-                {/*            data:*/}
-                {/*                {fill: palette.freshGreen},*/}
-                {/*            // labels:{*/}
-                {/*            //     fontSize: '10px',*/}
-                {/*            //     fontWeight: 700,*/}
-                {/*            //     color: themeFontColor,*/}
-                {/*            // }*/}
-                {/*        }}*/}
-                {/*    />*/}
-                {/*</svg>*/}
             </div>
-            {/*<div className={'users'} style={{width:widgetWidth-100}}>*/}
-            {/*    {data.map((data) => (*/}
-            {/*            <div className={'user'} key={data.x + data.y}>*/}
-            {/*                <div className={'fakeTable'}/>*/}
-            {/*                <div className={'user__name'}>*/}
-            {/*                    {data.x.length > 5 ? `${data.x.substring(0, 4)}...` : data.x}*/}
-            {/*                </div>*/}
-
-            {/*            </div>*/}
-            {/*        )*/}
-            {/*    )*/}
-            {/*    }*/}
-            {/*</div>*/}
         </div>
     )
 }

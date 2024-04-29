@@ -14,33 +14,4 @@
       justify-content: center;
     }
   }
-
-  .users {
-    align-self: flex-start;
-    display: flex;
-    margin: auto;
-    flex-direction: row;
-    justify-content: space-between;
-
-    .user {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-
-      .fakeTable {
-        display: flex;
-        min-height: 6px;
-        flex-direction: row;
-        flex: 1;
-        border-top: 1px solid lightgray;
-        border-right: 1px solid lightgray;
-        border-left: 1px double lightgray;
-      }
-
-      .user__name {
-        font-size: 8px;
-        text-align: center;
-      }
-    }
-  }
 }

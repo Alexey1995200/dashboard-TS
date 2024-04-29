@@ -3,12 +3,12 @@ import {finish} from "../../../../assets/svg";
 import {useEffect, useMemo, useRef, useState} from "react";
 import {palette, theme} from '../../../../assets/colors';
 import {IWidgetEl} from "../../interfaces";
-
 const LaunchDate = ({currentTheme}: IWidgetEl) => {
     const [launchDateScale, setLaunchDateScale] = useState<number>(1)
     const launchDateRef = useRef<HTMLDivElement>(null);
     const [finishDate, setFinishDate] = useState<string>('0')
     const [finishDateTimeStampMS, setFinishDateTimeStampMS] = useState<number>(0)
+    console.log(typeof finishDate)
     const getDimensions = () => {
         if (launchDateRef.current) {
             const {width, height} = launchDateRef.current.getBoundingClientRect();
@@ -46,7 +46,6 @@ const LaunchDate = ({currentTheme}: IWidgetEl) => {
         day: 'numeric',
         month: 'long'
     }
-
     const options: IOptions = {weekday: 'long', day: 'numeric', month: 'long',};
     const localDate = new Date();
     const timeLeftMS = finishDateTimeStampMS - localDate.getTime();

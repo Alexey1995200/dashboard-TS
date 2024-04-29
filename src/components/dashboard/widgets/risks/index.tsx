@@ -1,8 +1,7 @@
 import './styles.scss'
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {format} from "date-fns";
-import {palette, theme} from "../../../../assets/colors";
-import {IRisks, IWidgetEl} from "../../interfaces";
+import {IWidgetEl} from "../../interfaces";
 interface IOverTaskElement {
     task: string,
     deadline: string,
@@ -11,7 +10,12 @@ interface IOverTaskElement {
     employeeId: number,
     employeeShort: string,
 }
-const Risks = ({currentTheme}: IWidgetEl) => {
+interface IRisks {
+    id: number;
+    num: number;
+    description: string;
+}
+const Risks = ({themeFontColor, themeBackgroundColor}: IWidgetEl) => {
     const [risksScale, setRisksScale] = useState<number>(1)
     const risksRef = useRef<HTMLDivElement>(null);
     const [overTasks, setOverTasks] = useState<IOverTaskElement[]>([{
@@ -54,10 +58,8 @@ const Risks = ({currentTheme}: IWidgetEl) => {
             resizeObserver.disconnect();
         };
     }, []);
-
     const taskMedRisk = (overTasks.filter(task => task.days >= 7 && task.days <= 14)).length;
     const taskHiRisk = (overTasks.filter(task => task.days >= 14)).length;
-
     const risks: IRisks[] = [
         {
             id: 0,
@@ -73,12 +75,6 @@ const Risks = ({currentTheme}: IWidgetEl) => {
             description: 'Overdue hi.risk'
         },
     ]
-    const themeFontColor = useMemo(() => {
-        return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
-    }, [currentTheme]);
-    const themeBackgroundColor = useMemo(() => {
-        return currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white;
-    }, [currentTheme]);
     return (
         <div className={'risks__wrapper'} ref={risksRef} style={{backgroundColor:themeBackgroundColor, color:themeFontColor}}>
             <div className={'centered_title dragHandle'}

@@ -1,86 +1,23 @@
-import {comment, copy, priority, tag, update, alert, checked} from "../../../../assets/svg";
 import './styles.scss'
 import {getTime} from "date-fns";
-import {useEffect, useMemo, useRef, useState} from "react";
-import {palette, theme} from "../../../../assets/colors";
+import {useEffect, useRef, useState} from "react";
 import {IWidgetEl} from "../../interfaces";
+import {
+    ILog,
+    ILogs,
+    LOG_DESCRIPTION_COMPONENTS_MAPPING,
+    LOG_ICONS_MAPPING,
+    LOG_TITLE_MAPPING
+} from "./builderComponents";
 
-
-interface ILog {
-    type: string,
-    user: string,
-    date: number,
-    recordNum: number,
-    task: string,
-}
-
-interface ILogs {
-    log: ILog
-}
-
-const LOG_TYPES = {
-    ASSIGNED: "ASSIGNED",
-    PRIORITY_CHANGE: "PRIORITY_CHANGE",
-    SUBTASK: "SUBTASK",
-    UPDATE: "UPDATE",
-    OVERDUE: "OVERDUE",
-    COMMENT: "COMMENT",
-    FINISHED: "FINISHED",
-}
-
-const LOG_ICONS_MAPPING = {
-    [LOG_TYPES.ASSIGNED]: tag,
-    [LOG_TYPES.PRIORITY_CHANGE]: priority,
-    [LOG_TYPES.SUBTASK]: copy,
-    [LOG_TYPES.UPDATE]: update,
-    [LOG_TYPES.OVERDUE]: alert,
-    [LOG_TYPES.COMMENT]: comment,
-    [LOG_TYPES.FINISHED]: checked,
-
-
-}
-
-const LOG_TITLE_MAPPING = {
-    [LOG_TYPES.ASSIGNED]: "Task Assigned",
-    [LOG_TYPES.PRIORITY_CHANGE]: "Task Priority Changed",
-    [LOG_TYPES.SUBTASK]: "New SubTask",
-    [LOG_TYPES.UPDATE]: "Task Updated",
-    [LOG_TYPES.OVERDUE]: "Task Overdue",
-    [LOG_TYPES.COMMENT]: "New Comment",
-    [LOG_TYPES.FINISHED]: "Task Finished",
-}
-
-const AssignedLog = ({log}: ILogs) => `Task ${log.task} assigned to ${log.user}`
-const PriorityChange = ({log}: ILogs) => `${log.task} overdue is High, Priority of task changed`
-const NewSubTask = ({log}: ILogs) => `New subtask added to task ${log.task} by ${log.user}`
-const UpdateTask = ({log}: ILogs) => `Task ${log.task} updated by ${log.user}`
-const OverdueTask = ({log}: ILogs) => `Task ${log.task} is overdue`
-const NewComment = ({log}: ILogs) => `${log.user} commented on task ${log.task}`
-const FinishedTask = ({log}: ILogs) => `${log.user} commented on task ${log.task}`
-
-const LOG_DESCRIPTION_COMPONENTS_MAPPING = {
-    [LOG_TYPES.ASSIGNED]: AssignedLog,
-    [LOG_TYPES.PRIORITY_CHANGE]: PriorityChange,
-    [LOG_TYPES.SUBTASK]: NewSubTask,
-    [LOG_TYPES.UPDATE]: UpdateTask,
-    [LOG_TYPES.OVERDUE]: OverdueTask,
-    [LOG_TYPES.COMMENT]: NewComment,
-    [LOG_TYPES.FINISHED]: FinishedTask,
-}
-const ProjectLogs = ({currentTheme}: IWidgetEl) => {
+const ProjectLogs = ({themeFontColor, themeBackgroundColor}: IWidgetEl) => {
     const [logs, setLogs] = useState([])
-    const [user, setUser] = useState([])
     const [isAllLogsShown, setIsAllLogsShown] = useState(false);
     const showAllLogs = () => {
         setIsAllLogsShown(!isAllLogsShown);
     };
     const shownLogs = isAllLogsShown ? logs : logs.slice(-3);
     useEffect(() => {
-        fetch('db/logs/users')
-            .then((response) => response.json())
-            .then((response) => {
-                setUser(response.users)
-            })
         fetch('db/logs/')
             .then((response) => response.json())
             .then((response) => {
@@ -119,12 +56,6 @@ const ProjectLogs = ({currentTheme}: IWidgetEl) => {
             resizeObserver.disconnect();
         };
     }, []);
-    const themeFontColor = useMemo(() => {
-        return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
-    }, [currentTheme]);
-    const themeBackgroundColor = useMemo(() => {
-        return currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white;
-    }, [currentTheme]);
     return (
         <div className={'logBuilder'} ref={logBuilderRef} style={{
             backgroundColor: themeBackgroundColor,
@@ -172,9 +103,7 @@ const ProjectLogs = ({currentTheme}: IWidgetEl) => {
                                 </div>
                             </div>
                         ))
-
                     }
-
                 </div>
             </div>
             {(logs.length > 0) &&

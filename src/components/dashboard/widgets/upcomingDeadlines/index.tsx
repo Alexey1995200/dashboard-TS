@@ -1,10 +1,9 @@
 import './styles.scss'
 import {ConfigProvider, Progress} from "antd";
-import React, {useEffect, useMemo, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {strokeColor} from "../../const";
-import {palette, theme} from "../../../../assets/colors";
 import {IWidgetEl} from "../../interfaces";
-const UpcTasks = ({currentTheme}: IWidgetEl) => {
+const UpcTasks = ({themeFontColor, themeBackgroundColor}: IWidgetEl) => {
     const [upcomingScale, setUpcomingScale] = useState(1)
     const upcomingRef = useRef<HTMLDivElement>(null);
     const [tasks, setTasks] = useState([{
@@ -43,12 +42,6 @@ const UpcTasks = ({currentTheme}: IWidgetEl) => {
             resizeObserver.disconnect();
         };
     }, []);
-    const themeFontColor = useMemo(() => {
-        return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
-    }, [currentTheme]);
-    const themeBackgroundColor = useMemo(() => {
-        return currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white;
-    }, [currentTheme]);
     return <div className={'upcoming__wrapper'} ref={upcomingRef}
                 style={{
                     gap: `${upcomingScale > 1.25 ? 4 * upcomingScale : 4}px`,

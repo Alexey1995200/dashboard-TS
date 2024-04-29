@@ -1,17 +1,17 @@
 import Grid from "./grid/index";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     clear,
     compactHorizontal, compactNone, compactVertical,
     Desktop, Mobile, newWidget,
     resetSettings,
 } from "./../../assets/svg";
-
 import {getFromLS, isMobileVerByUserAgent, saveToLS, uploadRGLData} from "./utils";
 import {breakpoints, cols, isSystemThemeDark, screenWidth, widgets} from "./const";
 import CreateNewWidgetMenu from "./createNewWidgetMenu";
 import {ILayouts, IWidget, IWidgetData, TCurrentTheme} from "./interfaces";
 import {palette, theme} from "../../assets/colors";
+import './styles.scss'
 
 interface IDashBoard {
     isDarkTheme: boolean,
@@ -20,17 +20,16 @@ interface IDashBoard {
 }
 
 const Dashboard = ({
-                       isDarkTheme,
                        currentTheme,
                        setIsDarkTheme
                    }: IDashBoard) => {
     const [isWidgetMenuVisible, setIsWidgetMenuVisible] = useState<boolean>(false)
-    const [currentCompactType, setCurrentCompactType] = useState<"vertical" | "horizontal" | null | undefined>('vertical')
+    const [currentCompactType, setCurrentCompactType] =
+        useState<"vertical" | "horizontal" | null | undefined>('vertical')
     const [isMobileVer, setIsMobileVer] = useState(() => {
         const isMobile = getFromLS('isMobile')
         return isMobile ? isMobile : isMobileVerByUserAgent()
     })
-    const [layouts, setLayouts] = useState<ILayouts>();
     const [createdWidgetsList, setCreatedWidgetsList] = useState<IWidget[]>([])
     const [storedWidgetsKeys, setStoredWidgetsKeys] = useState<string[]>()
     const [storedWidgetsData, setStoredWidgetsData] = useState<IWidgetData[]>()
@@ -38,7 +37,7 @@ const Dashboard = ({
         setIsWidgetMenuVisible(!isWidgetMenuVisible);
     };
     const resetLocalSettings = () => {
-        setIsMobileVer(isMobileVerByUserAgent()) // Call the function to get the boolean value
+        setIsMobileVer(isMobileVerByUserAgent())
         global.localStorage.clear()
         setCurrentCompactType('vertical')
         setIsDarkTheme(isSystemThemeDark)
@@ -104,8 +103,7 @@ const Dashboard = ({
         setCreatedWidgetsList([])
         uploadRGLData([], 'layout')
     }
-    const uniqueID = () => Math.random().toString(16).slice(-4);
-    const addWidgetByKeyOnClick = (widget: string): void => {
+    const addWidgetByKeyOnClick = (widget: string) => {
         const newWidget: IWidget = {
             key: widget,
             el: widgets[widget].el,
@@ -115,7 +113,7 @@ const Dashboard = ({
             setCreatedWidgetsList([...createdWidgetsList, newWidget])
         }
     }
-    const getObjectByI = (array: IWidgetData[], targetI: string) => array.find(obj => obj.i === targetI)
+    const getObjectByKey = (array: IWidgetData[], targetKey: string) => array.find(obj => obj.i === targetKey)
     useEffect(() => {
         if (getFromLS('rgl_compactType') !== null) {
             setCurrentCompactType(getFromLS('rgl_compactType'))
@@ -126,7 +124,7 @@ const Dashboard = ({
                     return {
                         key: widget,
                         el: widgets[widget].el,
-                        data: {...widgets[widget].data, ...getObjectByI(storedWidgetsData, widget)}
+                        data: {...widgets[widget].data, ...getObjectByKey(storedWidgetsData, widget)}
                     }
                 } else
                     return {
@@ -138,15 +136,11 @@ const Dashboard = ({
             setCreatedWidgetsList(fixed)
         }
     }, [storedWidgetsData]);
-    const themeFontColor = useMemo(() => {
-        return currentTheme ? theme.dashboard.color[currentTheme] : palette.black;
-    }, [currentTheme]);
-    const themeBackgroundColor = useMemo(() => {
-        return currentTheme ? theme.dashboard.BGColor[currentTheme] : palette.pinball;
-    }, [currentTheme]);
+    const themeFontColor = () => currentTheme ? theme.dashboard.color[currentTheme] : palette.black
+    const themeBackgroundColor = () =>  currentTheme ? theme.dashboard.BGColor[currentTheme] : palette.pinball
     if (screenWidth > 320) {
         return (
-            <div className={'wrapper'} style={{backgroundColor: themeBackgroundColor, color: themeFontColor}}>
+            <div className={'wrapper'} style={{backgroundColor: themeBackgroundColor(), color: themeFontColor()}}>
                 {isWidgetMenuVisible &&
                     <CreateNewWidgetMenu
                         changeWidgetMenuVisibility={changeWidgetMenuVisibility}
@@ -194,7 +188,6 @@ const Dashboard = ({
                 {createdWidgetsList.length > 0 ? (
                     <Grid
                         currentCompactType={currentCompactType}
-                        layouts={layouts}
                         allWidgets={createdWidgetsList}
                         breakpoints={breakpoints(isMobileVer)}
                         cols={cols(isMobileVer)}
@@ -204,15 +197,8 @@ const Dashboard = ({
                         currentTheme={currentTheme}
                     />
                 ) : (
-                    <div style={{
-                        fontSize: '32px',
-                        height: '90dvh',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}>There's no widgets added</div>
+                    <div className={'noWidgets'}>There's no widgets added</div>
                 )}
-
             </div>
         )
     } else {

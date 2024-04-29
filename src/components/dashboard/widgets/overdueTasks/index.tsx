@@ -1,9 +1,8 @@
 import './styles.scss'
-import React, {useEffect, useMemo, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {format} from "date-fns";
 import {IWidgetEl} from "../../interfaces";
-import {palette, theme} from "../../../../assets/colors";
-const OverdueTasks = ({currentTheme}:IWidgetEl) => {
+const OverdueTasks = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
     const [overdueScale, setOverdueScale]=useState(1)
     const [tasks, setTasks] = useState([{
         task: 'status upd for board',
@@ -17,7 +16,6 @@ const OverdueTasks = ({currentTheme}:IWidgetEl) => {
     const getDimensions = () => {
         if (overdueRef.current) {
             const { width, height } = overdueRef.current.getBoundingClientRect();
-            
             return [width, height];
         } return [0, 0];
     };
@@ -41,12 +39,6 @@ const OverdueTasks = ({currentTheme}:IWidgetEl) => {
             resizeObserver.disconnect();
         };
     }, []);
-    const themeFontColor = useMemo(() => {
-        return currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black;
-    }, [currentTheme]);
-    const themeBackgroundColor = useMemo(() => {
-        return currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white;
-    }, [currentTheme]);
         return (
         <div className={'overdue__wrapper'} ref={overdueRef}
              style={{

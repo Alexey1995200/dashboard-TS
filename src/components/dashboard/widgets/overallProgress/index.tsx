@@ -1,11 +1,9 @@
 import { ConfigProvider, Progress } from "antd";
 import React, {useEffect, useRef, useState} from "react";
 import './styles.scss';
-import { useIsFetching } from '@tanstack/react-query'
 import {strokeColor} from "../../const";
-import {palette, theme} from "../../../../assets/colors";
 import {IWidgetEl} from "../../interfaces";
-const OverallProgress = ({currentTheme}:IWidgetEl) => {
+const OverallProgress = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
     const [overallScale, setOverallScale]=useState(1)
     const [percentage, setPercentage] = useState(Math.random()*100)
     const overallProgressRef = useRef<HTMLDivElement>(null);
@@ -22,8 +20,7 @@ const OverallProgress = ({currentTheme}:IWidgetEl) => {
         setOverallScale((Math.min(width, height)/120));
     };
     useEffect(() => {
-        handleResize(); // Initial render
-
+        handleResize();
         fetch('/db/progressDB/percentage')
             .then((response) => response.json())
             .then((response) => {
@@ -37,14 +34,13 @@ const OverallProgress = ({currentTheme}:IWidgetEl) => {
             resizeObserver.disconnect();
         };
     }, []);
-    const isFetching = useIsFetching()
     return (
         <div
             ref={overallProgressRef}
             className={'overallProgress'}
             style={{
-                backgroundColor: currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white,
-                color:currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black,
+                backgroundColor: themeBackgroundColor,
+                color:themeFontColor,
             }}
         >
             <div className={'centered_title overallProgress__title dragHandle'} style={{ transform: `scale(${overallScale > 1.25 ? overallScale/1.25 : 1})` }}>Overall Progress</div>
@@ -53,7 +49,7 @@ const OverallProgress = ({currentTheme}:IWidgetEl) => {
                     components: {
                         Progress: {
                             circleTextFontSize: '24',
-                            circleTextColor: currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black
+                            circleTextColor: themeFontColor
                         },
                     },
                 }}

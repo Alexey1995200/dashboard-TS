@@ -1,31 +1,32 @@
 import './styles.scss'
-import {auth, Burger, darkTheme, lighTheme, react, user} from "../../../assets/svg";
+import {auth, Burger, darkTheme, lightTheme, react, user} from "../../../assets/svg";
 import {colorFilter} from "../../dashboard/const";
-import {useState} from "react";
-import {TCurrentTheme} from "../../dashboard/interfaces";
+import React, {useState} from "react";
 import {palette} from "../../../assets/colors";
+
 interface ISideBar {
     changeSideBarVisibility: () => void
     changeDarkThemeState: () => void
     isDarkTheme: boolean,
-    currentTheme: TCurrentTheme
+    headerHeight:string
 }
+
 const Header = ({
                     changeSideBarVisibility,
                     changeDarkThemeState,
                     isDarkTheme,
-                    currentTheme
+                    headerHeight
                 }: ISideBar) => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+
     return (
-        <div className={'header__wrapper'}>
+        <div className={'header__wrapper'} id={'Header'} style={{height:headerHeight}}>
             <div className="header__left">
                 <Burger
                     color={palette.white}
                     style={{margin: 'auto 32px'}}
                     onClick={changeSideBarVisibility}
                 />
-
                 <nav className={'navBar__wrapper'}>
                     <ul className="navBar">
                         <li className="navBar__link">Dashboard</li>
@@ -42,24 +43,23 @@ const Header = ({
                     {isLoggedIn ?
                         <>
                             <div className={'account__info'}>
-                        <span className={'info__name'}>
-                        UserName Placeholder
-                            {/*{user.name}*/}
-                        </span>
+                                <span className={'info__name'}>
+                                    UserName Placeholder
+                                </span>
                                 <span className={'info__position'}>
-                        manager position
-                        </span>
+                                    manager position
+                                </span>
                             </div>
                             <img src={user} alt="USER" style={{margin: '4px'}}
                                  onClick={() => setIsLoggedIn(!isLoggedIn)}/>
                         </>
                         :
-                        <img className={'account__auth'} src={auth} alt="AUTH" style={{margin: '4px', padding: '4px'}}
+                        <img className={'account__auth'} src={auth} alt="AUTH"
                              onClick={() => setIsLoggedIn(!isLoggedIn)}/>
                     }
                 </div>
-                <img src={isDarkTheme ? darkTheme : lighTheme} alt={'changeTheme'} onClick={changeDarkThemeState}
-                     style={{height: '36px'}}/>
+                <img src={isDarkTheme ? darkTheme : lightTheme} alt={'changeTheme'} onClick={changeDarkThemeState}
+                     style={{height: '36px', padding: '0 16px', display:'flex', alignSelf:'center'}}/>
             </div>
         </div>
     )

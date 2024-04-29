@@ -36,7 +36,6 @@
     display: flex;
     gap: 8px;
     justify-content: space-around;
-
     img {
       height: 32px
     }
@@ -68,10 +67,10 @@
   }
 
   &:hover .remove_btn {
-    color: rgba(139, 0, 0, 0.5);
+    color: rgba(139, 0, 0, 0.75);
 
     &:hover {
-      color: red;
+      color: rgba(255, 0, 0, 1);
     }
   }
 }
@@ -107,6 +106,10 @@
   }
 }
 
-.test {
-  width: 360px;
+.noWidgets{
+  font-size: 32px;
+  height: 50dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -14,9 +14,7 @@ a:focus,a:active{outline: none;}
 nav,footer,header,aside{display: block;}
 
 html,body{
-	height: 100%;
-	width: 100%;
-	font-size: 100%;
+	width: 100dvw;
 	line-height: 1;
 	font-size: 14px;
 	-ms-text-size-adjust: 100%;

@@ -4,7 +4,7 @@ import {waiting} from "../../../../assets/svg";
 import {useEffect, useState} from "react";
 import {strokeColor} from "../../const";
 import {IWidgetEl} from "../../interfaces";
-import {palette, theme} from "../../../../assets/colors";
+
 interface ITasks {
     id: number;
     title: string;
@@ -12,10 +12,10 @@ interface ITasks {
 }
 const task: ITasks[] = [{
     id: 0,
-    title: "",
-    percentage: 0,
+    title: "Title",
+    percentage: Math.random()*100,
 }]
-const ProgressBar = ({currentTheme}:IWidgetEl) => {
+const ProgressBar = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
     const [percentage, setPercentage] = useState<number>(0)
     const [tasks, setTasks] = useState<ITasks[]>(task)
     useEffect(() => {
@@ -34,8 +34,8 @@ const ProgressBar = ({currentTheme}:IWidgetEl) => {
         <div
             className={'progressBar'}
             style={{
-                backgroundColor:currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white,
-                color:currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black
+                backgroundColor:themeBackgroundColor,
+                color:themeFontColor
             }}
         >
             <Progress
@@ -70,7 +70,7 @@ const ProgressBar = ({currentTheme}:IWidgetEl) => {
                                         components: {
                                             Progress: {
                                                 circleTextFontSize: '16px',
-                                                circleTextColor: currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black
+                                                circleTextColor: themeFontColor
                                             },
                                         },
                                     }}

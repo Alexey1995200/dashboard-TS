@@ -1,6 +1,6 @@
 //todo          sample           import {ReactComponent as ReactLogo} from './logo.svg'
 import {ReactComponent as Burger} from './burger.svg'
-import lighTheme from './sun.svg'
+import lightTheme from './sun.svg'
 import darkTheme from './moon.svg'
 //dashboard-board
 import waiting from './dashboard/wait.svg'
@@ -44,4 +44,4 @@ import compactVertical from './align/alignTop.svg'
 import compactHorizontal from './align/alignLeft.svg'
 import compactNone from './align/alignNone.svg'
 
-export {waiting, finish, alert, checked, comment, copy, tag, update, priority, react, user, auth, movement, resize, Desktop, Mobile, reset, resetSettings, resetTable, resetGlobal, compactVertical, compactHorizontal, compactNone, Burger, newWidget, ProgressBarIco, OverallProgressIco, LaunchDateIco, RiskIco, BudgetIco, OverdueIco, SummaryIco, AvgTimeIco, upcTasksIco, ProjectLogsIco, darkTheme, lighTheme, clear}
+export {waiting, finish, alert, checked, comment, copy, tag, update, priority, react, user, auth, movement, resize, Desktop, Mobile, reset, resetSettings, resetTable, resetGlobal, compactVertical, compactHorizontal, compactNone, Burger, newWidget, ProgressBarIco, OverallProgressIco, LaunchDateIco, RiskIco, BudgetIco, OverdueIco, SummaryIco, AvgTimeIco, upcTasksIco, ProjectLogsIco, darkTheme, lightTheme, clear}

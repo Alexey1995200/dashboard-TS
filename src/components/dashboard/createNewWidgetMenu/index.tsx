@@ -1,13 +1,13 @@
 import CreateWidgetButtons from "./createNewWidgetButton";
 import './style.scss'
-import React, {useEffect, useRef} from "react";
+import React from "react";
 
-interface ICNWM {
+interface ICreateNewWidgetMenu {
     changeWidgetMenuVisibility: () => void;
     createWidget: (widget: string) => void;
 }
 
-const CreateNewWidgetMenu = ({changeWidgetMenuVisibility, createWidget}: ICNWM) => {
+const CreateNewWidgetMenu = ({changeWidgetMenuVisibility, createWidget}: ICreateNewWidgetMenu) => {
     const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.stopPropagation();
     };
@@ -22,7 +22,6 @@ const CreateNewWidgetMenu = ({changeWidgetMenuVisibility, createWidget}: ICNWM) 
                 <h1>Create New Widget</h1>
                 <CreateWidgetButtons
                     createWidget={createWidget}
-
                 />
             </div>
         </div>
