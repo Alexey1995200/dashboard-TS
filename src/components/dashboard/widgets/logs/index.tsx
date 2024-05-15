@@ -18,11 +18,11 @@ const ProjectLogs = ({themeFontColor, themeBackgroundColor}: IWidgetEl) => {
     };
     const shownLogs = isAllLogsShown ? logs : logs.slice(-3);
     useEffect(() => {
-        fetch('db/logs/')
-            .then((response) => response.json())
-            .then((response) => {
-                setLogs(response.logs)
-            })
+        // fetch('db/logs/')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         setLogs(response.logs)
+        //     })
     }, []);
     const LogContentComponent = (logs: ILogs): string => {
         const logTextBuilder = LOG_DESCRIPTION_COMPONENTS_MAPPING[logs.log.type]

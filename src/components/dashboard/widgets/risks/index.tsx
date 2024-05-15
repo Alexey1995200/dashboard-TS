@@ -40,16 +40,16 @@ const Risks = ({themeFontColor, themeBackgroundColor}: IWidgetEl) => {
     };
     useEffect(() => {
         handleResize();
-        fetch('/db/overdueDB/tasks')
-            .then((response) => response.json())
-            .then((response) => {
-                setOverTasks(response.overTasks)
-            })
-        fetch('/db/budgetDB/overPercent')
-            .then((response) => response.json())
-            .then((response) => {
-                setOverPercent(response.overBudgetPercent)
-            })
+        // fetch('/db/overdueDB/tasks')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         // setOverTasks(response.overTasks)
+        //     })
+        // fetch('/db/budgetDB/overPercent')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         setOverPercent(response.overBudgetPercent)
+        //     })
         const resizeObserver = new ResizeObserver(handleResize);
         if (risksRef.current) {
             resizeObserver.observe(risksRef.current);

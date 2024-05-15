@@ -29,11 +29,11 @@ const UpcTasks = ({themeFontColor, themeBackgroundColor}: IWidgetEl) => {
     };
     useEffect(() => {
         handleResize();
-        fetch('db/upcDeadlinesDB/tasks')
-            .then((response) => response.json())
-            .then((response) => {
-                setTasks(response.upcTasks)
-            })
+        // fetch('db/upcDeadlinesDB/tasks')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         // setTasks(response.upcTasks)
+        //     })
         const resizeObserver = new ResizeObserver(handleResize);
         if (upcomingRef.current) {
             resizeObserver.observe(upcomingRef.current);

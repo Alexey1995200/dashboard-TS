@@ -4,8 +4,10 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './styles.css'
 import {gridMargins, gridRowHeight} from "../const";
-import {Breakpoints, ILayouts, IWidget, IWidgetData, IWidgetEl, IWidgets, TCurrentTheme} from "../interfaces";
+import {Breakpoints, ILayouts, IWidget, IWidgetData, IWidgetEl, IWidgets, TCurrentTheme, TLoading} from "../interfaces";
 import {palette, theme} from "../../../assets/colors";
+import {DataProvider, useData} from "../../../context/dataContext";
+import {IDB} from "../../../DB/db";
 
 interface IGrid {
     allWidgets: IWidget[];
@@ -15,7 +17,9 @@ interface IGrid {
     widgets: IWidgets;
     handleLayoutChange: (layout: IWidgetData[], layouts: ILayouts) => void;
     removeByKeyOnClick: (key: string) => void;
-    currentTheme: TCurrentTheme
+    currentTheme: TCurrentTheme;
+    DBData: IDB | null;
+    isDataLoading: boolean;
 }
 
 const Grid = ({
@@ -25,12 +29,22 @@ const Grid = ({
                   cols,
                   handleLayoutChange,
                   removeByKeyOnClick,
-                  currentTheme
+                  currentTheme,
+                  DBData,
+                  isDataLoading
               }: IGrid) => {
     const gridLayoutRef = useRef(null);
     const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);
     const themeWidgetFontColor = () => currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black
     const themeWidgetBackgroundColor = () => currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white
+
+    // const {
+    //     tasks,
+    //     employees,
+    //     finishProjectTimestampMS,
+    //     tasksProgress,
+    //     isLoading
+    // } = useData()
     return (
         <ResponsiveGridLayout
             ref={gridLayoutRef}
@@ -57,11 +71,17 @@ const Grid = ({
                             key={widget.key}
                             data-grid={widget.data}
                         >
-                            <WidgetEl
-                                currentTheme={currentTheme}
-                                themeFontColor={themeWidgetFontColor()}
-                                themeBackgroundColor={themeWidgetBackgroundColor()}
-                            />
+                            <DataProvider
+                            >
+                                <WidgetEl
+                                    currentTheme={currentTheme}
+                                    themeFontColor={themeWidgetFontColor()}
+                                    themeBackgroundColor={themeWidgetBackgroundColor()}
+                                    DBData={DBData}
+                                    isDataLoading={isDataLoading}
+                                />
+                            </DataProvider>
+
                             <span
                                 className="remove_btn"
                                 style={{

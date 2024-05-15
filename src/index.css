@@ -21,3 +21,21 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.loader {
+    width: 64px;
+    padding: 8px;
+    aspect-ratio: 1;
+    border-radius: 100%;
+    background: #299059;
+    --_m:
+            conic-gradient(#0000 25%,#000),
+            linear-gradient(#000 0 0) content-box;
+    -webkit-mask: var(--_m);
+    mask: var(--_m);
+    -webkit-mask-composite: source-out;
+    mask-composite: subtract;
+    animation: spin 2s infinite linear;
+}
+@keyframes spin {to{transform: rotate(1turn)}}

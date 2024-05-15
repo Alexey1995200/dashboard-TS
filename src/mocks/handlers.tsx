@@ -1,74 +1,12 @@
 import {delay, http, HttpResponse} from 'msw'
-import {finishDate, finishTimestampMS, summDB} from '../DB/db'
-import {avgData, percentage, tasks} from "../DB/progressDB";
-import {overTasks} from "../DB/overdueDB";
-import {budgetData, overBudgetPercent} from "../DB/budgetDB";
-import {upcTasks} from "../DB/upcDeadlinesDB";
-import {logs, users} from "../DB/logs";
+import {DB} from "../DB/db";
 
 export const handlers = [
-    http.get('/db/progressDB/percentage', async () => {
-            return HttpResponse.json({
-                percentage
-            })
-        }
-    ),
-    http.get('db/progressDB/tasks', async () => {
-            return HttpResponse.json({
-                tasks
-            })
-        }
-    ),
-    http.get('db/overdueDB/tasks', async () => {
+    http.get('/db/', async () => {
+        console.log('DB Fetch sended', DB)
         return HttpResponse.json({
-            overTasks
-        })
-    }),
-    http.get('db/budgetDB/data', async () => {
-        return HttpResponse.json({
-            budgetData: budgetData
-        })
-    }),
-    http.get('db/budgetDB/overPercent', async () => {
-        return HttpResponse.json({
-            overBudgetPercent
-        })
-    }),
-    http.get('db/summDB', async () => {
-        return HttpResponse.json({
-            summDB
-        })
-    }),
-    http.get('db/finDate', async () => {
-        return HttpResponse.json({
-            finishDate
-        })
-    }),
-    http.get('db/finTimestamp', async () => {
-        return HttpResponse.json({
-            finishTimestampMS
-        })
-    }),
-    http.get('db/upcDeadlinesDB/tasks', async () => {
-
-        return HttpResponse.json({
-            upcTasks
-        })
-    }),
-    http.get('db/logs', async () => {
-        return HttpResponse.json({
-            logs
-        })
-    }),
-    http.get('db/logs/users', async () => {
-        return HttpResponse.json({
-            users
-        })
-    }),
-    http.get('db/progressDB/avgData', async () => {
-        return HttpResponse.json({
-            avgData
-        })
+            DB
+        });
     }),
     http.get('/rgl_layout', () => {
             if (localStorage.getItem('rgl_layout')) {

@@ -31,16 +31,16 @@ const Summary = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
     const isProjectOnTime = ():boolean => (finishTimestampMS - new Date().getTime()) > 0;
     useEffect(() => {
         handleResize();
-        fetch('/db/summDB')
-            .then((response) => response.json())
-            .then((response) => {
-                setSummDB(response.summDB)
-            })
-        fetch('db/finTimestamp')
-            .then((response) => response.json())
-            .then((response) => {
-                setFinishTimestampMS(response.finishTimestampMS)
-            })
+        // fetch('/db/summDB')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         // setSummDB(response.summDB)
+        //     })
+        // fetch('db/finTimestamp')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         setFinishTimestampMS(response.finishTimestampMS)
+        //     })
         const resizeObserver = new ResizeObserver(handleResize);
         if (summaryRef.current) {
             resizeObserver.observe(summaryRef.current);

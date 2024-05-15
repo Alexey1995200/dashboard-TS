@@ -26,11 +26,11 @@ const OverdueTasks = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
     };
     useEffect(() => {
         handleResize();
-        fetch('/db/overdueDB/tasks')
-            .then((response) => response.json())
-            .then((response) => {
-                setTasks(response.overTasks)
-            })
+        // fetch('/db/overdueDB/tasks')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         // setTasks(response.overTasks)
+        //     })
         const resizeObserver = new ResizeObserver(handleResize);
         if (overdueRef.current) {
             resizeObserver.observe(overdueRef.current);

@@ -40,11 +40,11 @@ const AvgTime = ({themeFontColor, themeBackgroundColor}: IWidgetEl) => {
     };
     useEffect(() => {
         handleResize();
-        fetch('/db/progressDB/avgData')
-            .then((response) => response.json())
-            .then((response) => {
-                setData(response.avgData)
-            })
+        // fetch('/db/progressDB/avgData')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         setData(response.avgData)
+        //     })
         const resizeObserver = new ResizeObserver(handleResize);//todo read about event listener / resize observer
         if (avgRef.current) {
             resizeObserver.observe(avgRef.current);
@@ -59,12 +59,20 @@ const AvgTime = ({themeFontColor, themeBackgroundColor}: IWidgetEl) => {
         }
         return name
     };
-    const shortNameData = useMemo(() => {
-        return data.map(el => ({
-            ...el,
-            x: cutName(el.x, 5)
-        }));
-    }, [data])
+
+    // const avgData = Object.values(data)
+    //     .filter(employee => typeof employee.avgDays === 'number')
+    //     .map(employee => ({
+    //         x: employee.name,
+    //         y: employee.avgDays
+    //     }));
+    //
+    // const avgData = useMemo(() => {
+    //     return data.map(el => ({
+    //         ...el,
+    //         x: cutName(el.x, 5)
+    //     }));
+    // }, [data])
     return (
         <div className={'avgTime__wrapper'}
              style={{
@@ -85,7 +93,7 @@ const AvgTime = ({themeFontColor, themeBackgroundColor}: IWidgetEl) => {
                     <VictoryBar
                         alignment='middle'
                         standalone={false}
-                        data={data.length >= 5 ? shortNameData : data}
+                        // data={data.length >= 5 ? shortNameData : data}
                         barWidth={barWidth}
                         x="x"
                         y="y"

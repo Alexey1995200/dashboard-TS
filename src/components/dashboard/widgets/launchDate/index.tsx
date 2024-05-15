@@ -22,16 +22,16 @@ const LaunchDate = ({currentTheme}: IWidgetEl) => {
     };
     useEffect(() => {
         handleResize();
-        fetch('/db/finDate')
-            .then((response) => response.json())
-            .then((response) => {
-                setFinishDate(response.finishDate)
-            })
-        fetch('/db/finTimestamp')
-            .then((response) => response.json())
-            .then((response) => {
-                setFinishDateTimeStampMS(response.finishTimestampMS)
-            })
+        // fetch('/db/finDate')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         setFinishDate(response.finishDate)
+        //     })
+        // fetch('/db/finTimestamp')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         setFinishDateTimeStampMS(response.finishTimestampMS)
+        //     })
         const resizeObserver = new ResizeObserver(handleResize);
         if (launchDateRef.current) {
             resizeObserver.observe(launchDateRef.current);

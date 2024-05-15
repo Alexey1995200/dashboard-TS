@@ -17,19 +17,28 @@ const task: ITasks[] = [{
 }]
 const ProgressBar = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
     const [percentage, setPercentage] = useState<number>(0)
-    const [tasks, setTasks] = useState<ITasks[]>(task)
+    const [tasksProgress, setTasksProgress] = useState<ITasks[]>(task)
     useEffect(() => {
-        fetch('/db/progressDB/percentage')
-            .then((response) => response.json())
-            .then((response) => {
-                setPercentage(response.percentage)
-            })
-        fetch('/db/progressDB/tasks')
-            .then((response) => response.json())
-            .then((response) => {
-                setTasks(response.tasks)
-            })
+        // fetch('/db/progressDB/percentage')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         setPercentage(response.percentage)
+        //     })
+        // fetch('/db/progressDB/tasks')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         setTasksProgress(response.tasks)
+        //     })
     }, []);
+
+    const totalPercentage = tasksProgress.reduce((accumulator, object) => {
+            return accumulator + object.percentage;
+        }, 0
+    );
+    const calculatePercentage: number = totalPercentage / tasksProgress.length
+    useEffect(() => {
+        setPercentage(calculatePercentage)
+    }, [tasksProgress]);
     return (
         <div
             className={'progressBar'}
@@ -39,13 +48,13 @@ const ProgressBar = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
             }}
         >
             <Progress
-                percent={percentage}
+                percent={calculatePercentage}
                 strokeColor={strokeColor}
                 showInfo={false}
                 className={'progressBar__bar dragHandle'}
             />
             <div className={'progressBar__tasks'} >
-                {tasks.map((task: ITasks) => (
+                {tasksProgress.map((task: ITasks) => (
                     <div
 
                         className={'task'}

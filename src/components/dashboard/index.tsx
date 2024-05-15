@@ -9,9 +9,10 @@ import {
 import {getFromLS, isMobileVerByUserAgent, saveToLS, uploadRGLData} from "./utils";
 import {breakpoints, cols, isSystemThemeDark, screenWidth, widgets} from "./const";
 import CreateNewWidgetMenu from "./createNewWidgetMenu";
-import {ILayouts, IWidget, IWidgetData, TCurrentTheme} from "./interfaces";
+import {ILayouts, IWidget, IWidgetData, TCurrentTheme, TLoading} from "./interfaces";
 import {palette, theme} from "../../assets/colors";
 import './styles.scss'
+import {IDB} from "../../DB/db";
 
 interface IDashBoard {
     isDarkTheme: boolean,
@@ -33,6 +34,9 @@ const Dashboard = ({
     const [createdWidgetsList, setCreatedWidgetsList] = useState<IWidget[]>([])
     const [storedWidgetsKeys, setStoredWidgetsKeys] = useState<string[]>()
     const [storedWidgetsData, setStoredWidgetsData] = useState<IWidgetData[]>()
+    const [DBData, setDBData] = useState<IDB | null>(null)
+    const [isDataLoading, setIsDataLoading] = useState<boolean>(true)
+    console.log(DBData, '11111111111111111111111')
     const changeWidgetMenuVisibility = () => {
         setIsWidgetMenuVisible(!isWidgetMenuVisible);
     };
@@ -73,7 +77,8 @@ const Dashboard = ({
         setStoredWidgetsKeys(keys)
         setStoredWidgetsData(data)
     }
-    const fetchData = () => {
+    const fetchRGLData = () => {
+        console.log('fectrgl')
         fetch('/rgl_layout')
             .then((response) => response.json())
             .then((response) => {
@@ -81,10 +86,39 @@ const Dashboard = ({
                     setRGLParams(JSON.parse(response).value)
                 }
             })
-            .catch((err) => console.log('err', err))
+            .catch((err) => console.log('err/rgl_layout', err))
     }
+    const fetchDBData = () => {
+        fetch('/db/')
+            // .then ((response) => console.log('DB fetch test', response.json()))
+            .then((response) => {
+                //@ts-ignore
+                console.log('DB fetch',  (response))
+                if (!response.ok) {
+                    throw new Error('DB fetch Network response was not ok');
+                }
+                return response
+            })
+            // .then((response) => response.json())
+            .then((response) => {
+                // if (JSON.parse(response)
+                //     .value
+                //     )
+                // {
+                //     console.log('DB fetch got', response, JSON.parse(response), JSON.parse(response).value)
+                    setDBData(response)
+                    // setIsDataLoading(false)
+                // }
+                console.log(response, 'qwertytttt')
+            })
+            .catch((err) => {
+                setIsDataLoading(false)
+                console.log('err/DB fetch ERR',err)
+            })
+    };
     useEffect(() => {
-        fetchData()
+        fetchDBData()
+        fetchRGLData()
     }, []);
     const handleLayoutChange = (layout: IWidgetData[], layouts: ILayouts) => {
         if (createdWidgetsList.length > 0) {
@@ -195,6 +229,8 @@ const Dashboard = ({
                         handleLayoutChange={handleLayoutChange}
                         widgets={widgets}
                         currentTheme={currentTheme}
+                        DBData={DBData}
+                        isDataLoading={isDataLoading}
                     />
                 ) : (
                     <div className={'noWidgets'}>There's no widgets added</div>

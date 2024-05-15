@@ -1,7 +1,11 @@
+import {IDB} from "../../DB/db";
+
 export interface IWidgetEl {
     currentTheme?:TCurrentTheme
     themeFontColor?:string
     themeBackgroundColor?:string
+    DBData?:IDB | null
+    isDataLoading?:boolean
 }
 
 export interface IWidget {
@@ -61,3 +65,4 @@ export type IBpArr = IBpArrItem[];
 
 export type TCurrentTheme = 'dark' | 'light'
 
+export type TLoading = 'loading'|'loaded'|'error'

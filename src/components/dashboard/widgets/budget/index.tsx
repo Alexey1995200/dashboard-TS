@@ -39,16 +39,16 @@ const Budget = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
     };
     useEffect(() => {
         handleResize();
-        fetch('db/budgetDB/data')
-            .then((response) => response.json())
-            .then((response) => {
-                setData(response.budgetData)
-            })
-        fetch('/db/budgetDB/overPercent')
-            .then((response) => response.json())
-            .then((response) => {
-                setOverBudgetPercent(response.overBudgetPercent)
-            })
+        // fetch('db/budgetDB/data')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         setData(response.budgetData)
+        //     })
+        // fetch('/db/budgetDB/overPercent')
+        //     .then((response) => response.json())
+        //     .then((response) => {
+        //         setOverBudgetPercent(response.overBudgetPercent)
+        //     })
         const resizeObserver = new ResizeObserver(handleResize);
         if (budgetRef.current) {
             resizeObserver.observe(budgetRef.current);
