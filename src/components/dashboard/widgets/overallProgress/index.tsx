@@ -1,15 +1,26 @@
-import { ConfigProvider, Progress } from "antd";
-import React, {useEffect, useRef, useState} from "react";
+import {ConfigProvider, Progress} from "antd";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import './styles.scss';
 import {strokeColor} from "../../const";
 import {IWidgetEl} from "../../interfaces";
-const OverallProgress = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
-    const [overallScale, setOverallScale]=useState(1)
-    const [percentage, setPercentage] = useState(Math.random()*100)
+
+const OverallProgress = ({themeFontColor, themeBackgroundColor, DBData}: IWidgetEl) => {
+    const [overallScale, setOverallScale] = useState(1)
+    const [percentage, setPercentage] = useState(Math.random() * 100)
     const overallProgressRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (DBData != null) {
+            const totalPercentage = DBData.tasksProgress.reduce((accumulator, object) => {
+                    return accumulator + object.percentage;
+                }, 0
+            )
+            const calculatePercentage: number = totalPercentage / DBData.tasksProgress.length
+            setPercentage(calculatePercentage)
+        }
+    }, [DBData]);
     const getDimensions = () => {
         if (overallProgressRef.current) {
-            const { width, height } = overallProgressRef.current.getBoundingClientRect();
+            const {width, height} = overallProgressRef.current.getBoundingClientRect();
             return [width, height]
         }
     };
@@ -17,15 +28,10 @@ const OverallProgress = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
         const dimensions = getDimensions();
         if (!dimensions) return;
         const [width, height] = dimensions
-        setOverallScale((Math.min(width, height)/120));
+        setOverallScale((Math.min(width, height) / 120));
     };
     useEffect(() => {
         handleResize();
-        fetch('/db/progressDB/percentage')
-            .then((response) => response.json())
-            .then((response) => {
-                setPercentage(response.percentage)
-            })
         const resizeObserver = new ResizeObserver(handleResize);
         if (overallProgressRef.current) {
             resizeObserver.observe(overallProgressRef.current);
@@ -40,10 +46,12 @@ const OverallProgress = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
             className={'overallProgress'}
             style={{
                 backgroundColor: themeBackgroundColor,
-                color:themeFontColor,
+                color: themeFontColor,
             }}
         >
-            <div className={'centered_title overallProgress__title dragHandle'} style={{ transform: `scale(${overallScale > 1.25 ? overallScale/1.25 : 1})` }}>Overall Progress</div>
+            <div className={'centered_title overallProgress__title dragHandle'}
+                 style={{transform: `scale(${overallScale > 1.25 ? overallScale / 1.25 : 1})`}}>Overall Progress
+            </div>
             <ConfigProvider
                 theme={{
                     components: {
@@ -55,7 +63,7 @@ const OverallProgress = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
                 }}
             >
                 <Progress
-                    style={{ transform: `scale(${overallScale > 1.25 ? overallScale/1.25 : 1})` }}
+                    style={{transform: `scale(${overallScale > 1.25 ? overallScale / 1.25 : 1})`}}
                     size={96}
                     strokeWidth={12}
                     type="dashboard"

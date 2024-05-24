@@ -21,3 +21,48 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.widgetLoader{
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: inherit;
+}
+.widgetError{
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    font-size: 10dvh;
+    height: inherit;
+    & img {
+        aspect-ratio: 1;
+        height: 75%;
+        width: 75%;
+    }
+    @media (min-height: 1100px) {
+        font-size: 5dvh;
+        @media (min-height: 2180px) {
+            font-size: 2dvh;
+        }
+    }
+}
+@keyframes loader {
+    0% {
+        stroke-dasharray: 84.0955352783 104.0955352783;
+    }
+    100% {
+        stroke-dasharray: 178.19107055664062 10;
+    }
+}
+@keyframes loader2 {
+    0% {
+        stroke-dashoffset: 0;
+    }
+    100% {
+        stroke-dashoffset: -188.19107055664062;
+    }
+}

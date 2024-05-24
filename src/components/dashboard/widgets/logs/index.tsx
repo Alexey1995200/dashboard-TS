@@ -10,20 +10,16 @@ import {
     LOG_TITLE_MAPPING
 } from "./builderComponents";
 
-const ProjectLogs = ({themeFontColor, themeBackgroundColor}: IWidgetEl) => {
-    const [logs, setLogs] = useState([])
+const ProjectLogs = ({themeFontColor, themeBackgroundColor,DBData}: IWidgetEl) => {
+    const [logs, setLogs] = useState<ILog[]>([])
     const [isAllLogsShown, setIsAllLogsShown] = useState(false);
     const showAllLogs = () => {
         setIsAllLogsShown(!isAllLogsShown);
     };
     const shownLogs = isAllLogsShown ? logs : logs.slice(-3);
     useEffect(() => {
-        fetch('db/logs/')
-            .then((response) => response.json())
-            .then((response) => {
-                setLogs(response.logs)
-            })
-    }, []);
+        if (DBData) setLogs(DBData.logs)
+    }, [DBData]);
     const LogContentComponent = (logs: ILogs): string => {
         const logTextBuilder = LOG_DESCRIPTION_COMPONENTS_MAPPING[logs.log.type]
         return (

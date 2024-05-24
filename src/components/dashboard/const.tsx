@@ -7,20 +7,27 @@ import Budget from "./widgets/budget";
 import OverdueTasks from "./widgets/overdueTasks";
 import Summary from "./widgets/summary";
 import AvgTime from "./widgets/avgTime";
-import UpcTasks from "./widgets/upcomingDeadlines";
+import UpcTasks from "./widgets/upcomingTasks";
 import ProjectLogs from "./widgets/logs";
 import {
     AvgTimeIco,
-    BudgetIco,
+    BudgetIco, error,
     LaunchDateIco,
     OverallProgressIco,
     OverdueIco,
-    ProgressBarIco, ProjectLogsIco,
+    ProgressBarIco,
+    ProjectLogsIco,
     RiskIco,
-    SummaryIco, upcTasksIco
+    SummaryIco,
+    upcTasksIco
 } from "../../assets/svg";
 import {IBpArr, TBreakpoints} from "./interfaces";
 import {palette} from "../../assets/colors";
+import React, {ReactElement, ReactNode} from "react";
+import {Spinner} from "../../assets/spinner";
+import {IDB, ITask} from "../../DB/db";
+import {format} from "date-fns";
+import {useTheme} from "../../context/themeProvider";
 
 export const strokeColor = {
     '0%': palette.gumdropGreen,
@@ -69,7 +76,6 @@ export const breakpoints = (isMobileVer: boolean): TBreakpoints => {
         ['F3']: 486 - 10,
         ['Tab7in']: 600 - 10,
         ['Tab']: 780 - 10,
-        // Tab2: 800 - 1,
 
     } : {
         ['phone']: 360 - 10,
@@ -79,20 +85,31 @@ export const breakpoints = (isMobileVer: boolean): TBreakpoints => {
         ['qHD']: 960 - 10,
         ['XGA']: 1024 - 10,
         ['WXGA']: 1279 - 10,
-        ['WXGAHD']: 1366 - 10,
-        ['HDp']: 1600 - 10,
-        ['FHD']: 1920 - 10,
-        ['WQHD']: 2560 - 10,
-        ['FourK']: 3840 - 10,
-        ['FourKRetina']: 4096 - 10,
+        // ['WXGAHD']: 1366 - 10,
+        // ['HDp']: 1600 - 10,
+        // ['FHD']: 1920 - 10,
+        // ['WQHD']: 2560 - 10,
+        // ['FourK']: 3840 - 10,
+        // ['FourKRetina']: 4096 - 10,
     }
 }
 export const cols = (isMobileVer: boolean): TBreakpoints => {
     return isMobileVer ? {
-        ['galaxyY']: 1, ['galaxyS3']: 2, ['F3']: 4, ['Tab7in']: 6, ['Tab']: 8, // ['Tab2']: 8,
+        ['galaxyY']: 1, ['galaxyS3']: 2, ['F3']: 4, ['Tab7in']: 6, ['Tab']: 8,
     } : {
-        ['phone']: 4, ['WQVGA']: 6, ['VGA']: 8, ['WVGA']: 10, ['qHD']: 12, ['XGA']: 13, ['WXGA']: 16, ['WXGAHD']: 17, ['HDp']: 20,
-        ['FHD']: 24, ['WQHD']: 32, ['FourK']: 48, ['FourKRetina']: 52,
+        ['phone']: 4,
+        ['WQVGA']: 6,
+        ['VGA']: 8,
+        ['WVGA']: 10,
+        ['qHD']: 12,
+        ['XGA']: 13,
+        ['WXGA']: 16,
+        // ['WXGAHD']: 17,
+        // ['HDp']: 20,
+        // ['FHD']: 24,
+        // ['WQHD']: 32,
+        // ['FourK']: 48,
+        // ['FourKRetina']: 52,
     }
 }
 export const calculateH = (expectedH: number): number => ((expectedH + gridMargins[1]) / (gridRowHeight + gridMargins[1]))
@@ -275,6 +292,51 @@ export const widgets = {
         },
 }
 
+export interface LoaderProps {
+    children: ReactNode | ReactNode[];
+    isLoading: boolean;
+    isError: boolean
+}
 
+// todo fix it
+export const display = (isLoading: boolean, isDataPresent: boolean, Component: ReactElement, themeBackgroundColor?: string, themeFontColor?: string) => {
+    const style = {backgroundColor: themeBackgroundColor, color: themeFontColor, height: "92.5dvh"}
+    if (screenWidth > 320) {
+        if (isLoading) {
+            return (
+                <div className="widgetLoader" style={style}>
+                    <Spinner width={256} height={256} margin={4}/>
+                </div>
+            )
+        } else if (!isLoading && !isDataPresent) {
+            return (
+                <div className={'widgetError'} style={style}>
+                    <img src={error} alt="&#9940;"/>
+                </div>
+            )
+        } else {
+            return Component
+        }
+    }
+    return <h1 style={{display: 'flex', flex: 1,}}> This resolution is not supported </h1>
+}
 
+// isProjectOnTime: () => (finishProjectTimestampMS - new Date().getTime()) > 0
+export const isProjectOnTime = (finishProjectTimestampMS:number): boolean => (finishProjectTimestampMS - new Date().getTime()) > 0
+export const localDateTimestampMS: number = new Date().getTime()
+export const msInDay = 24*60*60*1000
+export const differenceInMs = (ts1:number, ts2:number) => Math.abs(ts1-ts2)
+export const differenceInDaysWithToday = (timestamp:number) => Math.ceil(differenceInMs(localDateTimestampMS, timestamp) / msInDay)
+export const tasksInOverdue = (DB:IDB):ITask[] => {
+    return Object.values(DB.tasks).filter((task) =>
+        task.deadline > localDateTimestampMS && !task.isCompleted)
+}
+export const tasksUpcoming = (DB:IDB):ITask[] => {
+    return Object.values(DB.tasks).filter((task) =>
+        task.deadline < localDateTimestampMS && !task.isCompleted)
+}
+export const dateToDMY = (timestamp:number) => format(new Date(timestamp), 'dd.MM.yyyy')
 
+export const setBodyColor = ({color}: any) => {
+    document.documentElement.style.setProperty('--bodyColor', color)
+}

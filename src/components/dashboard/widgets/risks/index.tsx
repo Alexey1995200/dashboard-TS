@@ -1,32 +1,20 @@
 import './styles.scss'
 import {useEffect, useRef, useState} from "react";
-import {format} from "date-fns";
 import {IWidgetEl} from "../../interfaces";
-interface IOverTaskElement {
-    task: string,
-    deadline: string,
-    days: number,
-    employee: string,
-    employeeId: number,
-    employeeShort: string,
-}
+import {differenceInDaysWithToday, differenceInMs, localDateTimestampMS, msInDay, tasksInOverdue} from "../../const";
+import {ITask} from "../../../../DB/db";
+
 interface IRisks {
     id: number;
     num: number;
     description: string;
 }
-const Risks = ({themeFontColor, themeBackgroundColor}: IWidgetEl) => {
+
+const Risks = ({themeFontColor, themeBackgroundColor, DBData}: IWidgetEl) => {
     const [risksScale, setRisksScale] = useState<number>(1)
     const risksRef = useRef<HTMLDivElement>(null);
-    const [overTasks, setOverTasks] = useState<IOverTaskElement[]>([{
-        task: 'status upd for board',
-        deadline: format(new Date(32503676461000), "dd.MM.yyyy"),
-        days: Math.floor((946681261001) / (1000 * 60 * 60 * 24)),
-        employee: 'employee',
-        employeeId: 0,
-        employeeShort: 'emp'
-    }])
-    const [overPercent, setOverPercent] = useState(0)
+    const [overTasks, setOverTasks] = useState<ITask[]>()
+    const [overBudgetPercent, setOverBudgetPercent] = useState(0)
     const getDimensions = () => {
         if (risksRef.current) {
             const {width, height} = risksRef.current.getBoundingClientRect();
@@ -40,16 +28,6 @@ const Risks = ({themeFontColor, themeBackgroundColor}: IWidgetEl) => {
     };
     useEffect(() => {
         handleResize();
-        fetch('/db/overdueDB/tasks')
-            .then((response) => response.json())
-            .then((response) => {
-                setOverTasks(response.overTasks)
-            })
-        fetch('/db/budgetDB/overPercent')
-            .then((response) => response.json())
-            .then((response) => {
-                setOverPercent(response.overBudgetPercent)
-            })
         const resizeObserver = new ResizeObserver(handleResize);
         if (risksRef.current) {
             resizeObserver.observe(risksRef.current);
@@ -58,33 +36,54 @@ const Risks = ({themeFontColor, themeBackgroundColor}: IWidgetEl) => {
             resizeObserver.disconnect();
         };
     }, []);
-    const taskMedRisk = (overTasks.filter(task => task.days >= 7 && task.days <= 14)).length;
-    const taskHiRisk = (overTasks.filter(task => task.days >= 14)).length;
+    useEffect(() => {
+        if (DBData) {
+            const budgetData = (DBData.budgetData)
+            setOverTasks(tasksInOverdue(DBData))
+            setOverBudgetPercent(+((budgetData[2].value) / (budgetData[1].value)).toFixed(2))
+        }
+    }, [DBData]);
+    const taskMedRisk = () => {
+        if (overTasks) {
+            return (overTasks.filter(task =>
+                differenceInDaysWithToday(task.deadline) >= 7 && differenceInDaysWithToday(task.deadline) <= 14)).length
+        }
+        return 0
+    }
+    const taskHiRisk = () => {
+        if (overTasks) {
+            return (overTasks.filter(task =>
+                differenceInDaysWithToday(task.deadline) >= 14)).length
+        }
+        return 0
+    }
+
     const risks: IRisks[] = [
         {
             id: 0,
-            num: overPercent,
+            num: overBudgetPercent,
             description: 'Currently Over Target Budget'
         }, {
             id: 1,
-            num: taskMedRisk,
+            num: taskMedRisk(),
             description: 'Overdue med.risk'
         }, {
             id: 2,
-            num: taskHiRisk,
+            num: taskHiRisk(),
             description: 'Overdue hi.risk'
         },
     ]
     return (
-        <div className={'risks__wrapper'} ref={risksRef} style={{backgroundColor:themeBackgroundColor, color:themeFontColor}}>
+        <div className={'risks__wrapper'} ref={risksRef}
+             style={{backgroundColor: themeBackgroundColor, color: themeFontColor}}>
             <div className={'centered_title dragHandle'}
-                style={{
-                    transform: `scale(${risksScale > 1.25 ? risksScale / 1.25 : 1})`,
-                    paddingTop: `${risksScale > 1.5 ? risksScale * 4 / 1.5 : 0}px`
-                }}> Risks
+                 style={{
+                     transform: `scale(${risksScale > 1.25 ? risksScale / 1.25 : 1})`,
+                     paddingTop: `${risksScale > 1.5 ? risksScale * 4 / 1.5 : 0}px`
+                 }}> Risks
             </div>
             <div className={'risks'}
-                style={{fontSize: `${risksScale > 1.25 ? 12 * risksScale / 1.25 : 12}px`}}>
+                 style={{fontSize: `${risksScale > 1.25 ? 12 * risksScale / 1.25 : 12}px`}}>
                 {risks.every(risk => risk.num <= 0) ? <div className={'goodNews'}>all good</div> :
                     risks.map((risk) => (
                             <div key={risk.id}
