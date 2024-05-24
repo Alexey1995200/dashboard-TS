@@ -13,32 +13,22 @@ interface ITasks {
 const task: ITasks[] = [{
     id: 0,
     title: "Title",
-    percentage: Math.random()*100,
+    percentage: Number((Math.random()*100).toFixed(2)),
 }]
-const ProgressBar = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
+const ProgressBar = ({themeFontColor, themeBackgroundColor, DBData}:IWidgetEl) => {
     const [percentage, setPercentage] = useState<number>(0)
     const [tasksProgress, setTasksProgress] = useState<ITasks[]>(task)
     useEffect(() => {
-        // fetch('/db/progressDB/percentage')
-        //     .then((response) => response.json())
-        //     .then((response) => {
-        //         setPercentage(response.percentage)
-        //     })
-        // fetch('/db/progressDB/tasks')
-        //     .then((response) => response.json())
-        //     .then((response) => {
-        //         setTasksProgress(response.tasks)
-        //     })
-    }, []);
-
-    const totalPercentage = tasksProgress.reduce((accumulator, object) => {
-            return accumulator + object.percentage;
-        }, 0
-    );
-    const calculatePercentage: number = totalPercentage / tasksProgress.length
-    useEffect(() => {
-        setPercentage(calculatePercentage)
-    }, [tasksProgress]);
+        if (DBData != null) {
+            const totalPercentage = DBData.tasksProgress.reduce((accumulator, object) => {
+                    return accumulator + object.percentage;
+                }, 0
+            )
+            const calculatePercentage: number = totalPercentage / DBData.tasksProgress.length
+            setPercentage(calculatePercentage)
+            setTasksProgress(DBData.tasksProgress)
+        }
+    }, [DBData]);
     return (
         <div
             className={'progressBar'}
@@ -48,7 +38,7 @@ const ProgressBar = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
             }}
         >
             <Progress
-                percent={calculatePercentage}
+                percent={percentage}
                 strokeColor={strokeColor}
                 showInfo={false}
                 className={'progressBar__bar dragHandle'}

@@ -2,53 +2,46 @@ import './styles.scss'
 import VictoryColumns from "./components/Columns_Victory";
 import {useEffect, useRef, useState} from "react";
 import {IWidgetEl} from "../../interfaces";
-interface IBudjData{
-    id:number;
-    type:string;
-    text:string;
-    value:number;
-    color:string
+
+interface IBudjData {
+    id: number;
+    type: string;
+    text: string;
+    value: number;
+    color: string
 }
-const Budget = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
-    const [budgetScale, setBudgetScale]=useState(1)
+
+const Budget = ({themeFontColor, themeBackgroundColor, DBData}: IWidgetEl) => {
+    const [budgetScale, setBudgetScale] = useState(1)
+    const [overBudgetPercent, setOverBudgetPercent] = useState(0)
     const [data, setData] = useState<IBudjData[]>([{
         id: 1,
         type: 'Type(title)',
         text: 'Title',
         value: 0,
-        color:'string'
-    },{
+        color: 'string'
+    }, {
         id: 2,
         type: 'Type(title)',
         text: 'Title',
         value: 0,
-        color:'string'
+        color: 'string'
     }])
-    const [overBudgetPercent, setOverBudgetPercent] = useState(0)
     const budgetRef = useRef<HTMLDivElement>(null);
     const getDimensions = () => {
         if (budgetRef.current) {
-            const { width, height } = budgetRef.current.getBoundingClientRect();
-            
+            const {width, height} = budgetRef.current.getBoundingClientRect();
+
             return [width, height];
-        } return [0, 0];
+        }
+        return [0, 0];
     };
     const handleResize = () => {
         const [width, height] = getDimensions();
-        setBudgetScale((Math.min(width, height)/165));
+        setBudgetScale((Math.min(width, height) / 165));
     };
     useEffect(() => {
         handleResize();
-        // fetch('db/budgetDB/data')
-        //     .then((response) => response.json())
-        //     .then((response) => {
-        //         setData(response.budgetData)
-        //     })
-        // fetch('/db/budgetDB/overPercent')
-        //     .then((response) => response.json())
-        //     .then((response) => {
-        //         setOverBudgetPercent(response.overBudgetPercent)
-        //     })
         const resizeObserver = new ResizeObserver(handleResize);
         if (budgetRef.current) {
             resizeObserver.observe(budgetRef.current);
@@ -57,22 +50,31 @@ const Budget = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
             resizeObserver.disconnect();
         };
     }, []);
+    useEffect(() => {
+        if (DBData) setData(DBData?.budgetData)
+    }, [DBData]);
+    useEffect(() => {
+        if (DBData && data.length===3){
+            setOverBudgetPercent(+((data[2].value) / (data[1].value)).toFixed(2))
+        }
+    }, [data]);
     return (
         <div className={'budget__wrapper'}
              ref={budgetRef}
              style={{
                  backgroundColor: themeBackgroundColor,
-                 color:themeFontColor
+                 color: themeFontColor
              }}
         >
             <h3 className={'centered_title dragHandle'}
                 style={{
-                    transform: `scale(${budgetScale > 1.25 ? budgetScale/1.5 : 1})`,
+                    transform: `scale(${budgetScale > 1.25 ? budgetScale / 1.5 : 1})`,
                 }}
             >Project Budget</h3>
             <div className={'budget'}>
                 <div className={'budget__columns dragHandle'}>
-                    <div className={'columns'} style={{ transform: `scale(${budgetScale > 1.25 ? budgetScale/1.5 : 1})` }}>
+                    <div className={'columns'}
+                         style={{transform: `scale(${budgetScale > 1.25 ? budgetScale / 1.5 : 1})`}}>
                         <VictoryColumns
                             columnsData={data}
                         />
@@ -81,12 +83,12 @@ const Budget = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
                         {data.map((column) => (
                                 <div className={'column__category'}
                                      key={column.id}
-                                     style={{ fontSize: `${budgetScale > 1.25 ? 8*budgetScale/1.5 : 8}px` }}
+                                     style={{fontSize: `${budgetScale > 1.25 ? 8 * budgetScale / 1.5 : 8}px`}}
                                 >
                                     <div
                                         className={`category__color`}
                                         content={''}
-                                        style={{ backgroundColor: column.color}}
+                                        style={{backgroundColor: column.color}}
                                     />
                                     <div className={'category__title'}>{column.type}</div>
                                 </div>
@@ -95,15 +97,24 @@ const Budget = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
                         }
                     </div>
                 </div>
-                <div className={'budget__money'} style={{ fontSize: `${budgetScale > 1.25 ? 12*budgetScale/1.25 : 12}px` }}>
-                    <div className={'block'}><div>Total Budget</div><div className={'bold'}>{data[0].value}</div></div>
-                    <div className={'block'}><div>Remaining</div><div className={'bold'}>{(data[0].value)-(data[1].value)}</div></div>
-                    <div className={'block'}><div>Currently</div>
+                <div className={'budget__money'}
+                     style={{fontSize: `${budgetScale > 1.25 ? 12 * budgetScale / 1.25 : 12}px`}}>
+                    <div className={'block'}>
+                        <div>Total Budget</div>
+                        <div className={'bold'}>{data[0].value}</div>
+                    </div>
+                    <div className={'block'}>
+                        <div>Remaining</div>
+                        <div className={'bold'}>{(data[0].value) - (data[1].value)}</div>
+                    </div>
+                    <div className={'block'}>
+                        <div>Currently</div>
                         <div className={'over'}>
-                            <div style={overBudgetPercent > 0 ? {color:'red'} : {}} className={'bold'}>
+                            <div style={overBudgetPercent > 0 ? {color: 'red'} : {}} className={'bold'}>
                                 {overBudgetPercent}%
                             </div>
-                            <div style={{color:'red'}} className={'over__add'}>{(overBudgetPercent > 0) ? 'Over Target' : ''}</div>
+                            <div style={{color: 'red'}}
+                                 className={'over__add'}>{(overBudgetPercent > 0) ? 'Over Target' : ''}</div>
                         </div>
                     </div>
                 </div>

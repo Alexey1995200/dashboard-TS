@@ -8,7 +8,12 @@ const CreateWidgetButtons = ({createWidget}: ICreateWidget) => {
     return (
         <div className="createWidget-menu">
                 {Object.keys(widgets).map((widget) => {
-                    return (<button className={`createWidget-menu__button ${widget}`} onClick={() => createWidget(widget)}><img src={widgetsIcons[widget].ico} alt={''}/>{widget}</button>)
+                    return (
+                        <button className={`createWidget-menu__button ${widget}`} onClick={() => createWidget(widget)}>
+                            <img src={widgetsIcons[widget].ico} alt={''}/>
+                            {widget}
+                        </button>
+                    )
                 })}
         </div>
     )

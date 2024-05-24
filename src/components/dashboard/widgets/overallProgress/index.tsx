@@ -4,15 +4,12 @@ import './styles.scss';
 import {strokeColor} from "../../const";
 import {IWidgetEl} from "../../interfaces";
 
-const OverallProgress = ({themeFontColor, themeBackgroundColor, DBData, isDataLoading}: IWidgetEl) => {
-    // const DBPercentage = useContext()
+const OverallProgress = ({themeFontColor, themeBackgroundColor, DBData}: IWidgetEl) => {
     const [overallScale, setOverallScale] = useState(1)
     const [percentage, setPercentage] = useState(Math.random() * 100)
     const overallProgressRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
-        console.log('useef')
         if (DBData != null) {
-            console.log('useef-true')
             const totalPercentage = DBData.tasksProgress.reduce((accumulator, object) => {
                     return accumulator + object.percentage;
                 }, 0
@@ -35,11 +32,6 @@ const OverallProgress = ({themeFontColor, themeBackgroundColor, DBData, isDataLo
     };
     useEffect(() => {
         handleResize();
-        // fetch('/db/progressDB/percentage')
-        //     .then((response) => response.json())
-        //     .then((response) => {
-        //         setPercentage(response.percentage)
-        //     })
         const resizeObserver = new ResizeObserver(handleResize);
         if (overallProgressRef.current) {
             resizeObserver.observe(overallProgressRef.current);
@@ -49,42 +41,39 @@ const OverallProgress = ({themeFontColor, themeBackgroundColor, DBData, isDataLo
         };
     }, []);
     return (
-        isDataLoading ?
-            <div className={"loader"}
-                 style={{backgroundColor: themeBackgroundColor, display: "flex", alignSelf: "center"}}/> :
-            <div
-                ref={overallProgressRef}
-                className={'overallProgress'}
-                style={{
-                    backgroundColor: themeBackgroundColor,
-                    color: themeFontColor,
+        <div
+            ref={overallProgressRef}
+            className={'overallProgress'}
+            style={{
+                backgroundColor: themeBackgroundColor,
+                color: themeFontColor,
+            }}
+        >
+            <div className={'centered_title overallProgress__title dragHandle'}
+                 style={{transform: `scale(${overallScale > 1.25 ? overallScale / 1.25 : 1})`}}>Overall Progress
+            </div>
+            <ConfigProvider
+                theme={{
+                    components: {
+                        Progress: {
+                            circleTextFontSize: '24',
+                            circleTextColor: themeFontColor
+                        },
+                    },
                 }}
             >
-                <div className={'centered_title overallProgress__title dragHandle'}
-                     style={{transform: `scale(${overallScale > 1.25 ? overallScale / 1.25 : 1})`}}>Overall Progress
-                </div>
-                <ConfigProvider
-                    theme={{
-                        components: {
-                            Progress: {
-                                circleTextFontSize: '24',
-                                circleTextColor: themeFontColor
-                            },
-                        },
-                    }}
-                >
-                    <Progress
-                        style={{transform: `scale(${overallScale > 1.25 ? overallScale / 1.25 : 1})`}}
-                        size={96}
-                        strokeWidth={12}
-                        type="dashboard"
-                        percent={Math.round(percentage)}
-                        gapDegree={180}
-                        strokeColor={strokeColor}
-                        className={'antProgOverall'}
-                    />
-                </ConfigProvider>
-            </div>
+                <Progress
+                    style={{transform: `scale(${overallScale > 1.25 ? overallScale / 1.25 : 1})`}}
+                    size={96}
+                    strokeWidth={12}
+                    type="dashboard"
+                    percent={Math.round(percentage)}
+                    gapDegree={180}
+                    strokeColor={strokeColor}
+                    className={'antProgOverall'}
+                />
+            </ConfigProvider>
+        </div>
     );
 };
 

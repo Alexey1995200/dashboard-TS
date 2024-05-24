@@ -14,7 +14,7 @@ const CreateNewWidgetMenu = ({changeWidgetMenuVisibility, createWidget}: ICreate
     return (
         <div className={'createNewWidget-wrapper'}
              onClick={changeWidgetMenuVisibility}
-             style={{backgroundColor: '#80000000'}}
+             // style={{backgroundColor: '#80000000'}}
         >
             <div className={'createNewWidget'}
                  onClick={handleClick}

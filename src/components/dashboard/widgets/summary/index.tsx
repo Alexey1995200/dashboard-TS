@@ -1,21 +1,22 @@
 import './styles.scss'
 import {useEffect, useRef, useState} from "react";
 import {IWidgetEl} from "../../interfaces";
+import {dateToDMY, isProjectOnTime} from "../../const";
 interface ISummaryElement {
-    startDate: 'string',
-    endDate: 'string',
-    projectLeader: 'string',
-    overallStatus: 'string',
+    startDate: number,
+    endDate: number,
+    projectLeader: string,
+    overallStatus: boolean,
 }
-const Summary = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
+const Summary = ({themeFontColor, themeBackgroundColor, DBData}:IWidgetEl) => {
     const [summaryScale, setSummaryScale]=useState<number>(1)
     const summaryRef = useRef<HTMLDivElement>(null);
-    const [summDB, setSummDB] =useState<ISummaryElement[]>([{
-        startDate: 'string',
-        endDate: 'string',
+    const [summDB, setSummDB] =useState<ISummaryElement>({
+        startDate: 0,
+        endDate: 0,
         projectLeader: 'string',
-        overallStatus: 'string',
-    }])
+        overallStatus: false,
+    })
     const [finishTimestampMS, setFinishTimestampMS] = useState<number>(0)
     const getDimensions = () => {
         if (summaryRef.current) {
@@ -28,19 +29,8 @@ const Summary = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
         const [width, height] = getDimensions();
         setSummaryScale((Math.min(width, height)/165));
     };
-    const isProjectOnTime = ():boolean => (finishTimestampMS - new Date().getTime()) > 0;
     useEffect(() => {
         handleResize();
-        // fetch('/db/summDB')
-        //     .then((response) => response.json())
-        //     .then((response) => {
-        //         // setSummDB(response.summDB)
-        //     })
-        // fetch('db/finTimestamp')
-        //     .then((response) => response.json())
-        //     .then((response) => {
-        //         setFinishTimestampMS(response.finishTimestampMS)
-        //     })
         const resizeObserver = new ResizeObserver(handleResize);
         if (summaryRef.current) {
             resizeObserver.observe(summaryRef.current);
@@ -49,6 +39,21 @@ const Summary = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
             resizeObserver.disconnect();
         };
     }, []);
+    useEffect(() => {
+        if (DBData){
+            setSummDB(
+                {
+                    startDate: DBData.startProjectTimestampMS,
+                    endDate: DBData.finishProjectTimestampMS,
+                    projectLeader:
+                        Object.values(DBData.employees).filter(employee => employee.role === 'projectLeader')
+                            .map(employee => employee.name)
+                            .toString(),
+                    overallStatus: isProjectOnTime(DBData.finishProjectTimestampMS),
+                }
+            )
+        }
+    }, [DBData]);
     return (
         <div className={'summary__wrapper'} ref={summaryRef} style={{backgroundColor:themeBackgroundColor, color:themeFontColor}}>
             <div className={'centered_title dragHandle'}
@@ -60,19 +65,20 @@ const Summary = ({themeFontColor, themeBackgroundColor}:IWidgetEl) => {
             <div className={'summary__table'} style={{fontSize: `${summaryScale > 1.25 ? 12 * summaryScale / 1.25 : 12}px`}}>
                 <div className={'row'}>
                     <div>Start Date:</div>
-                    <div>{summDB[0].startDate}</div>
+                    <div>{dateToDMY(summDB.startDate)}</div>
                 </div>
                 <div className={'row'}>
                     <div>End Date:</div>
-                    <div>{summDB[0].endDate}</div>
+                    <div>{dateToDMY(summDB.endDate)}</div>
                 </div>
                 <div className={'row'}>
                     <div>project Leader:</div>
-                    <div>{summDB[0].projectLeader}</div>
+                    <div>{summDB.projectLeader}</div>
                 </div>
                 <div className={'row'}>
                     <div>Overall Status:</div>
-                    <div className={`status__${isProjectOnTime() ? 'good' : 'bad'}`}>{summDB[0].overallStatus}</div>
+                    <div className={`status__${isProjectOnTime(summDB.endDate) ? 'good' : 'bad'}`}>{
+                        summDB.overallStatus ? 'onTime' : 'overdue'}</div>
                 </div>
             </div>
         </div>

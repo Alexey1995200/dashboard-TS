@@ -22,20 +22,47 @@ code {
     monospace;
 }
 
-
-.loader {
-    width: 64px;
-    padding: 8px;
-    aspect-ratio: 1;
-    border-radius: 100%;
-    background: #299059;
-    --_m:
-            conic-gradient(#0000 25%,#000),
-            linear-gradient(#000 0 0) content-box;
-    -webkit-mask: var(--_m);
-    mask: var(--_m);
-    -webkit-mask-composite: source-out;
-    mask-composite: subtract;
-    animation: spin 2s infinite linear;
+.widgetLoader{
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: inherit;
 }
-@keyframes spin {to{transform: rotate(1turn)}}
+.widgetError{
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    font-size: 10dvh;
+    height: inherit;
+    & img {
+        aspect-ratio: 1;
+        height: 75%;
+        width: 75%;
+    }
+    @media (min-height: 1100px) {
+        font-size: 5dvh;
+        @media (min-height: 2180px) {
+            font-size: 2dvh;
+        }
+    }
+}
+@keyframes loader {
+    0% {
+        stroke-dasharray: 84.0955352783 104.0955352783;
+    }
+    100% {
+        stroke-dasharray: 178.19107055664062 10;
+    }
+}
+@keyframes loader2 {
+    0% {
+        stroke-dashoffset: 0;
+    }
+    100% {
+        stroke-dashoffset: -188.19107055664062;
+    }
+}

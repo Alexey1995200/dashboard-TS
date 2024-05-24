@@ -3,10 +3,10 @@ import {DB} from "../DB/db";
 
 export const handlers = [
     http.get('/db/', async () => {
-        console.log('DB Fetch sended', DB)
-        return HttpResponse.json({
-            DB
-        });
+        await delay(500)
+        return HttpResponse.json(
+            JSON.stringify(DB)
+        );
     }),
     http.get('/rgl_layout', () => {
             if (localStorage.getItem('rgl_layout')) {
