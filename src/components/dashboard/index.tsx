@@ -7,20 +7,13 @@ import {
   resetSettings,
 } from "./../../assets/svg";
 import {getFromLS, isMobileVerByUserAgent, saveToLS, uploadRGLData} from "./utils";
-import {breakpoints, cols, display, isSystemThemeDark, screenWidth, widgets} from "./const"
+import {breakpoints, cols, display, getObjectByKey, isSystemThemeDark, screenWidth, widgets} from "./const"
 import CreateNewWidgetMenu from "./createNewWidgetMenu";
-import {ILayouts, IWidget, IWidgetData, TCurrentTheme} from "./interfaces";
-import {palette, theme} from "../../assets/colors";
+import {ILayouts, IWidget, IWidgetData} from "./interfaces";
+import {theme} from "../../assets/colors";
 import './styles.scss'
 import {IDB} from "../../DB/db";
-import {useData} from "../../context/dataContext";
 import {useTheme} from "../../context/themeProvider";
-
-// interface IDashBoard {
-//   isDarkTheme: boolean,
-//   currentTheme: TCurrentTheme,
-//   setIsDarkTheme: React.Dispatch<React.SetStateAction<boolean>>
-// }
 
 const Dashboard = ({
                      // currentTheme,
@@ -38,6 +31,8 @@ const Dashboard = ({
   const [storedWidgetsData, setStoredWidgetsData] = useState<IWidgetData[]>()
   const [DBData, setDBData] = useState<IDB | null>(null)
   const [isDataLoading, setIsDataLoading] = useState<boolean>(true)
+  const [isLayoutHandledOnce, setIsLayoutHandledOnce] = useState<boolean>(false)
+  const [isGridRenderedOnce, setIsGridRenderedOnce] = useState<boolean>(false)
   const {currentTheme, changeCurrentTheme} = useTheme()
   const changeWidgetMenuVisibility = () => {
     setIsWidgetMenuVisible(!isWidgetMenuVisible);
@@ -47,14 +42,6 @@ const Dashboard = ({
     global.localStorage.clear()
     setCurrentCompactType('vertical')
     changeCurrentTheme(isSystemThemeDark ? 'dark' : 'light')
-  }
-  const forcedMobileVersion = () => {
-    setIsMobileVer(true)
-    saveToLS('isMobile', true)
-  }
-  const forcedDesktopVersion = () => {
-    setIsMobileVer(false)
-    saveToLS('isMobile', false)
   }
   const changeCompactType = () => {
     if (currentCompactType === 'vertical') {
@@ -72,12 +59,16 @@ const Dashboard = ({
   const setRGLParams = (layoutData: IWidgetData[]) => {
     const keys: string[] = [];
     const data: IWidgetData[] = [];
+
     layoutData.forEach((obj: IWidgetData) => {
-      keys.push(obj.i)
-      data.push(obj)
+      // if (!(Object.values(obj).some(value => value === null || value === "null"))) {
+        keys.push(obj.i);
+        data.push(obj);
+      // }
     });
-    setStoredWidgetsData(data)
-    setStoredWidgetsKeys(keys)
+    console.log('qwe',data)
+    setStoredWidgetsData(data);
+    setStoredWidgetsKeys(keys);
   }
   const fetchRGLData = () => {
     fetch('/rgl_layout')
@@ -109,11 +100,12 @@ const Dashboard = ({
       })
   };
   useEffect(() => {
-    fetchDBData()
     fetchRGLData()
+    fetchDBData()
   }, []);
   const handleLayoutChange = (layout: IWidgetData[], layouts: ILayouts) => {
     if (createdWidgetsList.length > 0) {
+      setIsLayoutHandledOnce(true)
       uploadRGLData(layout, 'layout')
       // uploadRGLData(layouts, 'layouts')
       setRGLParams(layout)
@@ -139,7 +131,7 @@ const Dashboard = ({
       setCreatedWidgetsList([...createdWidgetsList, newWidget])
     }
   }
-  const getObjectByKey = (array: IWidgetData[], targetKey: string) => array.find(obj => obj.i === targetKey)
+
   useEffect(() => {
     if (getFromLS('rgl_compactType') !== null) {
       setCurrentCompactType(getFromLS('rgl_compactType'))
@@ -159,13 +151,13 @@ const Dashboard = ({
             data: widgets[widget].data
           }
       })
-      setCreatedWidgetsList(fixed)//todo name
+      setCreatedWidgetsList(fixed)
     }
   }, [storedWidgetsData]);
   const themeFontColor = theme.dashboard.color[currentTheme]
   const themeBackgroundColor = theme.dashboard.BGColor[currentTheme]
   const widgetComponent = <div className={'wrapper'}
-                               style={{backgroundColor: themeBackgroundColor, color: themeFontColor, zIndex: '-1'}}>
+                               style={{backgroundColor: themeBackgroundColor, color: themeFontColor}}>
     {isWidgetMenuVisible &&
         <CreateNewWidgetMenu
             changeWidgetMenuVisibility={changeWidgetMenuVisibility}
@@ -173,23 +165,8 @@ const Dashboard = ({
         />
     }
     <div className={'settings'}
-         style={screenWidth < 460 ? {flexDirection: "column"} : {flexDirection: 'row'}}>
-      {/*<div className={'choose_device same'}>*/}
-      {/*  <button onClick={forcedDesktopVersion}>*/}
-      {/*    <Desktop*/}
-      {/*      height='36px'*/}
-      {/*      width='36px'*/}
-      {/*      color={(isMobileVer === false) ? 'green' : 'red'}*/}
-      {/*    />*/}
-      {/*  </button>*/}
-      {/*  <button onClick={forcedMobileVersion}>*/}
-      {/*    <Mobile*/}
-      {/*      height='36px'*/}
-      {/*      width='36px'*/}
-      {/*      color={(isMobileVer === true) ? 'green' : 'red'}*/}
-      {/*    />*/}
-      {/*  </button>*/}
-      {/*</div>*/}
+         // style={screenWidth < 460 ? {flexDirection: "column"} : {flexDirection: 'row'}}
+    >
       <div className={'change_params same'}>
         <button onClick={changeCompactType}
         >
@@ -223,10 +200,13 @@ const Dashboard = ({
         cols={cols(isMobileVer)}
         removeByKeyOnClick={removeByKeyOnClick}
         handleLayoutChange={handleLayoutChange}
+        isLayoutHandledOnce={isLayoutHandledOnce}
         widgets={widgets}
         currentTheme={currentTheme}
         DBData={DBData}
         isDataLoading={isDataLoading}
+        setIsGridRenderedOnce={setIsGridRenderedOnce}
+        isGridRenderedOnce={isGridRenderedOnce}
       />
       // </div>
     ) : (

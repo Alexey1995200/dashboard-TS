@@ -1,16 +1,10 @@
 import Header from "./header";
-import SideBar from "./sideBar";
 import React, {useMemo, useState} from "react";
 import Dashboard from "../dashboard";
 import './styles.scss'
 import {screenHeight, screenWidth} from "../dashboard/const";
-import {useTheme} from "../../context/themeProvider";
 import {DataProvider} from "../../context/dataContext";
-
-// interface ILayout {
-//   isDarkTheme: boolean,
-//   setIsDarkTheme: React.Dispatch<React.SetStateAction<boolean>>
-// }
+import SideBar from "./sideBar";
 
 const Layout = () => {
   const [isSideBarVisible, setIsSideBarVisible] = useState<boolean>(false)
@@ -23,8 +17,10 @@ const Layout = () => {
       <Header
         changeSideBarVisibility={changeSideBarVisibility}
         headerHeight={headerHeight}
-        isSideBarVisible={isSideBarVisible}
       />
+      {isSideBarVisible && <SideBar
+          changeSideBarVisibility={changeSideBarVisibility}
+      />}
       <div style={{marginTop: `${headerHeight}`}}>
         <DataProvider>
           <Dashboard/>

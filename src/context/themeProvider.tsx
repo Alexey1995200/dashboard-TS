@@ -26,7 +26,6 @@ const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     <ThemeContext.Provider value={{
       currentTheme: theme,
       changeCurrentTheme: handleChangeTheme,
-
     }}>
       {children}
     </ThemeContext.Provider>

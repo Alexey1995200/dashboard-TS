@@ -1,10 +1,10 @@
-import React, {useMemo, useRef} from 'react';
+import React, {useEffect, useMemo, useRef} from 'react';
 import {Responsive, WidthProvider} from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './styles.css'
 import {gridMargins, gridRowHeight} from "../const";
-import {Breakpoints, ILayouts, IWidget, IWidgetData, IWidgetEl, IWidgets, TCurrentTheme, TLoading} from "../interfaces";
+import {Breakpoints, ILayouts, IWidget, IWidgetData, IWidgets, TCurrentTheme} from "../interfaces";
 import {palette, theme} from "../../../assets/colors";
 import {IDB} from "../../../DB/db";
 
@@ -19,6 +19,9 @@ interface IGrid {
   currentTheme: TCurrentTheme;
   DBData: IDB | null;
   isDataLoading: boolean;
+  isLayoutHandledOnce:boolean;
+  setIsGridRenderedOnce:React.Dispatch<React.SetStateAction<boolean>>;
+  isGridRenderedOnce:boolean
 }
 
 const Grid = ({
@@ -30,11 +33,15 @@ const Grid = ({
                 removeByKeyOnClick,
                 currentTheme,
                 DBData,
+                isLayoutHandledOnce,
+                setIsGridRenderedOnce,
+                isGridRenderedOnce
               }: IGrid) => {
   const gridLayoutRef = useRef(null);
   const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);
   const themeWidgetFontColor = currentTheme ? theme.dashboard.grid.widget.color[currentTheme] : palette.black
   const themeWidgetBackgroundColor = currentTheme ? theme.dashboard.grid.widget.BGColor[currentTheme] : palette.white
+  setIsGridRenderedOnce(true)
   return (
     <ResponsiveGridLayout
       ref={gridLayoutRef}
@@ -52,10 +59,10 @@ const Grid = ({
       onLayoutChange={(layout, layouts) => handleLayoutChange(layout, layouts)}
       style={{
         backgroundColor: currentTheme ? theme.dashboard.grid.BGColor[currentTheme] : palette.tangledWeb,
-        zIndex: '0', position:'relative'
       }}
+      // onBreakpointChange={} todo
     >
-      {allWidgets &&//do not remove
+      {allWidgets && breakpoints && cols && isGridRenderedOnce &&
         allWidgets.map(({el : WidgetEl, key, data}) => {
           // const WidgetEl: React.FC<IWidgetEl> = widget.el
           return (
@@ -63,7 +70,6 @@ const Grid = ({
               className={"widget"}
               key={key}
               data-grid={data}
-              style={{zIndex: '100'}}
             >
               <WidgetEl
                 currentTheme={currentTheme}

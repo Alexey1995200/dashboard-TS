@@ -1,6 +1,7 @@
 import CreateWidgetButtons from "./createNewWidgetButton";
 import './style.scss'
 import React from "react";
+import {handleClickInsideDiv} from "../const";
 
 interface ICreateNewWidgetMenu {
     changeWidgetMenuVisibility: () => void;
@@ -8,16 +9,13 @@ interface ICreateNewWidgetMenu {
 }
 
 const CreateNewWidgetMenu = ({changeWidgetMenuVisibility, createWidget}: ICreateNewWidgetMenu) => {
-    const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        event.stopPropagation();
-    };
     return (
         <div className={'createNewWidget-wrapper'}
              onClick={changeWidgetMenuVisibility}
              // style={{backgroundColor: '#80000000'}}
         >
             <div className={'createNewWidget'}
-                 onClick={handleClick}
+                 onClick={handleClickInsideDiv}
             >
                 <h1>Create New Widget</h1>
                 <CreateWidgetButtons
