@@ -9,9 +9,8 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import Layout from "./components/layout";
-import {isSystemThemeDark, setBodyColor} from "./components/dashboard/const";
-import {saveToLS} from "./components/dashboard/utils";
 import ThemeProvider, {useTheme} from "./context/themeProvider";
+import {setBodyColor} from "./components/dashboard/const";
 const queryClient = new QueryClient()
 async function enableMocking() {
   if (process.env.NODE_ENV !== 'development') {return}
@@ -36,7 +35,7 @@ enableMocking().then(() => {
   }
 });
 const App = () => {
-  const {currentTheme, changeCurrentTheme} = useTheme()
+  const {currentTheme} = useTheme()
   useEffect(() => {
     setBodyColor({color: (currentTheme==='dark' ? '#43494c' : '#d3d3d3')})
   }, [currentTheme])

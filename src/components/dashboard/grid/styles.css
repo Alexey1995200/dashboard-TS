@@ -1,3 +1,7 @@
+.dragHandle:hover {
+    cursor: move;
+}
+
 .grid_wrapper {
     min-height: 800px;
     user-select: none;
@@ -19,6 +23,3 @@
     justify-content: center;
 }
 
-.dragHandle:hover {
-    cursor: pointer;
-}

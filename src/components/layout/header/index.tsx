@@ -3,21 +3,17 @@ import {auth, Burger, darkTheme, lightTheme, react, user} from "../../../assets/
 import {colorFilter} from "../../dashboard/const";
 import React, {useState} from "react";
 import {palette} from "../../../assets/colors";
-import SideBar from "../sideBar";
 import {useTheme} from "../../../context/themeProvider";
 
-// todo rename => HeaderProps
-interface ISideBar {
+interface IHeaderProps {
   changeSideBarVisibility: () => void
   headerHeight: string,
-  isSideBarVisible: boolean,
 }
 
 const Header = ({
                   changeSideBarVisibility,
-                  headerHeight,
-                  isSideBarVisible
-                }: ISideBar) => {
+                  headerHeight
+                }: IHeaderProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
   const navLinks = ['Dashboard', 'Users', 'Tasks', 'Budget', 'Log']
 
@@ -29,12 +25,9 @@ const Header = ({
       changeCurrentTheme("light")
     }
   }
-
   return (
     <div className={'header__wrapper'} id={'Header'} style={{height: headerHeight}}>
-      {isSideBarVisible && <SideBar
-          changeSideBarVisibility={changeSideBarVisibility}
-      />}
+
       <div className="header__left">
         <Burger
           color={palette.white}

@@ -1,13 +1,12 @@
 .sideBar {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   overflow: auto;
   background-color: #b3dec2;
-  z-index: 999999;
   height: 100vh;
   width: 130px;
-
+  z-index: 99999999;
 
   .sideBar__header {
     display: flex;

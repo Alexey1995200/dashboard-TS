@@ -1,13 +1,17 @@
 .grid{
-  z-index: -2;
+  //z-index: -2;
 }
 .centered_title {
+  z-index: 1;
   font-weight: 500;
   font-size: 16px;
   display: flex;
   align-self: center;
   justify-content: center;
   margin: 0 auto;
+  &:hover{
+    text-shadow: 1px 1px 4px rgba(255,255,255,.5);
+  }
 }
 
 .goodNews {

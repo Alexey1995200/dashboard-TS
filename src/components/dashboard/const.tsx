@@ -21,7 +21,7 @@ import {
     SummaryIco,
     upcTasksIco
 } from "../../assets/svg";
-import {IBpArr, TBreakpoints} from "./interfaces";
+import {IBpArr, IWidgetData, TBreakpoints} from "./interfaces";
 import {palette} from "../../assets/colors";
 import React, {ReactElement, ReactNode} from "react";
 import {Spinner} from "../../assets/spinner";
@@ -48,6 +48,10 @@ export const useragent: string = window.navigator.userAgent
 export const screenWidth: number = window.innerWidth
 export const screenHeight: number = window.innerHeight
 export const isSystemThemeDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+export const handleClickInsideDiv = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation();
+};
+export const getObjectByKey = (array: IWidgetData[], targetKey: string) => array.find(obj => obj.i === targetKey)
 export const breakpointsArr: IBpArr = [
     {device: 'phone', resolution: 360 - 1, type: 'desktop'},
     {device: 'WQVGA', resolution: 480 - 1, type: 'desktop'},
@@ -85,12 +89,12 @@ export const breakpoints = (isMobileVer: boolean): TBreakpoints => {
         ['qHD']: 960 - 10,
         ['XGA']: 1024 - 10,
         ['WXGA']: 1279 - 10,
-        // ['WXGAHD']: 1366 - 10,
-        // ['HDp']: 1600 - 10,
-        // ['FHD']: 1920 - 10,
-        // ['WQHD']: 2560 - 10,
-        // ['FourK']: 3840 - 10,
-        // ['FourKRetina']: 4096 - 10,
+        ['WXGAHD']: 1366 - 10,
+        ['HDp']: 1600 - 10,
+        ['FHD']: 1920 - 10,
+        ['WQHD']: 2560 - 10,
+        ['FourK']: 3840 - 10,
+        ['FourKRetina']: 4096 - 10,
     }
 }
 export const cols = (isMobileVer: boolean): TBreakpoints => {
@@ -104,12 +108,12 @@ export const cols = (isMobileVer: boolean): TBreakpoints => {
         ['qHD']: 12,
         ['XGA']: 13,
         ['WXGA']: 16,
-        // ['WXGAHD']: 17,
-        // ['HDp']: 20,
-        // ['FHD']: 24,
-        // ['WQHD']: 32,
-        // ['FourK']: 48,
-        // ['FourKRetina']: 52,
+        ['WXGAHD']: 17,
+        ['HDp']: 20,
+        ['FHD']: 24,
+        ['WQHD']: 32,
+        ['FourK']: 48,
+        ['FourKRetina']: 52,
     }
 }
 export const calculateH = (expectedH: number): number => ((expectedH + gridMargins[1]) / (gridRowHeight + gridMargins[1]))
