@@ -1,22 +1,25 @@
 import './styles.scss'
-import {handleClickInsideDiv, screenWidth} from "../../dashboard/const";
+import {handleClickInsideDiv, screenHeight, screenWidth} from "../../dashboard/const";
 
 interface ISideBar {
-  changeSideBarVisibility: () => void
+  changeSideBarVisibility: () => void;
+  headerHeight: number
 }
-const sideBarWidth:number = 130
+
+const sideBarWidth: number = 130
 const SideBar = ({
-                   changeSideBarVisibility
+                   changeSideBarVisibility,
+                   headerHeight
                  }: ISideBar) =>
   (
-    <div>
+    <div className={'sideBar__wrapper'}>
       <div className="sideBar"
            onClick={handleClickInsideDiv}
-           style={{width: `${sideBarWidth}px`}}
+           style={{width: `${sideBarWidth}px`, marginTop:`${headerHeight}px`}}
       >
-        <div className={'sideBar__header'}>
-          <button onClick={changeSideBarVisibility} className="remove_btn">&#10006;</button>
-        </div>
+        {/*<div className={'sideBar__header'}>*/}
+          {/*<button onClick={changeSideBarVisibility} className="remove_btn">&#10006;</button>*/}
+        {/*</div>*/}
         <ul className="sideBar__links">
           <li className="sideBar__link">Dashboard</li>
           <li className="sideBar__link">User Profile</li>
@@ -28,7 +31,8 @@ const SideBar = ({
           <li className="sideBar__link">Last Changes</li>
         </ul>
       </div>
-      <div onClick={changeSideBarVisibility} style={{width:`${screenWidth-sideBarWidth}px`, height:'100dvh'}}/>
+      <div onClick={changeSideBarVisibility}
+           style={{width: `${screenWidth}px`, height: `${screenHeight}px`}}/>
     </div>
   )
 export default SideBar

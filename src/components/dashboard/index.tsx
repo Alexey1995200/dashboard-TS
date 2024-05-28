@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {
   clear,
   compactHorizontal, compactNone, compactVertical,
-  Desktop, Mobile, newWidget,
+  newWidget,
   resetSettings,
 } from "./../../assets/svg";
 import {getFromLS, isMobileVerByUserAgent, saveToLS, uploadRGLData} from "./utils";
@@ -14,11 +14,12 @@ import {theme} from "../../assets/colors";
 import './styles.scss'
 import {IDB} from "../../DB/db";
 import {useTheme} from "../../context/themeProvider";
+import {message} from "antd";
 
-const Dashboard = ({
-                     // currentTheme,
-                     // setIsDarkTheme
-                   }) => {
+interface IDashboardProps{
+  headerHeight:number
+}
+const Dashboard = ({headerHeight}:IDashboardProps) => {
   const [isWidgetMenuVisible, setIsWidgetMenuVisible] = useState<boolean>(false)
   const [currentCompactType, setCurrentCompactType] =
     useState<"vertical" | "horizontal" | null | undefined>('vertical')
@@ -34,6 +35,17 @@ const Dashboard = ({
   const [isLayoutHandledOnce, setIsLayoutHandledOnce] = useState<boolean>(false)
   const [isGridRenderedOnce, setIsGridRenderedOnce] = useState<boolean>(false)
   const {currentTheme, changeCurrentTheme} = useTheme()
+  const [messageApi] = message.useMessage();
+  const widgetCreatingError = (str:string) => {   //todo    don't work
+    messageApi.open({
+      type: 'error',
+      content: `Widget ${str} already created`,
+      style: {
+        marginTop: '10dvh',
+        zIndex:'999'
+      },
+    });
+  };
   const changeWidgetMenuVisibility = () => {
     setIsWidgetMenuVisible(!isWidgetMenuVisible);
   };
@@ -59,14 +71,15 @@ const Dashboard = ({
   const setRGLParams = (layoutData: IWidgetData[]) => {
     const keys: string[] = [];
     const data: IWidgetData[] = [];
-
     layoutData.forEach((obj: IWidgetData) => {
-      // if (!(Object.values(obj).some(value => value === null || value === "null"))) {
-        keys.push(obj.i);
-        data.push(obj);
-      // }
+      const filteredObj = Object.fromEntries(
+        Object.entries(obj).filter(([_, value]) => value !== null && value !== "null")
+      ) as IWidgetData;
+      if (filteredObj.i !== undefined) {
+        keys.push(filteredObj.i);
+        data.push(filteredObj);
+      }
     });
-    console.log('qwe',data)
     setStoredWidgetsData(data);
     setStoredWidgetsKeys(keys);
   }
@@ -100,6 +113,9 @@ const Dashboard = ({
       })
   };
   useEffect(() => {
+    if (getFromLS('rgl_compactType') !== null) {
+      setCurrentCompactType(getFromLS('rgl_compactType'))
+    }
     fetchRGLData()
     fetchDBData()
   }, []);
@@ -128,14 +144,12 @@ const Dashboard = ({
       data: widgets[widget].data
     }
     if (!createdWidgetsList.some(w => w.key === widget)) {
+      widgetCreatingError(widget)
       setCreatedWidgetsList([...createdWidgetsList, newWidget])
     }
   }
 
   useEffect(() => {
-    if (getFromLS('rgl_compactType') !== null) {
-      setCurrentCompactType(getFromLS('rgl_compactType'))
-    }
     if (storedWidgetsKeys) {
       const fixed: IWidget[] = storedWidgetsKeys.map((widget) => {
         if (storedWidgetsData) {
@@ -157,7 +171,7 @@ const Dashboard = ({
   const themeFontColor = theme.dashboard.color[currentTheme]
   const themeBackgroundColor = theme.dashboard.BGColor[currentTheme]
   const widgetComponent = <div className={'wrapper'}
-                               style={{backgroundColor: themeBackgroundColor, color: themeFontColor}}>
+                               style={{backgroundColor: themeBackgroundColor, color: themeFontColor, marginTop:`${headerHeight}px`}}>
     {isWidgetMenuVisible &&
         <CreateNewWidgetMenu
             changeWidgetMenuVisibility={changeWidgetMenuVisibility}

@@ -2,6 +2,7 @@ import CreateWidgetButtons from "./createNewWidgetButton";
 import './style.scss'
 import React from "react";
 import {handleClickInsideDiv} from "../const";
+import {notification} from "antd";
 
 interface ICreateNewWidgetMenu {
     changeWidgetMenuVisibility: () => void;

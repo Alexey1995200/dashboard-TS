@@ -11,19 +11,19 @@ const Layout = () => {
   const changeSideBarVisibility = () => {
     setIsSideBarVisible(!isSideBarVisible)
   }
-  const headerHeight = (screenWidth > screenHeight) ? '64px' : '48px'
+  const headerHeight = (screenWidth > screenHeight) ? 64 : 48
   return (
     <>
       <Header
         changeSideBarVisibility={changeSideBarVisibility}
         headerHeight={headerHeight}
+        isSideBarVisible={isSideBarVisible}
       />
-      {isSideBarVisible && <SideBar
-          changeSideBarVisibility={changeSideBarVisibility}
-      />}
       <div style={{marginTop: `${headerHeight}`}}>
         <DataProvider>
-          <Dashboard/>
+          <Dashboard
+            headerHeight={headerHeight}
+          />
         </DataProvider>
       </div>
     </>
