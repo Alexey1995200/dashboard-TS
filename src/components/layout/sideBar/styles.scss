@@ -1,9 +1,10 @@
-.sideBar__wrapper{
+.sideBar__wrapper {
   position: fixed;
   top: 0;
   left: 0;
   overflow: unset;
   z-index: 998;
+
   .sideBar {
     position: fixed;
     top: 0;
@@ -33,24 +34,14 @@
       .sideBar__link {
         padding: 8px;
 
-        &:hover {
-
-        }
-
         .sideBar__widgets {
           padding: 4px;
 
-          &:hover {
-
-          }
-
           .sideBar__widget {
             padding: 4px;
-
           }
         }
       }
     }
-
   }
 }

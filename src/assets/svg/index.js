@@ -1,4 +1,3 @@
-//todo          sample           import {ReactComponent as ReactLogo} from './logo.svg'
 import {ReactComponent as Burger} from './burger.svg'
 import {ReactComponent as Loader} from './loader.svg'
 import lightTheme from './sun.svg'
@@ -6,13 +5,13 @@ import darkTheme from './moon.svg'
 import error from './err.svg'
 //dashboard-board
 import waiting from './dashboard/wait.svg'
-import finish from  './dashboard/finish.svg'
+import finish from './dashboard/finish.svg'
 import {ReactComponent as Desktop} from './desktop.svg'
 import {ReactComponent as Mobile} from './mobile.svg'
 //dashboard
 import newWidget from './magic.svg'
 import ProgressBarIco from './progressBar.svg'
-import OverallProgressIco from'./progress.svg'
+import OverallProgressIco from './progress.svg'
 import LaunchDateIco from './calendar.svg'
 import RiskIco from './caution.svg'
 import BudgetIco from './budget.svg'
@@ -45,5 +44,53 @@ import auth from './auth.svg'
 import compactVertical from './align/alignTop.svg'
 import compactHorizontal from './align/alignLeft.svg'
 import compactNone from './align/alignNone.svg'
+//XP
+import xpAlert from './xp/alrt.png'
+import xpError from './xp/err.png'
 
-export {waiting, finish, alert, checked, comment, copy, tag, update, priority, react, user, auth, movement, resize, Desktop, Mobile, reset, resetSettings, resetTable, resetGlobal, compactVertical, compactHorizontal, compactNone, Burger, newWidget, ProgressBarIco, OverallProgressIco, LaunchDateIco, RiskIco, BudgetIco, OverdueIco, SummaryIco, AvgTimeIco, upcTasksIco, ProjectLogsIco, darkTheme, lightTheme, clear, error, Loader}
+
+export {
+    waiting,
+    finish,
+    alert,
+    checked,
+    comment,
+    copy,
+    tag,
+    update,
+    priority,
+    react,
+    user,
+    auth,
+    movement,
+    resize,
+    Desktop,
+    Mobile,
+    reset,
+    resetSettings,
+    resetTable,
+    resetGlobal,
+    compactVertical,
+    compactHorizontal,
+    compactNone,
+    Burger,
+    newWidget,
+    ProgressBarIco,
+    OverallProgressIco,
+    LaunchDateIco,
+    RiskIco,
+    BudgetIco,
+    OverdueIco,
+    SummaryIco,
+    AvgTimeIco,
+    upcTasksIco,
+    ProjectLogsIco,
+    darkTheme,
+    lightTheme,
+    clear,
+    error,
+    Loader,
+    xpAlert,
+    xpError,
+
+}

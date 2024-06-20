@@ -2,11 +2,14 @@
     cursor: move;
 }
 
+.react-resizable-handle-se{
+    cursor: nwse-resize!important;
+}
+
 .grid_wrapper {
     min-height: 800px;
     user-select: none;
     overflow: auto;
-    /*z-index: -1;*/
 }
 
 .grid-item-container {

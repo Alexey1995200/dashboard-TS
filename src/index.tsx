@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import './clean_style.css';
@@ -11,12 +11,18 @@ import {
 import Layout from "./components/layout";
 import ThemeProvider, {useTheme} from "./context/themeProvider";
 import {setBodyColor} from "./components/dashboard/const";
+import {palette} from "./assets/colors";
+
 const queryClient = new QueryClient()
+
 async function enableMocking() {
-  if (process.env.NODE_ENV !== 'development') {return}
+  if (process.env.NODE_ENV !== 'development') {
+    return
+  }
   const {worker} = await import('./mocks/browser')
   return worker.start()
 }
+
 enableMocking().then(() => {
   const root = document.getElementById('root')
   if (root !== null) {
@@ -25,7 +31,7 @@ enableMocking().then(() => {
       <QueryClientProvider client={queryClient}>
         <React.StrictMode>
           <ThemeProvider>
-            <App/>
+            <DashboardApp/>
           </ThemeProvider>
         </React.StrictMode>
       </QueryClientProvider>
@@ -34,10 +40,10 @@ enableMocking().then(() => {
     return <div>something broken</div>
   }
 });
-const App = () => {
+const DashboardApp = () => {
   const {currentTheme} = useTheme()
   useEffect(() => {
-    setBodyColor({color: (currentTheme==='dark' ? '#43494c' : '#d3d3d3')})
+    setBodyColor({color: (currentTheme === 'dark' ? palette.littleBlackDress : palette.pinball)})
   }, [currentTheme])
   return (
     <Layout/>

@@ -1,17 +1,18 @@
 import Header from "./header";
-import React, {useMemo, useState} from "react";
+import React, {useState} from "react";
 import Dashboard from "../dashboard";
-import './styles.scss'
 import {screenHeight, screenWidth} from "../dashboard/const";
 import {DataProvider} from "../../context/dataContext";
-import SideBar from "./sideBar";
 
 const Layout = () => {
   const [isSideBarVisible, setIsSideBarVisible] = useState<boolean>(false)
+
   const changeSideBarVisibility = () => {
     setIsSideBarVisible(!isSideBarVisible)
   }
-  const headerHeight = (screenWidth > screenHeight) ? 64 : 48
+  const pcHeaderHeightInPX = 64
+  const mobileHeaderHeightInPX = 48
+  const headerHeight: number = (screenWidth > screenHeight) ? pcHeaderHeightInPX : mobileHeaderHeightInPX
   return (
     <>
       <Header
@@ -19,11 +20,9 @@ const Layout = () => {
         headerHeight={headerHeight}
         isSideBarVisible={isSideBarVisible}
       />
-      <div style={{marginTop: `${headerHeight}`}}>
+      <div style={{marginTop: `${headerHeight}px`}}>
         <DataProvider>
-          <Dashboard
-            headerHeight={headerHeight}
-          />
+          <Dashboard/>
         </DataProvider>
       </div>
     </>

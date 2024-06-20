@@ -1,72 +1,53 @@
 import Grid from "./grid/index";
 import React, {useEffect, useState} from "react";
-import {
-  clear,
-  compactHorizontal, compactNone, compactVertical,
-  newWidget,
-  resetSettings,
-} from "./../../assets/svg";
+import {clear, compactHorizontal, compactNone, compactVertical, newWidget, resetSettings,} from "./../../assets/svg";
 import {getFromLS, isMobileVerByUserAgent, saveToLS, uploadRGLData} from "./utils";
-import {breakpoints, cols, display, getObjectByKey, isSystemThemeDark, screenWidth, widgets} from "./const"
+import {breakpoints, cols, display, getObjectByKey, isSystemThemeDark, widgets} from "./const"
 import CreateNewWidgetMenu from "./createNewWidgetMenu";
-import {ILayouts, IWidget, IWidgetData} from "./interfaces";
+import {CompactType, ExtendedCompactType, ILayouts, IWidget, IWidgetData} from "./interfaces";
 import {theme} from "../../assets/colors";
 import './styles.scss'
 import {IDB} from "../../DB/db";
-import {useTheme} from "../../context/themeProvider";
-import {message} from "antd";
+import {ThemeType, useTheme} from "../../context/themeProvider";
+import PopUp from "../layout/popUp";
 
-interface IDashboardProps{
-  headerHeight:number
-}
-const Dashboard = ({headerHeight}:IDashboardProps) => {
+const Dashboard = () => {
   const [isWidgetMenuVisible, setIsWidgetMenuVisible] = useState<boolean>(false)
   const [currentCompactType, setCurrentCompactType] =
-    useState<"vertical" | "horizontal" | null | undefined>('vertical')
+    useState<ExtendedCompactType>(CompactType.vertical)
   const [isMobileVer, setIsMobileVer] = useState(() => {
     const isMobile = getFromLS('isMobile')
     return isMobile ? isMobile : isMobileVerByUserAgent()
   })
+  const [isPopUpVisibe, setIsPopUpVisibe] = useState<boolean>(false)
   const [createdWidgetsList, setCreatedWidgetsList] = useState<IWidget[]>([])
   const [storedWidgetsKeys, setStoredWidgetsKeys] = useState<string[]>()
   const [storedWidgetsData, setStoredWidgetsData] = useState<IWidgetData[]>()
   const [DBData, setDBData] = useState<IDB | null>(null)
   const [isDataLoading, setIsDataLoading] = useState<boolean>(true)
   const [isLayoutHandledOnce, setIsLayoutHandledOnce] = useState<boolean>(false)
-  const [isGridRenderedOnce, setIsGridRenderedOnce] = useState<boolean>(false)
   const {currentTheme, changeCurrentTheme} = useTheme()
-  const [messageApi] = message.useMessage();
-  const widgetCreatingError = (str:string) => {   //todo    don't work
-    messageApi.open({
-      type: 'error',
-      content: `Widget ${str} already created`,
-      style: {
-        marginTop: '10dvh',
-        zIndex:'999'
-      },
-    });
-  };
   const changeWidgetMenuVisibility = () => {
     setIsWidgetMenuVisible(!isWidgetMenuVisible);
   };
   const resetLocalSettings = () => {
     setIsMobileVer(isMobileVerByUserAgent())
     global.localStorage.clear()
-    setCurrentCompactType('vertical')
-    changeCurrentTheme(isSystemThemeDark ? 'dark' : 'light')
+    setCurrentCompactType(CompactType.vertical)
+    changeCurrentTheme(isSystemThemeDark ? ThemeType.dark : ThemeType.light)
   }
   const changeCompactType = () => {
-    if (currentCompactType === 'vertical') {
-      saveToLS('rgl_compactType', 'horizontal')
-      setCurrentCompactType('horizontal')
-    } else if (currentCompactType === 'horizontal') {
+    if (currentCompactType === CompactType.vertical) {
+      saveToLS('rgl_compactType', CompactType.horizontal)
+      setCurrentCompactType(CompactType.horizontal)
+    } else if (currentCompactType === CompactType.horizontal) {
       saveToLS('rgl_compactType', null)
       setCurrentCompactType(null)
     } else if (currentCompactType === null) {
-      saveToLS('rgl_compactType', 'vertical')
-      setCurrentCompactType('vertical')
+      saveToLS('rgl_compactType', CompactType.vertical)
+      setCurrentCompactType(CompactType.vertical)
     }
-    // "horizontal" | "vertical" | null.
+    // compact types which can be used: "horizontal" | "vertical" | null // ExtendedCompactType // CompactType
   }
   const setRGLParams = (layoutData: IWidgetData[]) => {
     const keys: string[] = [];
@@ -91,7 +72,7 @@ const Dashboard = ({headerHeight}:IDashboardProps) => {
           setRGLParams(JSON.parse(response).value)
         }
       })
-      .catch((err) => console.log('err/rgl_layout', err))
+      .catch((err) => console.error('err/rgl_layout', err))
   }
   const fetchDBData = () => {
     fetch('/db/')
@@ -109,7 +90,7 @@ const Dashboard = ({headerHeight}:IDashboardProps) => {
       })
       .catch((err) => {
         setIsDataLoading(false)
-        console.log('err/DB fetch ERR', err)
+        console.error('err/DB fetch ERR', err)
       })
   };
   useEffect(() => {
@@ -122,8 +103,7 @@ const Dashboard = ({headerHeight}:IDashboardProps) => {
   const handleLayoutChange = (layout: IWidgetData[], layouts: ILayouts) => {
     if (createdWidgetsList.length > 0) {
       setIsLayoutHandledOnce(true)
-      uploadRGLData(layout, 'layout')
-      // uploadRGLData(layouts, 'layouts')
+      layout.length && uploadRGLData(layout, 'layout')
       setRGLParams(layout)
     }
   };
@@ -137,6 +117,7 @@ const Dashboard = ({headerHeight}:IDashboardProps) => {
     setCreatedWidgetsList([])
     uploadRGLData([], 'layout')
   }
+
   const addWidgetByKeyOnClick = (widget: string) => {
     const newWidget: IWidget = {
       key: widget,
@@ -144,9 +125,8 @@ const Dashboard = ({headerHeight}:IDashboardProps) => {
       data: widgets[widget].data
     }
     if (!createdWidgetsList.some(w => w.key === widget)) {
-      widgetCreatingError(widget)
       setCreatedWidgetsList([...createdWidgetsList, newWidget])
-    }
+    } else {setIsPopUpVisibe(true)}
   }
 
   useEffect(() => {
@@ -171,16 +151,14 @@ const Dashboard = ({headerHeight}:IDashboardProps) => {
   const themeFontColor = theme.dashboard.color[currentTheme]
   const themeBackgroundColor = theme.dashboard.BGColor[currentTheme]
   const widgetComponent = <div className={'wrapper'}
-                               style={{backgroundColor: themeBackgroundColor, color: themeFontColor, marginTop:`${headerHeight}px`}}>
+                               style={{backgroundColor: themeBackgroundColor, color: themeFontColor}}>
     {isWidgetMenuVisible &&
-        <CreateNewWidgetMenu
-            changeWidgetMenuVisibility={changeWidgetMenuVisibility}
-            createWidget={addWidgetByKeyOnClick}
-        />
+      <CreateNewWidgetMenu
+          changeWidgetMenuVisibility={changeWidgetMenuVisibility}
+          createWidget={addWidgetByKeyOnClick}
+      />
     }
-    <div className={'settings'}
-         // style={screenWidth < 460 ? {flexDirection: "column"} : {flexDirection: 'row'}}
-    >
+    <div className={'settings'}>
       <div className={'change_params same'}>
         <button onClick={changeCompactType}
         >
@@ -205,8 +183,14 @@ const Dashboard = ({headerHeight}:IDashboardProps) => {
         </button>
       </div>
     </div>
+    <PopUp
+      type={'alert'}
+      text={'Widget already created'}
+      title={'Error'}
+      isPopUpVisibe={isPopUpVisibe}
+      setIsPopUpVisibe={setIsPopUpVisibe}
+    />
     {createdWidgetsList.length ? (
-      // <div className="grid" style={{zIndex:'-1000'}}>
       <Grid
         currentCompactType={currentCompactType}
         allWidgets={createdWidgetsList}
@@ -219,10 +203,7 @@ const Dashboard = ({headerHeight}:IDashboardProps) => {
         currentTheme={currentTheme}
         DBData={DBData}
         isDataLoading={isDataLoading}
-        setIsGridRenderedOnce={setIsGridRenderedOnce}
-        isGridRenderedOnce={isGridRenderedOnce}
       />
-      // </div>
     ) : (
       <div className={'noWidgets'}>There's no widgets added</div>
     )}

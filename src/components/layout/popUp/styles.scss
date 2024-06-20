@@ -1,0 +1,36 @@
+.popUp {
+  position: absolute;
+  width: 20%;
+  min-width: 320px;
+  top: -100px;
+  color: #000;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffffe1;
+  border: 1px solid #ccc;
+  padding: 16px;
+  opacity: 0.5;
+  transition: all 1.25s;
+  z-index: 1000;
+  &.visible {
+    top: 20px;
+    opacity: 1;
+    transition: all 0.25s;
+  }
+
+  .popUp-upper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+  }
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  .popUp-lower{
+    display: flex;
+    flex-direction: row;
+  }
+
+}
+

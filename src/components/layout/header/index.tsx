@@ -3,34 +3,55 @@ import {auth, Burger, darkTheme, lightTheme, react, user} from "../../../assets/
 import {colorFilter} from "../../dashboard/const";
 import React, {useState} from "react";
 import {palette} from "../../../assets/colors";
-import {useTheme} from "../../../context/themeProvider";
+import {ThemeType, useTheme} from "../../../context/themeProvider";
 import SideBar from "../sideBar";
 
 interface IHeaderProps {
   changeSideBarVisibility: () => void
   headerHeight: number,
-  isSideBarVisible:boolean
+  isSideBarVisible: boolean
 }
 
 const Header = ({
-                  changeSideBarVisibility,
-                  headerHeight,
-                  isSideBarVisible
-                }: IHeaderProps) => {
+  changeSideBarVisibility,
+  headerHeight,
+  isSideBarVisible
+}: IHeaderProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
-  const navLinks = ['Dashboard', 'Users', 'Tasks', 'Budget', 'Log']
+  const navLinks = [
+    {
+      title: 'Dashboard',
+      link: '/'
+    },
+    {
+      title: 'Users',
+      link: '/'
+    },
+    {
+      title: 'Tasks',
+      link: '/'
+    },
+    {
+      title: 'Budget',
+      link: '/'
+    },
+    {
+      title: 'Log',
+      link: '/'
+    }
+    ]
 
   const {currentTheme, changeCurrentTheme} = useTheme()
   const changeTheme = () => {
-    if (currentTheme === "light") {
-      changeCurrentTheme("dark")
-    } else if (currentTheme === "dark") {
-      changeCurrentTheme("light")
+    if (currentTheme === ThemeType.light) {
+      changeCurrentTheme(ThemeType.dark)
+    } else if (currentTheme === ThemeType.dark) {
+      changeCurrentTheme(ThemeType.light)
     }
   }
   return (
     <>
-      <div className={'header__wrapper'} id={'Header'} style={{height: `${headerHeight}px`}}>
+      <div className={'header__wrapper'} style={{height: `${headerHeight}px`}}>
         <div className="header__left">
           <Burger
             color={palette.white}
@@ -39,8 +60,10 @@ const Header = ({
           />
           <nav className={'navBar__wrapper'}>
             <ul className="navBar">
-              {navLinks.map((navLink) => (
-                <li className="navBar__link">{navLink}</li>
+              {navLinks.map((item) => (
+                <li className="navBar__link" key={`${item.link}${item.title}`}>
+                  <a href={item.link}>{item.title}</a>
+                </li>
               ))}
             </ul>
           </nav>
@@ -73,7 +96,8 @@ const Header = ({
       {isSideBarVisible && <SideBar
           changeSideBarVisibility={changeSideBarVisibility}
           headerHeight={headerHeight}
-      />}</>
+      />}
+    </>
   )
 }
 

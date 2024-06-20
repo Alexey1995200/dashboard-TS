@@ -7,6 +7,40 @@ interface ISideBar {
 }
 
 const sideBarWidth: number = 130
+const sidebarArr = [
+  {
+    title: 'Dashboard',
+    link: '/'
+  },
+  {
+    title: 'User Profile',
+    link: '/'
+  },
+  {
+    title: 'Notifications',
+    link: '/'
+  },
+  {
+    title: 'Tasks',
+    link: '/'
+  },
+  {
+    title: 'Users',
+    link: '/'
+  },
+  {
+    title: 'Budget',
+    link: '/'
+  },
+  {
+    title: 'Log',
+    link: '/'
+  },
+  {
+    title: 'Last Changes',
+    link: '/'
+  }
+]
 const SideBar = ({
                    changeSideBarVisibility,
                    headerHeight
@@ -15,20 +49,14 @@ const SideBar = ({
     <div className={'sideBar__wrapper'}>
       <div className="sideBar"
            onClick={handleClickInsideDiv}
-           style={{width: `${sideBarWidth}px`, marginTop:`${headerHeight}px`}}
+           style={{width: `${sideBarWidth}px`, marginTop: `${headerHeight}px`}}
       >
-        {/*<div className={'sideBar__header'}>*/}
-          {/*<button onClick={changeSideBarVisibility} className="remove_btn">&#10006;</button>*/}
-        {/*</div>*/}
         <ul className="sideBar__links">
-          <li className="sideBar__link">Dashboard</li>
-          <li className="sideBar__link">User Profile</li>
-          <li className="sideBar__link">Notifications</li>
-          <li className="sideBar__link">Tasks</li>
-          <li className="sideBar__link">Users</li>
-          <li className="sideBar__link">Budget</li>
-          <li className="sideBar__link">Log</li>
-          <li className="sideBar__link">Last Changes</li>
+          {sidebarArr.map((item) => (
+            <li className={'sideBar__link'} key={`${item.link}${item.title}`}>
+              <a href={item.link}>{item.title}</a>
+            </li>
+          ))}
         </ul>
       </div>
       <div onClick={changeSideBarVisibility}
